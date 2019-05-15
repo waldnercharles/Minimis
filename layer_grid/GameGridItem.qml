@@ -23,139 +23,155 @@ Item {
 
     Behavior on scale { PropertyAnimation { duration: 100; } }
 
-    Rectangle {
-        id: container
-
-        anchors.fill: parent
-        anchors.margins: gridItemSpacing
-
-        radius: cornerRadius + borderWidth
-        color: selected ? "#ff9e12" : "transparent"
+    Item {
+        id: card
+        anchors.fill: parent;
 
         Rectangle {
-            id: borderAnimation
-            width: parent.width
-            height: parent.height
-            visible: selected
-            color: "white"
+            id: container
+
+            anchors.fill: parent
+            anchors.margins: gridItemSpacing
 
             radius: cornerRadius + borderWidth
+            color: selected ? "#ff9e12" : "transparent"
 
-            SequentialAnimation on opacity {
-                id: opacityAnimation
-                loops: Animation.Infinite
-                NumberAnimation { to: 1; duration: 500; }
-                NumberAnimation { to: 0; duration: 500; }
-                PauseAnimation { duration: 200 }
-            }
-        }
+            Rectangle {
+                id: borderAnimation
+                width: parent.width
+                height: parent.height
+                visible: selected
+                color: "white"
 
-        Rectangle {
-            id: grayBackground
-            anchors { fill: parent; margins: borderWidth }
-            color: "#1a1a1a"
-            radius: cornerRadius
+                radius: cornerRadius + borderWidth
 
-            z: 2
-        }
-
-        Image {
-            id: screenshot
-            anchors { fill: parent; margins: borderWidth }
-
-            asynchronous: true
-
-            source: game.assets.screenshots[0] || ""
-            visible: game.assets.screenshots[0]
-            opacity: selected ? 1 : 0.5
-
-            fillMode: Image.PreserveAspectCrop
-
-            layer.enabled: true
-            layer.effect: OpacityMask {
-                maskSource: Item {
-                    width: screenshot.width
-                    height: screenshot.height
-                    Rectangle {
-                        anchors.centerIn: parent
-                        width: screenshot.width
-                        height: screenshot.height
-                        radius: cornerRadius
-                    }
+                SequentialAnimation on opacity {
+                    id: opacityAnimation
+                    loops: Animation.Infinite
+                    NumberAnimation { to: 1; duration: 500; }
+                    NumberAnimation { to: 0; duration: 500; }
+                    PauseAnimation { duration: 200 }
                 }
             }
-            z: 2
-        }
-    }
 
-    Item {
-        id: logo_container
-        anchors.fill: parent
-        anchors.centerIn: parent
-        Image {
-            id: logo
-            anchors { fill: parent; centerIn: parent; margins: vpx(30) }
-            asynchronous: true
-            source: game.assets.logo || ""
+            Rectangle {
+                id: grayBackground
+                anchors { fill: parent; margins: borderWidth }
+                color: "#1a1a1a"
+                radius: cornerRadius
+
+                z: 2
+            }
+
+            Image {
+                id: screenshot
+                anchors { fill: parent; margins: borderWidth }
+
+                asynchronous: true
+
+                source: game.assets.screenshots[0] || ""
+                visible: game.assets.screenshots[0]
+                opacity: selected ? 1 : 0.5
+
+                fillMode: Image.PreserveAspectCrop
+
+                layer.enabled: true
+                layer.effect: OpacityMask {
+                    maskSource: Item {
+                        width: screenshot.width
+                        height: screenshot.height
+                        Rectangle {
+                            anchors.centerIn: parent
+                            width: screenshot.width
+                            height: screenshot.height
+                            radius: cornerRadius
+                        }
+                    }
+                }
+                z: 2
+            }
+        }
+
+        Item {
+            id: logo_container
+            anchors.fill: parent
+            anchors.centerIn: parent
+            Image {
+                id: logo
+                anchors { fill: parent; centerIn: parent; margins: vpx(30) }
+                asynchronous: true
+                source: game.assets.logo || ""
+                visible: false
+                fillMode: Image.PreserveAspectFit
+            }
+
+            Glow {
+                source: logo
+                anchors.fill: source
+                radius: vpx(2)
+                spread: 0.8
+                color: "#bbffffff"
+            }
             visible: false
-            fillMode: Image.PreserveAspectFit
         }
 
-        Glow {
-            source: logo
+        DropShadow {
+            id: logo_shadow
+            source: logo_container
             anchors.fill: source
-            radius: vpx(2)
-            spread: 0.8
-            color: "#bbffffff"
+            color: "black"
+            radius: vpx(3)
+            spread: 0.3
+            smooth: true
+            visible: !selected || !highlightVisible
+            z: 5
         }
-        visible: false
+
+        Image {
+            anchors.centerIn: parent
+
+            visible: screenshot.status === Image.Loading
+            source: "../assets/loading-spinner.png"
+
+            RotationAnimator on rotation {
+                loops: Animator.Infinite;
+                from: 0;
+                to: 360;
+                duration: 500
+            }
+        }
+
+        Text {
+            width: parent.width - vpx(64)
+            anchors.centerIn: parent
+
+            visible: !game.assets.screenshots[0]
+
+            text: game.title
+            wrapMode: Text.Wrap
+            horizontalAlignment: Text.AlignHCenter
+            color: "#eee"
+            font {
+                pixelSize: vpx(16)
+                family: globalFonts.sans
+            }
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: root.clicked()
+            onDoubleClicked: root.doubleClicked()
+        }
     }
 
     DropShadow {
-        id: logo_shadow
-        source: logo_container
-        anchors.fill: source
-        color: "black"
-        radius: vpx(3)
-        spread: 0.3
-        smooth: true
-        visible: !selected || !highlightVisible
-        z: 5
-    }
-
-    Image {
-        anchors.centerIn: parent
-
-        visible: screenshot.status === Image.Loading
-        source: "../assets/loading-spinner.png"
-
-        RotationAnimator on rotation {
-            loops: Animator.Infinite;
-            from: 0;
-            to: 360;
-            duration: 500
+            source: card
+            anchors.fill: source
+            horizontalOffset: -10
+            verticalOffset: 10
+            radius: 12.0
+            samples: 17
+            color: "#44000000"
+            visible: true
         }
-    }
-
-    Text {
-        width: parent.width - vpx(64)
-        anchors.centerIn: parent
-
-        visible: !game.assets.screenshots[0]
-
-        text: game.title
-        wrapMode: Text.Wrap
-        horizontalAlignment: Text.AlignHCenter
-        color: "#eee"
-        font {
-            pixelSize: vpx(16)
-            family: globalFonts.sans
-        }
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: root.clicked()
-        onDoubleClicked: root.doubleClicked()
-    }
 }

@@ -32,14 +32,14 @@ FocusScope {
         }
     }
 
-    // BackgroundImage {
-    //     anchors {
-    //         top: topbar.bottom; bottom: parent.bottom
-    //         left: parent.left; right: parent.right
-    //     }
+    BackgroundImage {
+        anchors {
+            top: topbar.bottom; bottom: parent.bottom
+            left: parent.left; right: parent.right
+        }
 
-    //     game: gamegrid.currentGame
-    // }
+        game: gamegrid.currentGame
+    }
 
     GameGrid {
         id: gamegrid

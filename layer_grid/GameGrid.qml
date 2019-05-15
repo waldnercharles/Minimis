@@ -1,22 +1,6 @@
-// Pegasus Frontend
-// Copyright (C) 2017-2019  Mátyás Mustoha
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-
 import QtQuick 2.3
-
+import QtMultimedia 5.9
+import QtGraphicalEffects 1.0
 
 FocusScope {
     id: root
@@ -37,6 +21,26 @@ FocusScope {
     signal launchRequested
 
     onPlatformChanged: if (memoryLoaded && grid.count) gameIndex = 0;
+
+    property var videoSource
+    property var highlightVisible
+
+    onCurrentGameChanged: {
+        videoSource = undefined;
+        highlightVisible = false;
+        videoDelay.restart();
+    }
+
+    Timer {
+        id: videoDelay
+        interval: 800
+        onTriggered: {
+            if (currentGame.assets.videos.length > 0) {
+                videoSource = currentGame.assets.videos[0];
+                highlightVisible = true;
+            }
+        }
+    }
 
     Keys.onPressed: {
         if (event.isAutoRepeat)
@@ -64,6 +68,95 @@ FocusScope {
         }
     }
 
+    Component {
+        id: highlight
+        Item {
+            id: highlightContainer
+            z: grid.currentItem.z + 1
+            scale: grid.currentItem.scale
+
+            width: grid.currentItem.width
+            height: grid.currentItem.height
+
+            x: grid.currentItem.x
+            y: grid.currentItem.y
+
+            visible: highlightVisible
+
+            Behavior on x { PropertyAnimation { duration: videoDelay.interval; easing.type: Easing.OutQuart; easing.amplitude: 2.0; } }
+            Behavior on y { PropertyAnimation { duration: videoDelay.interval; easing.type: Easing.OutQuart; easing.amplitude: 2.0; } }
+
+            // TODO: Move this into its own component
+            Item {
+                id: logo_container
+                anchors.fill: parent
+
+                anchors.centerIn: video
+                Image {
+                    id: logo
+                    anchors { fill: parent; centerIn: parent; margins: vpx(30) }
+                    asynchronous: true
+                    source: currentGame.assets.logo || ""
+                    visible: false
+                    fillMode: Image.PreserveAspectFit
+                }
+
+                Glow {
+                    source: logo
+                    anchors.fill: source
+                    radius: vpx(2)
+                    spread: 0.8
+                    color: "#bbffffff"
+                }
+                visible: false
+            }
+
+            DropShadow {
+                id: logo_shadow
+                source: logo_container
+                anchors.fill: source
+                color: "black"
+                radius: vpx(3)
+                spread: 0.3
+                smooth: true
+
+                z: video.z + 1
+            }
+
+            Video {
+                id: video
+                anchors.fill: parent
+                anchors.margins: grid.currentItem.gridItemSpacing + grid.currentItem.borderWidth;
+                anchors.centerIn: parent
+
+                autoPlay: true
+
+                volume: 0.2
+
+                source: videoSource || ""
+                fillMode: VideoOutput.PreserveAspectCrop
+                loops: MediaPlayer.Infinite
+
+                opacity: videoSource ? 1 : 0
+                Behavior on opacity { PropertyAnimation { duration: videoDelay.interval * 2; easing.type: Easing.OutQuart; easing.amplitude: 2.0; } }
+
+                layer.enabled: true
+                layer.effect: OpacityMask {
+                    maskSource: Item {
+                        width: video.width
+                        height: video.height
+                        Rectangle {
+                            anchors.centerIn: parent
+                            width: video.width
+                            height: video.height
+                            radius: grid.currentItem.cornerRadius
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     GridView {
         id: grid
 
@@ -88,12 +181,14 @@ FocusScope {
         anchors.topMargin: cellHeight * 0.14
         anchors.bottomMargin: cellHeight * 0.07
 
-        highlightMoveDuration: 150
+        highlight: highlight
+        highlightFollowsCurrentItem: false
 
         delegate: GameGridItem {
             width: GridView.view.cellWidth
             height: GridView.view.cellHeight
             selected: GridView.isCurrentItem
+            highlightVisible: highlightVisible
 
             game: modelData
 

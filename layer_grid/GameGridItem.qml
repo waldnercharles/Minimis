@@ -1,20 +1,3 @@
-// Pegasus Frontend
-// Copyright (C) 2017-2018  Mátyás Mustoha
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-
 import QtQuick 2.8
 import QtMultimedia 5.9
 import QtGraphicalEffects 1.0
@@ -24,12 +7,12 @@ Item {
 
     property int cornerRadius: vpx(4)
     property int gridItemSpacing: vpx(7)
+    property int borderWidth: vpx(3)
 
     property bool selected: false
-    property var game
+    property bool highlightVisible: false
 
-    property alias imageWidth: screenshot.paintedWidth
-    property alias imageHeight: screenshot.paintedHeight
+    property var game
 
     signal clicked()
     signal doubleClicked()
@@ -38,40 +21,7 @@ Item {
     scale: selected ? 1.14 : 1.0
     z: selected ? 3 : 1
 
-
     Behavior on scale { PropertyAnimation { duration: 100; } }
-
-    onSelectedChanged: {
-        screenshot.opacity = 1;
-        videoPreviewLoader.playlist.clear();
-        videoPreviewLoader.sourceComponent = undefined;
-        screenshotFadeTimer.stop();
-        videoTimer.restart();
-    }
-
-    Timer {
-        id: videoTimer
-        interval: 300
-        onTriggered: {
-            // screenshot.visible = true;
-            if (selected && game && game.assets.videos.length > 0) {
-                for (var i = 0; i < game.assets.videos.length; i++) {
-                    videoPreviewLoader.playlist.addItem(game.assets.videos[i]);
-                }
-
-                videoPreviewLoader.sourceComponent = videoPreviewWrapper;
-                screenshotFadeTimer.restart();
-            }
-        }
-    }
-
-    Timer {
-        id: screenshotFadeTimer
-        interval: 800
-        onTriggered: {
-            screenshot.opacity = 0;
-        }
-    }
 
     Rectangle {
         id: container
@@ -79,7 +29,7 @@ Item {
         anchors.fill: parent
         anchors.margins: gridItemSpacing
 
-        radius: cornerRadius + vpx(3)
+        radius: cornerRadius + borderWidth
         color: selected ? "#ff9e12" : "transparent"
 
         Rectangle {
@@ -89,7 +39,7 @@ Item {
             visible: selected
             color: "white"
 
-            radius: cornerRadius + vpx(3)
+            radius: cornerRadius + borderWidth
 
             SequentialAnimation on opacity {
                 id: opacityAnimation
@@ -102,7 +52,7 @@ Item {
 
         Rectangle {
             id: grayBackground
-            anchors { fill: parent; margins: vpx(3) }
+            anchors { fill: parent; margins: borderWidth }
             color: "#1a1a1a"
             radius: cornerRadius
 
@@ -111,7 +61,7 @@ Item {
 
         Image {
             id: screenshot
-            anchors { fill: parent; margins: vpx(3) }
+            anchors { fill: parent; margins: borderWidth }
 
             asynchronous: true
 
@@ -119,14 +69,7 @@ Item {
             visible: game.assets.screenshots[0]
             opacity: selected ? 1 : 0.5
 
-            // sourceSize { width: 256; height: 256 }
             fillMode: Image.PreserveAspectCrop
-
-            // onStatusChanged: if (status === Image.Ready) {
-            //     imageHeightRatio = paintedHeight / paintedWidth;
-            //     root.imageLoaded(paintedWidth, paintedHeight);
-            // }
-            Behavior on opacity { PropertyAnimation { duration: 200; easing.type: Easing.OutQuart; easing.amplitude: 2.0; } }
 
             layer.enabled: true
             layer.effect: OpacityMask {
@@ -137,52 +80,10 @@ Item {
                         anchors.centerIn: parent
                         width: screenshot.width
                         height: screenshot.height
-                        radius: cornerRadius - vpx(1)
+                        radius: cornerRadius
                     }
                 }
             }
-            z: 3
-        }
-
-        Component {
-            id: videoPreviewWrapper
-
-            Video {
-                id: video
-                playlist: videoPreviewLoader.playlist
-                anchors.fill: parent
-                fillMode: VideoOutput.PreserveAspectCrop
-                autoPlay: true
-
-                volume: 0.3
-            }
-        }
-
-        Loader {
-            id: videoPreviewLoader
-            anchors { fill: parent; margins: vpx(3) }
-
-            property Playlist playlist: Playlist {
-                playbackMode: Playlist.Loop
-            }
-
-            visible: selected && playlist.itemCount > 0
-
-            asynchronous: true
-            layer.enabled: true
-            layer.effect: OpacityMask {
-                maskSource: Item {
-                    width: videoPreviewLoader.width
-                    height: videoPreviewLoader.height
-                    Rectangle {
-                        anchors.centerIn: parent
-                        width: videoPreviewLoader.width
-                        height: videoPreviewLoader.height
-                        radius: cornerRadius - vpx(1)
-                    }
-                }
-            }
-
             z: 2
         }
     }
@@ -196,7 +97,7 @@ Item {
             anchors { fill: parent; centerIn: parent; margins: vpx(30) }
             asynchronous: true
             source: game.assets.logo || ""
-            visible: source || ""
+            visible: false
             fillMode: Image.PreserveAspectFit
         }
 
@@ -218,6 +119,7 @@ Item {
         radius: vpx(3)
         spread: 0.3
         smooth: true
+        visible: !selected || !highlightVisible
         z: 5
     }
 

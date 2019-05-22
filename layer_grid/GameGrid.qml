@@ -24,21 +24,30 @@ FocusScope {
 
     property var videoSource
     property var highlightVisible
+    // property int videoVisible = 0
 
     onCurrentGameChanged: {
         videoSource = undefined;
         highlightVisible = false;
         videoDelay.restart();
+        videoVisibleDelay.stop();
     }
 
     Timer {
         id: videoDelay
-        interval: 800
+        interval: 200
         onTriggered: {
             if (currentGame.assets.videos.length > 0) {
                 videoSource = currentGame.assets.videos[0];
-                highlightVisible = true;
             }
+        }
+    }
+
+    Timer {
+        id: videoVisibleDelay
+        interval: 800
+        onTriggered: {
+            highlightVisible = true;
         }
     }
 
@@ -129,16 +138,24 @@ FocusScope {
                 anchors.margins: grid.currentItem.gridItemSpacing + grid.currentItem.borderWidth;
                 anchors.centerIn: parent
 
-                autoPlay: true
+                // autoPlay: true
 
-                volume: 0.2
+                volume: highlightVisible ? 0.3 : 0
 
                 source: videoSource || ""
                 fillMode: VideoOutput.PreserveAspectCrop
                 loops: MediaPlayer.Infinite
 
-                opacity: videoSource ? 1 : 0
-                Behavior on opacity { PropertyAnimation { duration: videoDelay.interval * 2; easing.type: Easing.OutQuart; easing.amplitude: 2.0; } }
+                onStatusChanged: {
+                    if (status == MediaPlayer.Loaded) {
+                        video.play();
+                        videoVisibleDelay.restart();
+                    }
+                }
+
+                opacity: source && highlightVisible ? 1 : 0
+
+                Behavior on opacity { PropertyAnimation { duration: videoDelay.interval * 4; easing.type: Easing.OutQuart; easing.amplitude: 2.0; } }
 
                 layer.enabled: true
                 layer.effect: OpacityMask {
@@ -151,6 +168,27 @@ FocusScope {
                             height: video.height
                             radius: grid.currentItem.cornerRadius
                         }
+                    }
+
+                    layer.enabled: platform.shortName == "gb" ? true : false
+                    layer.effect: ShaderEffect {
+                        width: video.width; height: video.height
+                        property variant src: video
+                        fragmentShader: "
+                            varying highp vec2 qt_TexCoord0;
+                            uniform sampler2D src;
+                            uniform lowp float qt_Opacity;
+
+                            void main() {
+                                lowp vec4 tex = texture2D(src, qt_TexCoord0);
+
+                                vec3 min = vec3(0.06, 0.22, 0.06);
+                                vec3 max = vec3(0.61, 0.74, 0.06);
+
+                                vec3 color = vec3(dot(tex.rgb, vec3(0.2126, 0.7152, 0.0722))) * (max - min) + min;
+
+                                gl_FragColor = vec4(color, tex.a)* qt_Opacity;
+                            }"
                     }
                 }
             }

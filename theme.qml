@@ -1,105 +1,112 @@
-// Pegasus Frontend
-// Copyright (C) 2017-2019  Mátyás Mustoha
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-
 import QtQuick 2.0
-import "layer_filter"
-import "layer_gameinfo"
-import "layer_grid"
-import "layer_platform"
-
+import "Components"
 
 FocusScope {
-    PlatformBar {
-        id: topbar
-        z: 300
-        anchors {
-            top: parent.top;
-            left: parent.left; right: parent.right
-        }
-    }
+    FontLoader { id: titleFont; source: "assets/fonts/AkzidenzGrotesk-BoldCond.otf" }
+    FontLoader { id: subtitleFont; source: "assets/fonts/Gotham-Bold.otf" }
+    FontLoader { id: bodyFont; source: "assets/fonts/Montserrat-Medium.otf" }
+
+    property int currentCollectionIndex: 0
+    property var currentCollection
+    property var currentGame
+
+    property bool muteVideo: false
+
+    property var settings
 
     BackgroundImage {
-        anchors {
-            top: topbar.bottom; bottom: parent.bottom
-            left: parent.left; right: parent.right
-        }
-
-        game: gamegrid.currentGame
+        anchors.fill: parent
     }
 
-    GameGrid {
-        id: gamegrid
+    GamesView {
+        id: gamesView
 
         focus: true
 
-        anchors {
-            top: topbar.bottom; bottom: parent.bottom;
-            left: parent.left; right: parent.right;
-            leftMargin: vpx(80); rightMargin: vpx(80);
-        }
+        anchors.fill: parent
+        anchors.leftMargin: vpx(80)
+        anchors.rightMargin: vpx(80)
 
-        platform: topbar.currentCollection
-        onNextPlatformRequested: topbar.next()
-        onPrevPlatformRequested: topbar.prev()
-        onDetailsRequested: gamepreview.focus = true
-        onFiltersRequested: filter.focus = true
-        onLaunchRequested: launchGame()
+        muted: collectionTransition.pendingCollection != currentCollection
     }
 
-    // GamePreview {
-    //     id: gamepreview
+    CollectionTransition {
+        id: collectionTransition
 
-    //     panelWidth: parent.width * 0.7 + vpx(72)
-    //     anchors {
-    //         top: topbar.bottom; bottom: parent.bottom
-    //         left: parent.left; right: parent.right
-    //     }
+        anchors.fill: parent
 
-    //     game: gamegrid.currentGame
-    //     onOpenRequested: gamepreview.focus = true
-    //     onCloseRequested: gamegrid.focus = true
-    //     onFiltersRequested: filter.focus = true
-    //     onLaunchRequested: launchGame()
-    // }
+        pendingCollection: api.collections.get(currentCollectionIndex)
+    }
 
-    // FilterLayer {
-    //     id: filter
-    //     anchors.fill: parent
-
-    //     onCloseRequested: gamegrid.focus = true
-    //     onTitleFilterChanged: gamegrid.filterTitle = tfil
-    // }
 
     Component.onCompleted: {
-        var coll_idx = api.memory.get('collectionIndex') || 0;
-        var game_idx = api.memory.get('gameIndex') || 0;
+        loadSettings();
+    }
 
-        // if (coll_idx < api.collections.count)
-        //     topbar.collectionIndex = coll_idx;
+    Keys.onPressed: {
+        if (event.isAutoRepeat)
+            return;
 
-        if (game_idx < api.collections.get(coll_idx).games.count)
-            gamegrid.gameIndex = game_idx;
+        if (api.keys.isPrevPage(event)) {
+            event.accepted = true;
+            prevCollection();
+            return;
+        }
+        if (api.keys.isNextPage(event)) {
+            event.accepted = true;
+            nextCollection();
+            return;
+        }
+        // if (api.keys.isDetails(event)) {
+        //     event.accepted = true;
+        //     detailsRequested();
+        //     return;
+        // }
+        // if (api.keys.isFilters(event)) {
+        //     event.accepted = true;
+        //     filtersRequested();
+        //     return;
+        // }
+    }
 
-        gamegrid.memoryLoaded = true;
+    function prevCollection() {
+        currentCollectionIndex = (currentCollectionIndex + api.collections.count - 1) % api.collections.count;
+    }
+
+    function nextCollection() {
+        currentCollectionIndex = (currentCollectionIndex + 1) % api.collections.count;
     }
 
     function launchGame() {
-        api.memory.set('collectionIndex', topbar.collectionIndex);
-        api.memory.set('gameIndex', gamegrid.gameIndex);
-        gamegrid.currentGame.launch();
+        api.memory.set('collectionIndex', collectionIndex);
+        api.memory.set('gameIndex', grid.gameIndex);
+        grid.currentGame.launch();
+    }
+
+    function loadSettings() {
+        if (api.memory.has('settings')) {
+            settings = api.memory.get('settings');
+        } else {
+            settings = {
+                game: {
+                    scale: { key: 'Scale', value: 0.95, type: 'real' },
+                    scaleSelected: { key: 'Scale - Selected', value: 1.1, type: 'real' },
+
+                    cornerRadius: { key: 'Corner Radius', value: 5, type: 'int' },
+
+                    previewEnabled: { key: 'Video Preview', value: true, type: 'bool' },
+                    previewVolume: { key: 'Video Preview Volume', value: 0.5, type: 'real' },
+
+                    logoMargin: { key: 'Logo Margins', value: 30, type: 'int' },
+                    logoFontSize: { key: 'Logo Font Size', value: 16, type: 'int' },
+                    
+                    highlightBorderAnimated: { key: 'Highlight Border Animated', value: true, type: 'bool' },
+                    highlightBorderWidth: { key: 'Highlight Border Width', value: 3, type: 'int', },
+                    highlightBorderColor1: { key: 'Highlight Border Color 1', value: '#ff9e12', type: 'string' },
+                    highlightBorderColor2: { key: 'Highlight Border Color 2', value: '#ffffff', type: 'string' },
+
+                }
+            }
+        }
     }
 }

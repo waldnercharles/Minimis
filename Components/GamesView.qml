@@ -77,9 +77,9 @@ FocusScope {
                 Behavior on scale { PropertyAnimation { duration: 100; } }
 
                 Keys.onPressed: {
-                    if (api.keys.isAccept(event) && !event.isAutoRepeat) {
-                        root.launchRequested();
-                    }
+                    // if (api.keys.isAccept(event) && !event.isAutoRepeat) {
+                    //     root.launchRequested();
+                    // }
                 }
             }
 

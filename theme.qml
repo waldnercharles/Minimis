@@ -10,20 +10,24 @@ import "./utils.js" as Utils
 FocusScope {
     id: root
 
-    FontLoader { id: titleFont; source: "assets/fonts/AkzidenzGrotesk-BoldCond.otf" }
-    FontLoader { id: subtitleFont; source: "assets/fonts/Gotham-Bold.otf" }
-    FontLoader { id: bodyFont; source: "assets/fonts/Montserrat-Medium.otf" }
+    FontLoader { id: titleFont; source: "assets/fonts/SourceSansPro-Bold.ttf" }
+    FontLoader { id: subtitleFont; source: "assets/fonts/OpenSans-Bold.ttf" }
+    FontLoader { id: bodyFont; source: "assets/fonts/OpenSans-Semibold.ttf" }
 
     SoundEffect { id: sfxNav; source: "assets/sfx/navigation.wav" }
     SoundEffect { id: sfxBack; source: "assets/sfx/back.wav" }
     SoundEffect { id: sfxAccept; source: "assets/sfx/accept.wav" }
     SoundEffect { id: sfxToggle; source: "assets/sfx/toggle.wav" }
 
-    property var stateHistory: []
     property var settings
+    property var stateHistory: []
 
     property var currentCollection
     property int currentCollectionIndex: 0
+
+    property var marginFromGameScaling: (root.width / settings.game.gameViewColumns.value * (1.0 - settings.game.scale.value) / 2.0)
+    property var headerLeftMargin: vpx(settings.theme.leftMargin.value) + marginFromGameScaling + settings.game.borderWidth.value
+    property var headerRightMargin: vpx(settings.theme.rightMargin.value) + marginFromGameScaling + settings.game.borderWidth.value
 
     states: [
         State { name: 'gamesView'; PropertyChanges { target: loader; sourceComponent: gamesView } },
@@ -64,9 +68,7 @@ FocusScope {
         }
 
         if (api.keys.isCancel(event)) {
-            event.accepted = true;
-            previousScreen();
-            return;
+            event.accepted = previousScreen();
         }
     }
 
@@ -74,7 +76,11 @@ FocusScope {
         if (stateHistory.length > 0) {
             sfxBack.play();
             root.state = stateHistory.pop();
+
+            return true;
         }
+
+        return false;
     }
 
     function toGamesView() {
@@ -90,37 +96,45 @@ FocusScope {
     }
 
     function loadSettings() {
-        if (api.memory.has('settings')) {
-            settings = api.memory.get('settings');
-        } else {
-            settings = {
-                theme: {
-                    accentColor: { key: 'Accent Color', value: '#efc62e', type: 'string' },
-                    backgroundColor: { key: 'Background Color', value: '#1c1f26', type: 'string' },
-                },
-                game: {
-                    scale: { key: 'Scale', value: 0.95, type: 'real' },
-                    scaleSelected: { key: 'Scale - Selected', value: 1.00, type: 'real' },
+        settings = {
+            game: {
+                gameViewColumns: { name: 'Number of Columns', value: 3, type: 'int' },
 
-                    aspectRatioWidth: { key: 'Aspect Ratio - Width', value: 9.2, type: 'real' },
-                    aspectRatioHeight: { key: 'Aspect Ratio - Height', value: 4.3, type: 'real' },
+                previewEnabled: { name: 'Video Preview', value: true, type: 'bool' },
+                previewVolume: { name: 'Video Preview Volume', value: 0.0, delta: 0.05, type: 'real' },
 
-                    cornerRadius: { key: 'Corner Radius', value: 5, type: 'int' },
+                borderAnimated: { name: 'Highlight Border Animated', value: true, type: 'bool' },
+                borderWidth: { name: 'Highlight Border Width', value: 5, type: 'int', },
 
-                    previewEnabled: { key: 'Video Preview', value: true, type: 'bool' },
-                    previewVolume: { key: 'Video Preview Volume', value: 0.0, type: 'real' },
+                scale: { name: 'Scale', value: 0.95, delta: 0.01, type: 'real' },
+                scaleSelected: { name: 'Scale - Selected', value: 1.0, delta: 0.01, type: 'real' },
 
-                    logoMargin: { key: 'Logo Margins', value: 30, type: 'int' },
-                    logoFontSize: { key: 'Logo Font Size', value: 16, type: 'int' },
-                    
-                    borderAnimated: { key: 'Highlight Border Animated', value: true, type: 'bool' },
-                    borderWidth: { key: 'Highlight Border Width', value: 5, type: 'int', },
+                aspectRatioWidth: { name: 'Aspect Ratio - Width', value: 9.2, delta: 0.1, type: 'real' },
+                aspectRatioHeight: { name: 'Aspect Ratio - Height', value: 4.3, delta: 0.1, type: 'real' },
 
-                    gameViewLeftPadding: { key: 'Screen Padding - Left', value: 60, type: 'int' },
-                    gameViewRightPadding: { key: 'Screen Padding - Right', value: 60, type: 'int' },
+                cornerRadius: { name: 'Corner Radius', value: 5, type: 'int' },
 
-                    gameViewColumns: { key: 'Number of Columns', value: 3, type: 'int' },
-                }
+                logoMargin: { name: 'Logo Margins', value: 30, type: 'int' },
+                logoFontSize: { name: 'Logo Font Size', value: 16, type: 'int' },
+            },
+            theme: {
+                backgroundColor: { name: 'Background Color', value: '#1B262C', type: 'string' },
+
+                accentColor: { name: 'Accent Color', value: '#FFD460', type: 'string' },
+
+                borderColor1: { name: 'Border Color 1', value: '#FFD460', type: 'string' },
+                borderColor2: { name: 'Border Color 2', value: '#F6F7D7', type: 'string' },
+
+                textColor: { name: 'Text Color', value: '#F6F7D7', type: 'string' },
+
+                leftMargin: { name: 'Screen Padding - Left', value: 60, type: 'int' },
+                rightMargin: { name: 'Screen Padding - Right', value: 60, type: 'int' },
+            },
+        };
+
+        for (const category of Object.values(settings)) {
+            for (const setting of Object.values(category)) {
+                api.memory.set(setting.name, setting.value = api.memory.get(setting.name) ?? setting.value);
             }
         }
     }

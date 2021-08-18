@@ -8,7 +8,9 @@ Item {
     property bool selected: false
 
     onSelectedChanged: {
-        if (selected)
+        const playPreview = modelData && modelData.assets.videoList.length > 0 && settings.game.previewEnabled.value;
+
+        if (selected && playPreview)
             fadescreenshot.restart();
         else {
             fadescreenshot.stop();

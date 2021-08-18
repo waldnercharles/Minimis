@@ -8,8 +8,6 @@ import "../utils.js" as Utils
 FocusScope {
     id: header
 
-    property real gamePadding: (parent.width / settings.game.gameViewColumns.value * (1.0 - settings.game.scale.value) / 2.0)
-
     width: parent.width
     height: vpx(75)
 
@@ -21,9 +19,8 @@ FocusScope {
             id: container
 
             anchors.fill: parent
-            anchors.leftMargin: vpx(settings.game.gameViewLeftPadding.value) + header.gamePadding + settings.game.borderWidth.value
-            anchors.rightMargin: vpx(settings.game.gameViewRightPadding.value) + header.gamePadding + settings.game.borderWidth.value
-
+            anchors.leftMargin: headerLeftMargin
+            anchors.rightMargin: headerRightMargin
 
             Rectangle {
                 id: logoBackground

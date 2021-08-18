@@ -12,7 +12,10 @@ Item {
         videoPreview.state = "";
         videoPreview.stop();
         videoPreview.playlist.clear();
-        videoDelay.restart();
+
+        if (settings.game.previewEnabled.value) {
+            videoDelay.restart();
+        }
     }
 
     Timer {

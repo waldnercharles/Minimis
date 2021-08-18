@@ -25,13 +25,15 @@ FocusScope {
 
         focus: true
 
+        property var gradientHeight: 0.0133
+
         GridView {
             id: grid
 
             focus: true
 
-            anchors.leftMargin: vpx(settings.game.gameViewLeftPadding.value + settings.game.borderWidth.value)
-            anchors.rightMargin: vpx(settings.game.gameViewRightPadding.value + settings.game.borderWidth.value)
+            anchors.leftMargin: vpx(settings.theme.leftMargin.value + settings.game.borderWidth.value)
+            anchors.rightMargin: vpx(settings.theme.rightMargin.value + settings.game.borderWidth.value)
 
             model: currentCollection != null ? currentCollection.games : null
 
@@ -42,7 +44,7 @@ FocusScope {
             displayMarginEnd: cellHeight * 2
 
             anchors.fill: parent
-            anchors.topMargin: cellHeight * (settings.game.scaleSelected.value - 1.0) / 2.0 + parent.height * 0.015 + vpx(settings.game.borderWidth.value)
+            anchors.topMargin: (cellHeight + vpx(settings.game.borderWidth.value)) * (settings.game.scaleSelected.value - 1.0) / 2.0 + parent.height * gridContainer.gradientHeight * 2
             anchors.bottomMargin: anchors.topMargin
 
             highlight: GamesViewItemHighlight {
@@ -61,10 +63,12 @@ FocusScope {
             highlightMoveDuration: 0
 
             highlightRangeMode: GridView.ApplyRange
-            preferredHighlightBegin: ((grid.cellHeight - grid.cellHeight * settings.game.scale.value) + (grid.cellHeight * settings.game.scaleSelected.value - grid.cellHeight)) / 2.0
-            preferredHighlightEnd: grid.height - preferredHighlightBegin
+            preferredHighlightBegin: 0
+            preferredHighlightEnd: grid.height
 
             delegate: GamesViewItem {
+                id: item
+
                 width: GridView.view.cellWidth
                 height: GridView.view.cellHeight
 
@@ -130,8 +134,8 @@ FocusScope {
                 end: Qt.point(0, root.height)
 
                 gradient: Gradient {
-                    GradientStop { position: 0.01; color: 'transparent' }
-                    GradientStop { position: 0.0133; color: 'white' }
+                    GradientStop { position: gridContainer.gradientHeight / 1.2; color: 'transparent' }
+                    GradientStop { position: gridContainer.gradientHeight; color: 'white' }
                 }
             }
         }

@@ -9,7 +9,7 @@ Rectangle {
 
   property var pendingCollection
 
-  color: "#000000"
+  color: settings.theme.backgroundColor.value
   opacity: 0
 
   SequentialAnimation {
@@ -42,16 +42,26 @@ Rectangle {
 
     asynchronous: false
     smooth: true
+
+    visible: false
+  }
+
+  ColorOverlay {
+    anchors.fill: logo
+    source: logo
+    color: settings.theme.accentColor.value
   }
 
   onPendingCollectionChanged: {
-    currentCollection = null;
+    if (pendingCollection != currentCollection) {
+      currentCollection = null;
 
-    debounceTimer.stop();
-    fadeAnimation.stop();
+      debounceTimer.stop();
+      fadeAnimation.stop();
 
-    root.opacity = 1;
+      root.opacity = 1;
 
-    debounceTimer.restart();
+      debounceTimer.restart();
+    }
   }
 }

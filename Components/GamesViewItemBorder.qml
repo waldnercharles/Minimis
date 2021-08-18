@@ -4,9 +4,9 @@ import QtGraphicalEffects 1.0
 Item {
     id: root
 
-    property int borderWidth: settings.game.highlightBorderWidth.value
-    property string borderColor1: settings.game.highlightBorderColor1.value
-    property string borderColor2: settings.game.highlightBorderColor2.value
+    property int borderWidth: settings.game.borderWidth.value
+    property string borderColor1: settings.theme.accentColor.value
+    property string borderColor2: 'white'
 
     property int cornerRadius: vpx(settings.game.cornerRadius.value)
 
@@ -23,9 +23,9 @@ Item {
             loops: Animation.Infinite
             ColorAnimation { from: borderColor1; to: borderColor2; duration: 500 }
             ColorAnimation { from: borderColor2; to: borderColor1; duration: 500 }
-            PauseAnimation { duration: 200 }
+            PauseAnimation { duration: 300 }
 
-            running: settings.game.highlightBorderAnimated.value
+            running: settings.game.borderAnimated.value
         }
     }
 }

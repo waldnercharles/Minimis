@@ -80,7 +80,12 @@ Item {
             id: logo
 
             anchors.fill: parent
-            anchors.margins: vpx(settings.game.logoMargin.value)
+
+            anchors.leftMargin: vpx(settings.game.logoMargin.value)
+            anchors.rightMargin: anchors.leftMargin
+
+            anchors.topMargin: vpx(settings.game.logoMargin.value) * parent.height / parent.width
+            anchors.bottomMargin: anchors.topMargin
 
             source: modelData.assets.logo || ""
             sourceSize: Qt.size(logo.width, logo.height)

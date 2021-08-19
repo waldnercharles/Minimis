@@ -16,11 +16,15 @@ Item {
             fadescreenshot.stop();
             grayBackground.opacity = 1;
             screenshot.opacity = 1;
-            logo.opacity = 1;
+            if (settings.game.logoVisible.value) {
+                logo.opacity = 1;
+            } else {
+                logo.opacity = 0;
+            }
         }
     }
 
-    Behavior on scale { PropertyAnimation { duration: 100; } }
+    Behavior on scale { NumberAnimation { duration: 100; } }
 
     scale: selected ? settings.game.scaleSelected.value : settings.game.scale.value
     z: selected ? 10 : 1
@@ -33,7 +37,9 @@ Item {
             grayBackground.opacity = 0;
             screenshot.opacity = 0;
 
-            if (settings.game.previewHideLogo.value) {
+            if (settings.game.previewLogoVisible.value) {
+                logo.opacity = 1;
+            } else {
                 logo.opacity = 0;
             }
         }
@@ -53,6 +59,8 @@ Item {
             radius: vpx(settings.game.cornerRadius.value)
 
             Behavior on opacity { NumberAnimation { duration: 200 } }
+
+            visible: !screenshot.visible
         }
 
         Image {
@@ -68,7 +76,7 @@ Item {
             asynchronous: true
             smooth: true
 
-            fillMode: Image.PreserveAspectCrop
+            fillMode: settings.game.aspectRatioNative.value ? Image.Stretch : Image.PreserveAspectCrop
 
             visible: screenshot.status === Image.Ready && logo.status !== Image.Loading
 
@@ -76,18 +84,27 @@ Item {
 
             layer.enabled: true
             layer.effect: OpacityMask {
+                id: mask
                 maskSource: Rectangle {
                     width: screenshot.width; height: screenshot.height
                     radius: vpx(settings.game.cornerRadius.value)
+                }
+
+                layer.enabled: !selected
+                layer.effect: DropShadow {
+                    anchors.fill: screenshot
+                    horizontalOffset: vpx(0); verticalOffset: vpx(4)
+
+                    samples: 5
+                    color: '#99000000';
+                    source: mask
                 }
             }
         }
 
         Image {
             id: logo
-
             anchors.fill: parent
-            scale: settings.game.logoScale.value
 
             source: modelData.assets.logo || ""
             sourceSize: Qt.size(logo.width, logo.height)
@@ -97,10 +114,29 @@ Item {
 
             fillMode: Image.PreserveAspectFit
 
-            visible: logo.status === Image.Ready && screenshot.status !== Image.Loading && settings.game.logoVisible.value
+            scale: selected ? settings.game.logoScaleSelected.value : settings.game.logoScale.value
+            visible: logo.status === Image.Ready && screenshot.status !== Image.Loading
+
+            opacity: settings.game.logoVisible.value ? 1 : 0
 
             Behavior on opacity { NumberAnimation { duration: 200 } }
+            Behavior on scale { NumberAnimation { duration: 100; } }
+
+            layer.enabled: true
+            layer.effect: DropShadow {
+                anchors.fill: logo
+
+                horizontalOffset: vpx(0); verticalOffset: vpx(6)
+
+                samples: 10
+                color: '#99000000'
+                source: logo
+
+            }
         }
+
+        
+
 
         Text {
             id: textLogo

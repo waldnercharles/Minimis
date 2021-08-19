@@ -4,10 +4,9 @@ import QtGraphicalEffects 1.0
 
 FocusScope {
     id: root
+    anchors.fill: parent
 
     property int savedIndex: 0;
-
-    anchors.fill: parent
 
     GamesViewHeader {
         id: header
@@ -103,9 +102,9 @@ FocusScope {
                 Behavior on scale { PropertyAnimation { duration: 100; } }
 
                 Keys.onPressed: {
-                    // if (api.keys.isAccept(event) && !event.isAutoRepeat) {
-                    //     root.launchRequested();
-                    // }
+                    if (api.keys.isAccept(event) && !event.isAutoRepeat) {
+                        toGameDetailsView(modelData)
+                    }
                 }
             }
 

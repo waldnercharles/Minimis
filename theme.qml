@@ -25,9 +25,13 @@ FocusScope {
     property var currentCollection
     property int currentCollectionIndex: 0
 
+    property var selectedGame
+    property var selectedGameHistory: []
+
     states: [
         State { name: 'gamesView'; PropertyChanges { target: loader; sourceComponent: gamesView } },
-        State { name: 'settingsView'; PropertyChanges { target: loader; sourceComponent: settingsView } }
+        State { name: 'settingsView'; PropertyChanges { target: loader; sourceComponent: settingsView } },
+        State { name: 'gameDetailsView'; PropertyChanges { target: loader; sourceComponent: gameDetailsView } }
     ]
 
     state: 'gamesView'
@@ -44,6 +48,11 @@ FocusScope {
     Component {
         id: settingsView
         SettingsView { focus: true }
+    }
+
+    Component {
+        id: gameDetailsView
+        GameDetailsView { focus: true }
     }
 
     Loader {
@@ -73,8 +82,13 @@ FocusScope {
             sfxBack.play();
             root.state = stateHistory.pop();
 
+            if (selectedGameHistory.length > 0) {
+                selectedGame = selectedGameHistory.pop();
+            }
+
             return true;
         }
+
 
         return false;
     }
@@ -82,13 +96,25 @@ FocusScope {
     function toGamesView() {
         sfxAccept.play();
         stateHistory.push(root.state);
-        root.state = "gamesView";
+        root.state = 'gamesView';
     }
 
     function toSettingsView() {
         sfxAccept.play();
         stateHistory.push(root.state);
-        root.state = "settingsView";
+        root.state = 'settingsView';
+    }
+
+    function toGameDetailsView(game) {
+        sfxAccept.play();
+        stateHistory.push(root.state);
+        root.state = 'gameDetailsView';
+
+        if (selectedGame) {
+            selectedGameHistory.push(selectedGame);
+        }
+
+        selectedGame = game;
     }
 
     function loadSettings() {
@@ -99,7 +125,7 @@ FocusScope {
                 art: {
                     name: 'Art',
                     value: 0,
-                    values: ['boxFront', 'boxBack', 'boxSpine', 'boxFull', 'cartridge', 'logo', 'marquee', 'bezel', 'panel', 'cabinetLeft', 'cabinetRight', 'tile', 'banner', 'steam', 'poster', 'background', 'screenshot', 'titlescreen'],
+                    values: ['boxFront', 'boxBack', 'boxSpine', 'boxFull', 'cartridge', 'marquee', 'bezel', 'panel', 'cabinetLeft', 'cabinetRight', 'tile', 'banner', 'steam', 'poster', 'background', 'screenshot', 'titlescreen'],
                     type: 'array'
                 },
 
@@ -108,8 +134,7 @@ FocusScope {
                 aspectRatioHeight: { name: 'Aspect Ratio - Height', value: 4.3, delta: 0.1, min: 0.1, type: 'real' },
 
                 previewEnabled: { name: 'Video Preview - Enabled', value: true, type: 'bool' },
-                previewVolume: { name: 'Video Preview - Volume', value: 0.0, delta: 0.05, min: 0.1, type: 'real' },
-                previewHideLogo: { name: 'Video Preview - Hide Logo', value: false, type: 'bool' },
+                previewVolume: { name: 'Video Preview - Volume', value: 0.0, delta: 0.1, min: 0.0, type: 'real' },
 
                 borderAnimated: { name: 'Border - Animate', value: true, type: 'bool' },
                 borderColor1: { name: 'Border - Color 1', value: '#FFD460', type: 'string' },
@@ -122,7 +147,9 @@ FocusScope {
                 cornerRadius: { name: 'Corner Radius', value: 5, min: 0, type: 'int' },
 
                 logoScale: { name: 'Logo - Scale', value: 0.8, delta: 0.01, min: 0.01, type: 'real' },
+                logoScaleSelected: { name: 'Logo - Scale - Selected', value: 0.9, delta: 0.01, min: 0.01, type: 'real' },
                 logoVisible: { name: 'Logo - Visible', value: true, type: 'bool' },
+                previewLogoVisible: { name: 'Logo - Visible - Video Preview', value: true, type: 'bool' },
                 logoFontSize: { name: 'Logo - Font Size', value: 16, min: 1, type: 'int' },
             },
             theme: {

@@ -23,6 +23,6 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: settings.theme.backgroundColor.value
+        color: api.memory.get(settings.theme.backgroundColor.name)
     }
 }

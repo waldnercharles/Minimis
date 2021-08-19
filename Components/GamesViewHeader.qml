@@ -6,9 +6,16 @@ import QtQml.Models 2.10
 import "../utils.js" as Utils
 
 FocusScope {
-    id: header
+    id: root
 
-    width: parent.width
+    property string text
+
+    anchors {
+        left: parent.left; right: parent.right; top: parent.top;
+        leftMargin: vpx(settings.theme.leftMargin.value + settings.game.borderWidth.value) + (parent.width / settings.game.gameViewColumns.value * (1.0 - settings.game.scale.value) / 2.0);
+        rightMargin: vpx(settings.theme.leftMargin.value + settings.game.borderWidth.value) + (parent.width / settings.game.gameViewColumns.value * (1.0 - settings.game.scale.value) / 2.0);
+    }
+
     height: vpx(75)
 
     Rectangle {
@@ -19,23 +26,20 @@ FocusScope {
             id: container
 
             anchors.fill: parent
-            anchors.leftMargin: headerLeftMargin
-            anchors.rightMargin: headerRightMargin
 
             Rectangle {
-                id: logoBackground
-
+                id: background
                 color: settings.theme.accentColor.value
 
-                width: logo.width + vpx(80)
-                height: header.height
+                width: (title.visible ? title.width : logo.width) + vpx(80)
+                height: root.height
             }
 
             Image {
                 id: logo
 
-                height: header.height - vpx(30)
-                anchors.centerIn: logoBackground
+                height: root.height - vpx(30)
+                anchors.centerIn: background
 
                 fillMode: Image.PreserveAspectFit
                 source: currentCollection ? '../assets/logos/png/' + Utils.getPlatformName(currentCollection.shortName) + '.png' : ''
@@ -48,6 +52,26 @@ FocusScope {
                 anchors.fill: logo
                 source: logo
                 color: settings.theme.backgroundColor.value
+
+                visible: !title.visible
+            }
+
+            Text {
+                id: title
+
+                height: root.height - vpx(30)
+                anchors.centerIn: background
+
+                text: root.text ?? currentCollection.name
+
+                font.family: titleFont.name
+                font.pixelSize: vpx(36)
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                color: settings.theme.backgroundColor.value
+
+                visible: root.text || logo.status === Image.Null || logo.status === Image.Error
             }
 
             ListView {
@@ -58,7 +82,7 @@ FocusScope {
                     Item {
                         id: settingsButton
 
-                        property bool selected: ListView.isCurrentItem && header.focus
+                        property bool selected: ListView.isCurrentItem && root.focus
 
                         width: buttons.height; height: buttons.height
 

@@ -25,10 +25,6 @@ FocusScope {
     property var currentCollection
     property int currentCollectionIndex: 0
 
-    property var marginFromGameScaling: (root.width / settings.game.gameViewColumns.value * (1.0 - settings.game.scale.value) / 2.0)
-    property var headerLeftMargin: vpx(settings.theme.leftMargin.value) + marginFromGameScaling + settings.game.borderWidth.value
-    property var headerRightMargin: vpx(settings.theme.rightMargin.value) + marginFromGameScaling + settings.game.borderWidth.value
-
     states: [
         State { name: 'gamesView'; PropertyChanges { target: loader; sourceComponent: gamesView } },
         State { name: 'settingsView'; PropertyChanges { target: loader; sourceComponent: settingsView } }
@@ -100,17 +96,18 @@ FocusScope {
             game: {
                 gameViewColumns: { name: 'Number of Columns', value: 3, type: 'int' },
 
+                aspectRatioWidth: { name: 'Aspect Ratio - Width', value: 9.2, delta: 0.1, type: 'real' },
+                aspectRatioHeight: { name: 'Aspect Ratio - Height', value: 4.3, delta: 0.1, type: 'real' },
+
                 previewEnabled: { name: 'Video Preview', value: true, type: 'bool' },
-                previewVolume: { name: 'Video Preview Volume', value: 0.0, delta: 0.05, type: 'real' },
+                previewVolume: { name: 'Video Preview - Volume', value: 0.0, delta: 0.05, type: 'real' },
+                previewHideLogo: { name: 'Video Preview - Hide Logo', value: false, type: 'bool' },
 
                 borderAnimated: { name: 'Highlight Border Animated', value: true, type: 'bool' },
                 borderWidth: { name: 'Highlight Border Width', value: 5, type: 'int', },
 
                 scale: { name: 'Scale', value: 0.95, delta: 0.01, type: 'real' },
                 scaleSelected: { name: 'Scale - Selected', value: 1.0, delta: 0.01, type: 'real' },
-
-                aspectRatioWidth: { name: 'Aspect Ratio - Width', value: 9.2, delta: 0.1, type: 'real' },
-                aspectRatioHeight: { name: 'Aspect Ratio - Height', value: 4.3, delta: 0.1, type: 'real' },
 
                 cornerRadius: { name: 'Corner Radius', value: 5, type: 'int' },
 

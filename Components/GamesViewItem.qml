@@ -16,6 +16,7 @@ Item {
             fadescreenshot.stop();
             grayBackground.opacity = 1;
             screenshot.opacity = 1;
+            logo.opacity = 1;
         }
     }
 
@@ -31,6 +32,10 @@ Item {
         onTriggered: {
             grayBackground.opacity = 0;
             screenshot.opacity = 0;
+
+            if (settings.game.previewHideLogo.value) {
+                logo.opacity = 0;
+            }
         }
     }
 
@@ -98,6 +103,8 @@ Item {
             fillMode: Image.PreserveAspectFit
 
             visible: logo.status === Image.Ready && screenshot.status !== Image.Loading
+
+            Behavior on opacity { NumberAnimation { duration: 200 } }
         }
 
         Text {

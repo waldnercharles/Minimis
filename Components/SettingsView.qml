@@ -37,42 +37,9 @@ FocusScope {
         loadSettings();
     }
 
-    Item {
+    GamesViewHeader {
         id: header
-
-        anchors {
-            top: parent.top; left: parent.left; right: parent.right
-        }
-
-        anchors.leftMargin: headerLeftMargin
-        anchors.rightMargin: headerRightMargin
-
-        height: vpx(75)
-
-        Rectangle {
-            id: titleBackground
-
-            color: settings.theme.accentColor.value
-
-            width: title.width + vpx(80)
-            height: header.height
-        }
-
-        Text {
-            id: title
-
-            height: header.height - vpx(30)
-            anchors.centerIn: titleBackground
-
-            text: 'Settings'
-
-            font.family: titleFont.name
-            font.pixelSize: vpx(36)
-            font.bold: true
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            color: settings.theme.backgroundColor.value
-        }
+        text: 'Settings'
     }
 
     property real rowHeight: vpx(50)

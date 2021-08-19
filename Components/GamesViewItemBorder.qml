@@ -5,8 +5,8 @@ Item {
     id: root
 
     property int borderWidth: settings.game.borderWidth.value
-    property string borderColor1: settings.theme.borderColor1.value
-    property string borderColor2: settings.theme.borderColor2.value
+    property string borderColor1: settings.game.borderColor1.value
+    property string borderColor2: settings.game.borderColor2.value
 
     property int cornerRadius: vpx(settings.game.cornerRadius.value)
 

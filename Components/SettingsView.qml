@@ -168,38 +168,59 @@ FocusScope {
             }
 
             function incrementSettingValue() {
+                var newValue = value;
+
                 switch (modelData.type) {
                     case 'bool':
-                        api.memory.set(modelData.name, !value);
+                        newValue = !value;
                         break;
                     case 'int':
-                        api.memory.set(modelData.name, parseInt(value) + 1);
+                        newValue = parseInt(value) + 1;
                         break;
                     case 'real':
-                        api.memory.set(modelData.name, (parseFloat(value) + parseFloat(modelData.delta)).toFixed(getPrecision(modelData.delta)));
+                        newValue = (parseFloat(value) + parseFloat(modelData.delta)).toFixed(getPrecision(modelData.delta));
                         break;
                 }
 
+                if (modelData.min != null) {
+                    newValue = Math.max(newValue, modelData.min);
+                }
+
+                if (modelData.max != null) {
+                    newValue = Math.min(newValue, modelData.max);
+                }
+
+                api.memory.set(modelData.name, newValue);
             }
 
             function decrementSettingValue() {
+                var newValue = value;
+
                 switch (modelData.type) {
                     case 'bool':
-                        api.memory.set(modelData.name, !value);
+                        newValue = !value;
                         break;
                     case 'int':
-                        api.memory.set(modelData.name, parseInt(value) - 1);
+                        newValue = parseInt(value) - 1;
                         break;
                     case 'real':
-                        api.memory.set(modelData.name, (parseFloat(value) - parseFloat(modelData.delta)).toFixed(getPrecision(modelData.delta)));
+                        newValue = (parseFloat(value) - parseFloat(modelData.delta)).toFixed(getPrecision(modelData.delta));
                         break;
                 }
+
+                if (modelData.min != null) {
+                    newValue = Math.max(newValue, modelData.min);
+                }
+
+                if (modelData.max != null) {
+                    newValue = Math.min(newValue, modelData.max);
+                }
+
+                api.memory.set(modelData.name, newValue);
             }
         }
 
         Keys.onUpPressed: { sfxNav.play(); decrementCurrentIndex() }
         Keys.onDownPressed: { sfxNav.play(); incrementCurrentIndex() }
-
-        
     }
 }

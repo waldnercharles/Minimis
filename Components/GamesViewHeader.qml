@@ -13,7 +13,7 @@ FocusScope {
     anchors {
         left: parent.left; right: parent.right; top: parent.top;
         leftMargin: vpx(settings.theme.leftMargin.value + settings.game.borderWidth.value) + (parent.width / settings.game.gameViewColumns.value * (1.0 - settings.game.scale.value) / 2.0);
-        rightMargin: vpx(settings.theme.leftMargin.value + settings.game.borderWidth.value) + (parent.width / settings.game.gameViewColumns.value * (1.0 - settings.game.scale.value) / 2.0);
+        rightMargin: vpx(settings.theme.rightMargin.value + settings.game.borderWidth.value) + (parent.width / settings.game.gameViewColumns.value * (1.0 - settings.game.scale.value) / 2.0);
     }
 
     height: vpx(75)

@@ -94,38 +94,38 @@ FocusScope {
     function loadSettings() {
         settings = {
             game: {
-                gameViewColumns: { name: 'Number of Columns', value: 3, type: 'int' },
+                gameViewColumns: { name: 'Number of Columns', value: 3, type: 'int', min: 1 },
 
-                aspectRatioWidth: { name: 'Aspect Ratio - Width', value: 9.2, delta: 0.1, type: 'real' },
-                aspectRatioHeight: { name: 'Aspect Ratio - Height', value: 4.3, delta: 0.1, type: 'real' },
+                aspectRatioWidth: { name: 'Aspect Ratio - Width', value: 9.2, delta: 0.1, min: 0.1, type: 'real' },
+                aspectRatioHeight: { name: 'Aspect Ratio - Height', value: 4.3, delta: 0.1, min: 0.1, type: 'real' },
 
-                previewEnabled: { name: 'Video Preview', value: true, type: 'bool' },
-                previewVolume: { name: 'Video Preview - Volume', value: 0.0, delta: 0.05, type: 'real' },
+                previewEnabled: { name: 'Video Preview - Enabled', value: true, type: 'bool' },
+                previewVolume: { name: 'Video Preview - Volume', value: 0.0, delta: 0.05, min: 0.1, type: 'real' },
                 previewHideLogo: { name: 'Video Preview - Hide Logo', value: false, type: 'bool' },
 
-                borderAnimated: { name: 'Highlight Border Animated', value: true, type: 'bool' },
-                borderWidth: { name: 'Highlight Border Width', value: 5, type: 'int', },
+                borderAnimated: { name: 'Border - Animate', value: true, type: 'bool' },
+                borderColor1: { name: 'Border - Color 1', value: '#FFD460', type: 'string' },
+                borderColor2: { name: 'Border - Color 2', value: '#F6F7D7', type: 'string' },
+                borderWidth: { name: 'Border - Width', value: 5, min: 0, type: 'int', },
 
-                scale: { name: 'Scale', value: 0.95, delta: 0.01, type: 'real' },
-                scaleSelected: { name: 'Scale - Selected', value: 1.0, delta: 0.01, type: 'real' },
+                scale: { name: 'Scale', value: 0.95, delta: 0.01, min: 0.01, max: 1.0, type: 'real' },
+                scaleSelected: { name: 'Scale - Selected', value: 1.0, delta: 0.01, min: 0.01, type: 'real' },
 
-                cornerRadius: { name: 'Corner Radius', value: 5, type: 'int' },
+                cornerRadius: { name: 'Corner Radius', value: 5, min: 0, type: 'int' },
 
-                logoMargin: { name: 'Logo Margins', value: 30, type: 'int' },
-                logoFontSize: { name: 'Logo Font Size', value: 16, type: 'int' },
+                logoScale: { name: 'Logo - Scale', value: 0.8, delta: 0.01, min: 0.01, type: 'real' },
+                logoFontSize: { name: 'Logo - Font Size', value: 16, min: 1, type: 'int' },
             },
             theme: {
                 backgroundColor: { name: 'Background Color', value: '#1B262C', type: 'string' },
 
                 accentColor: { name: 'Accent Color', value: '#FFD460', type: 'string' },
 
-                borderColor1: { name: 'Border Color 1', value: '#FFD460', type: 'string' },
-                borderColor2: { name: 'Border Color 2', value: '#F6F7D7', type: 'string' },
 
                 textColor: { name: 'Text Color', value: '#F6F7D7', type: 'string' },
 
-                leftMargin: { name: 'Screen Padding - Left', value: 60, type: 'int' },
-                rightMargin: { name: 'Screen Padding - Right', value: 60, type: 'int' },
+                leftMargin: { name: 'Screen Padding - Left', value: 60, min: 0, type: 'int' },
+                rightMargin: { name: 'Screen Padding - Right', value: 60, min: 0, type: 'int' },
             },
         };
 

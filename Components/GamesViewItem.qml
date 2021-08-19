@@ -52,8 +52,6 @@ Item {
             color: "#1a1a1a"
             radius: vpx(settings.game.cornerRadius.value)
 
-            visible: screenshot.status === Image.Null || screenshot.status === Image.Error || spinner.visible
-
             Behavior on opacity { NumberAnimation { duration: 200 } }
         }
 

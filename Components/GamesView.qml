@@ -32,10 +32,12 @@ FocusScope {
             id: fakeAsset
 
             property var fakeSource: {
-                for (var i = 0; i < currentCollection.games.count; i++) {
-                    var game = currentCollection.games.get(i);
-                    if (game.assets[gridContainer.assetKey]) {
-                        return game.assets[gridContainer.assetKey];
+                if (currentCollection != null) {
+                    for (var i = 0; i < currentCollection.games.count; i++) {
+                        var game = currentCollection.games.get(i);
+                        if (game.assets[gridContainer.assetKey]) {
+                            return game.assets[gridContainer.assetKey];
+                        }
                     }
                 }
 
@@ -107,6 +109,10 @@ FocusScope {
                 }
             }
 
+            onModelChanged: {
+                grid.currentIndex = gridContainer.focus ? 0 : -1;
+            }
+
             Keys.onUpPressed: {
                 sfxNav.play();
                 if (grid.currentIndex < settings.game.gameViewColumns.value) {
@@ -128,23 +134,6 @@ FocusScope {
             }
             Keys.onLeftPressed: { sfxNav.play(); moveCurrentIndexLeft() }
             Keys.onRightPressed: { sfxNav.play(); moveCurrentIndexRight() }
-
-            Keys.onPressed: {
-                if (event.isAutoRepeat) {
-                    return;
-                }
-
-                if (api.keys.isPrevPage(event)) {
-                    event.accepted = true;
-                    prevCollection();
-                    return;
-                }
-                if (api.keys.isNextPage(event)) {
-                    event.accepted = true;
-                    nextCollection();
-                    return;
-                }
-            }
         }
 
         layer.enabled: true
@@ -165,7 +154,7 @@ FocusScope {
         }
 
         onFocusChanged: {
-            if (focus) {
+            if (gridContainer.focus) {
                 grid.currentIndex = savedIndex;
             } else {
                 savedIndex = grid.currentIndex;
@@ -180,6 +169,22 @@ FocusScope {
 
         pendingCollection: api.collections.get(currentCollectionIndex)
 
+    }
+
+    Keys.onPressed: {
+        if (event.isAutoRepeat) {
+            return;
+        }
+
+        if (api.keys.isPrevPage(event)) {
+            event.accepted = true;
+            prevCollection();
+        }
+
+        if (api.keys.isNextPage(event)) {
+            event.accepted = true;
+            nextCollection();
+        }
     }
 
     function prevCollection() {

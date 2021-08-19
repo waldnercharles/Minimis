@@ -32,8 +32,8 @@ FocusScope {
 
             focus: true
 
-            anchors.leftMargin: vpx(settings.theme.leftMargin.value + settings.game.borderWidth.value)
-            anchors.rightMargin: vpx(settings.theme.rightMargin.value + settings.game.borderWidth.value)
+            anchors.leftMargin: vpx(settings.theme.leftMargin.value)
+            anchors.rightMargin: vpx(settings.theme.rightMargin.value)
 
             model: currentCollection != null ? currentCollection.games : null
 

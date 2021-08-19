@@ -21,8 +21,10 @@ FocusScope {
         return p;
     }
 
+    function capitalizeFirstLetter([ first, ...rest ], locale = 'en-US') {
+        return first.toLocaleUpperCase(locale) + rest.join('');
+    }
     function capitalize(str) {
-        const capitalizeFirstLetter = ([ first, ...rest ], locale = 'en-US') => first.toLocaleUpperCase(locale) + rest.join('')
         return capitalizeFirstLetter(str).split(/([A-Z]?[^A-Z]*)/g).join(' ');
     }
 
@@ -84,6 +86,9 @@ FocusScope {
                 event.accepted = true;
             }
         }
+
+        Keys.onUpPressed: { sfxNav.play(); decrementCurrentIndex() }
+        Keys.onDownPressed: { sfxNav.play(); incrementCurrentIndex() }
     }
 
     ListView {
@@ -125,7 +130,7 @@ FocusScope {
             Text {
                 id: settingsValue
 
-                text: value
+                text: capitalizeFirstLetter((modelData.type != 'array' ? value : modelData.values[value]).toString())
                 color: settings.theme.textColor.value
                 font.family: subtitleFont.name
                 font.pixelSize: vpx(20)
@@ -180,6 +185,9 @@ FocusScope {
                     case 'real':
                         newValue = (parseFloat(value) + parseFloat(modelData.delta)).toFixed(getPrecision(modelData.delta));
                         break;
+                    case 'array':
+                        newValue = (parseInt(value) + modelData.values.length + 1) % modelData.values.length
+                        break;
                 }
 
                 if (modelData.min != null) {
@@ -205,6 +213,9 @@ FocusScope {
                         break;
                     case 'real':
                         newValue = (parseFloat(value) - parseFloat(modelData.delta)).toFixed(getPrecision(modelData.delta));
+                        break;
+                    case 'array':
+                        newValue = (parseInt(value) + modelData.values.length - 1) % modelData.values.length
                         break;
                 }
 

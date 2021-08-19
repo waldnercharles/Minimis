@@ -96,6 +96,14 @@ FocusScope {
             game: {
                 gameViewColumns: { name: 'Number of Columns', value: 3, type: 'int', min: 1 },
 
+                art: {
+                    name: 'Art',
+                    value: 0,
+                    values: ['boxFront', 'boxBack', 'boxSpine', 'boxFull', 'cartridge', 'logo', 'marquee', 'bezel', 'panel', 'cabinetLeft', 'cabinetRight', 'tile', 'banner', 'steam', 'poster', 'background', 'screenshot', 'titlescreen'],
+                    type: 'array'
+                },
+
+                aspectRatioNative: { name: 'Aspect Ratio - Use Native', value: false, type: 'bool' },
                 aspectRatioWidth: { name: 'Aspect Ratio - Width', value: 9.2, delta: 0.1, min: 0.1, type: 'real' },
                 aspectRatioHeight: { name: 'Aspect Ratio - Height', value: 4.3, delta: 0.1, min: 0.1, type: 'real' },
 
@@ -114,6 +122,7 @@ FocusScope {
                 cornerRadius: { name: 'Corner Radius', value: 5, min: 0, type: 'int' },
 
                 logoScale: { name: 'Logo - Scale', value: 0.8, delta: 0.01, min: 0.01, type: 'real' },
+                logoVisible: { name: 'Logo - Visible', value: true, type: 'bool' },
                 logoFontSize: { name: 'Logo - Font Size', value: 16, min: 1, type: 'int' },
             },
             theme: {

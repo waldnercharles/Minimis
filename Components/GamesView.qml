@@ -25,7 +25,29 @@ FocusScope {
 
         focus: true
 
+        property var assetKey: settings.game.art.values[settings.game.art.value]
         property var gradientHeight: 0.0133
+
+        Image {
+            id: fakeAsset
+
+            property var fakeSource: {
+                for (var i = 0; i < currentCollection.games.count; i++) {
+                    var game = currentCollection.games.get(i);
+                    if (game.assets[gridContainer.assetKey]) {
+                        return game.assets[gridContainer.assetKey];
+                    }
+                }
+
+                return '';
+            }
+
+            fillMode: Image.PreserveAspectFit
+            source: fakeSource
+
+            asynchronous: true
+            visible: false
+        }
 
         GridView {
             id: grid
@@ -37,8 +59,10 @@ FocusScope {
 
             model: currentCollection != null ? currentCollection.games : null
 
+            property var aspectRatio: settings.game.aspectRatioNative.value ? fakeAsset.height / fakeAsset.width : (settings.game.aspectRatioHeight.value / settings.game.aspectRatioWidth.value)
+
             cellWidth: width / settings.game.gameViewColumns.value
-            cellHeight: cellWidth * settings.game.aspectRatioHeight.value / settings.game.aspectRatioWidth.value
+            cellHeight: cellWidth * aspectRatio
 
             displayMarginBeginning: cellHeight * 2
             displayMarginEnd: cellHeight * 2

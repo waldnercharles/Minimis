@@ -59,10 +59,12 @@ Item {
 
         Image {
             id: screenshot
+            
+            property var assetKey: settings.game.art.values[settings.game.art.value]
 
             anchors.fill: parent
 
-            source: modelData.assets.screenshots[0] || ""
+            source: modelData.assets[assetKey] || ""
             sourceSize: Qt.size(screenshot.width, screenshot.height)
 
             asynchronous: true
@@ -97,7 +99,7 @@ Item {
 
             fillMode: Image.PreserveAspectFit
 
-            visible: logo.status === Image.Ready && screenshot.status !== Image.Loading
+            visible: logo.status === Image.Ready && screenshot.status !== Image.Loading && settings.game.logoVisible.value
 
             Behavior on opacity { NumberAnimation { duration: 200 } }
         }

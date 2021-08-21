@@ -71,13 +71,14 @@ Item {
             anchors.fill: parent
 
             source: modelData.assets[assetKey] || ""
-            sourceSize: Qt.size(screenshot.width, screenshot.height)
+            sourceSize: settings.performance.artImageResolution.value === 0 ? undefined : Qt.size(screenshot.width, screenshot.height)
 
             asynchronous: true
-            smooth: true
+
+            cache: settings.performance.artImageCaching.value
+            smooth: settings.performance.artImageSmoothing.value
 
             fillMode: settings.game.aspectRatioNative.value ? Image.Stretch : Image.PreserveAspectCrop
-
             visible: screenshot.status === Image.Ready && logo.status !== Image.Loading
 
             Behavior on opacity { NumberAnimation { duration: 200 } }
@@ -90,12 +91,12 @@ Item {
                     radius: vpx(settings.game.cornerRadius.value)
                 }
 
-                layer.enabled: !selected
+                layer.enabled: !selected && settings.performance.artDropShadow.value
                 layer.effect: DropShadow {
                     anchors.fill: screenshot
-                    horizontalOffset: vpx(0); verticalOffset: vpx(4)
+                    horizontalOffset: vpx(0); verticalOffset: vpx(3)
 
-                    samples: 5
+                    samples: 4
                     color: '#99000000';
                     source: mask
                 }
@@ -107,10 +108,12 @@ Item {
             anchors.fill: parent
 
             source: modelData.assets.logo || ""
-            sourceSize: Qt.size(logo.width, logo.height)
+            sourceSize: settings.performance.logoImageResolution.value === 0 ? undefined : Qt.size(logo.width, logo.height)
 
             asynchronous: true
-            smooth: true
+            smooth: settings.performance.logoImageSmoothing.value
+
+            cache: settings.performance.logoImageCaching.value
 
             fillMode: Image.PreserveAspectFit
 
@@ -122,21 +125,17 @@ Item {
             Behavior on opacity { NumberAnimation { duration: 200 } }
             Behavior on scale { NumberAnimation { duration: 100; } }
 
-            layer.enabled: true
+            layer.enabled: settings.performance.logoDropShadow.value
             layer.effect: DropShadow {
                 anchors.fill: logo
 
-                horizontalOffset: vpx(0); verticalOffset: vpx(6)
+                horizontalOffset: vpx(0); verticalOffset: vpx(4)
 
-                samples: 10
-                color: '#99000000'
+                samples: 5
+                color: '#75000000'
                 source: logo
-
             }
         }
-
-        
-
 
         Text {
             id: textLogo

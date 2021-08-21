@@ -37,6 +37,7 @@ Item {
         anchors.fill: parent
 
         color: "black"
+        visible: videoPreview.playlist.itemCount > 0 && videoPreview.opacity > 0
 
         Video {
             id: videoPreview
@@ -58,7 +59,6 @@ Item {
             }
 
             opacity: 0
-            visible: videoPreview.playlist.itemCount > 0 && opacity > 0
 
             muted: root.muted
 

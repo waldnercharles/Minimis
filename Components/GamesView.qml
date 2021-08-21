@@ -65,6 +65,8 @@ FocusScope {
             cellWidth: width / settings.game.gameViewColumns.value
             cellHeight: cellWidth * aspectRatio
 
+            // cacheBuffer: (height / cellHeight * settings.game.gameViewColumns.value)
+
             displayMarginBeginning: cellHeight * 2
             displayMarginEnd: cellHeight * 2
 

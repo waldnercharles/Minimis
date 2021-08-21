@@ -19,7 +19,69 @@ FocusScope {
     SoundEffect { id: sfxAccept; source: "assets/sfx/accept.wav" }
     SoundEffect { id: sfxToggle; source: "assets/sfx/toggle.wav" }
 
-    property var settings
+    property var settings: ({
+        game: {
+            gameViewColumns: { name: 'Number of Columns', value: 3, type: 'int', min: 1 },
+
+            art: {
+                name: 'Art',
+                value: 0,
+                values: ['screenshot', 'boxFront', 'boxBack', 'boxSpine', 'boxFull', 'cartridge', 'marquee', 'bezel', 'panel', 'cabinetLeft', 'cabinetRight', 'tile', 'banner', 'steam', 'poster', 'background', 'titlescreen'],
+                type: 'array'
+            },
+
+            aspectRatioNative: { name: 'Aspect Ratio - Use Native', value: false, type: 'bool' },
+            aspectRatioWidth: { name: 'Aspect Ratio - Width', value: 9.2, delta: 0.1, min: 0.1, type: 'real' },
+            aspectRatioHeight: { name: 'Aspect Ratio - Height', value: 4.3, delta: 0.1, min: 0.1, type: 'real' },
+
+            previewEnabled: { name: 'Video Preview - Enabled', value: true, type: 'bool' },
+            previewVolume: { name: 'Video Preview - Volume', value: 0.0, delta: 0.1, min: 0.0, type: 'real' },
+
+            borderAnimated: { name: 'Border - Animate', value: true, type: 'bool' },
+            borderColor1: { name: 'Border - Color 1', value: '#FFC85C', type: 'string' },
+            borderColor2: { name: 'Border - Color 2', value: '#ECECEC', type: 'string' },
+            borderWidth: { name: 'Border - Width', value: 5, min: 0, type: 'int', },
+
+            scale: { name: 'Scale', value: 0.95, delta: 0.01, min: 0.01, max: 1.0, type: 'real' },
+            scaleSelected: { name: 'Scale - Selected', value: 1.0, delta: 0.01, min: 0.01, type: 'real' },
+
+            cornerRadius: { name: 'Corner Radius', value: 5, min: 0, type: 'int' },
+
+            logoScale: { name: 'Logo - Scale', value: 0.75, delta: 0.01, min: 0.01, type: 'real' },
+            logoScaleSelected: { name: 'Logo - Scale - Selected', value: 0.85, delta: 0.01, min: 0.01, type: 'real' },
+            logoVisible: { name: 'Logo - Visible', value: true, type: 'bool' },
+            previewLogoVisible: { name: 'Logo - Visible - Video Preview', value: true, type: 'bool' },
+            logoFontSize: { name: 'Logo - Font Size', value: 16, min: 1, type: 'int' },
+        },
+        gameDetails: {
+            previewEnabled: { name: 'Video Preview - Enabled', value: true, type: 'bool' },
+            previewVolume: { name: 'Video Preview - Volume', value: 0.0, delta: 0.1, min: 0.0, type: 'real' },
+        },
+        theme: {
+            backgroundColor: { name: 'Background Color', value: '#13161B', type: 'string' },
+            accentColor: { name: 'Accent Color', value: '#FFC85C', type: 'string' },
+            textColor: { name: 'Text Color', value: '#ECECEC', type: 'string' },
+
+            // backgroundColor: { name: 'Background Color', value: '#262A53', type: 'string' },
+            // accentColor: { name: 'Accent Color', value: '#FFA0A0', type: 'string' },
+            // textColor: { name: 'Text Color', value: '#FFE3E3', type: 'string' },
+
+            leftMargin: { name: 'Screen Padding - Left', value: 60, min: 0, type: 'int' },
+            rightMargin: { name: 'Screen Padding - Right', value: 60, min: 0, type: 'int' },
+        },
+        performance: {
+            artImageResolution: { name: 'Art - Image Resolution', value: 0, values: ['Native', 'Scaled'], type: 'array' },
+            artImageCaching: { name: 'Art - Image Caching', value: false, type: 'bool' },
+            artImageSmoothing: { name: 'Art - Image Smoothing', value: false, type: 'bool' },
+            artDropShadow: { name: 'Art - Drop Shadow', value: false, type: 'bool' },
+
+            logoImageResolution: { name: 'Logo - Image Resolution', value: 0, values: ['Native', 'Scaled'], type: 'array' },
+            logoImageCaching: { name: 'Logo - Image Caching', value: false, type: 'bool' },
+            logoImageSmoothing: { name: 'Logo - Image Smoothing', value: false, type: 'bool' },
+            logoDropShadow: { name: 'Logo - Drop Shadow', value: false, type: 'bool' }
+        }
+    })
+
     property var stateHistory: []
 
     property var currentCollection
@@ -36,8 +98,9 @@ FocusScope {
 
     state: 'gamesView'
 
-    BackgroundImage {
+    Rectangle {
         anchors.fill: parent
+        color: settings.theme.backgroundColor.value
     }
 
     Component {
@@ -118,56 +181,12 @@ FocusScope {
     }
 
     function loadSettings() {
-        settings = {
-            game: {
-                gameViewColumns: { name: 'Number of Columns', value: 3, type: 'int', min: 1 },
-
-                art: {
-                    name: 'Art',
-                    value: 0,
-                    values: ['boxFront', 'boxBack', 'boxSpine', 'boxFull', 'cartridge', 'marquee', 'bezel', 'panel', 'cabinetLeft', 'cabinetRight', 'tile', 'banner', 'steam', 'poster', 'background', 'screenshot', 'titlescreen'],
-                    type: 'array'
-                },
-
-                aspectRatioNative: { name: 'Aspect Ratio - Use Native', value: false, type: 'bool' },
-                aspectRatioWidth: { name: 'Aspect Ratio - Width', value: 9.2, delta: 0.1, min: 0.1, type: 'real' },
-                aspectRatioHeight: { name: 'Aspect Ratio - Height', value: 4.3, delta: 0.1, min: 0.1, type: 'real' },
-
-                previewEnabled: { name: 'Video Preview - Enabled', value: true, type: 'bool' },
-                previewVolume: { name: 'Video Preview - Volume', value: 0.0, delta: 0.1, min: 0.0, type: 'real' },
-
-                borderAnimated: { name: 'Border - Animate', value: true, type: 'bool' },
-                borderColor1: { name: 'Border - Color 1', value: '#FFD460', type: 'string' },
-                borderColor2: { name: 'Border - Color 2', value: '#F6F7D7', type: 'string' },
-                borderWidth: { name: 'Border - Width', value: 5, min: 0, type: 'int', },
-
-                scale: { name: 'Scale', value: 0.95, delta: 0.01, min: 0.01, max: 1.0, type: 'real' },
-                scaleSelected: { name: 'Scale - Selected', value: 1.0, delta: 0.01, min: 0.01, type: 'real' },
-
-                cornerRadius: { name: 'Corner Radius', value: 5, min: 0, type: 'int' },
-
-                logoScale: { name: 'Logo - Scale', value: 0.8, delta: 0.01, min: 0.01, type: 'real' },
-                logoScaleSelected: { name: 'Logo - Scale - Selected', value: 0.9, delta: 0.01, min: 0.01, type: 'real' },
-                logoVisible: { name: 'Logo - Visible', value: true, type: 'bool' },
-                previewLogoVisible: { name: 'Logo - Visible - Video Preview', value: true, type: 'bool' },
-                logoFontSize: { name: 'Logo - Font Size', value: 16, min: 1, type: 'int' },
-            },
-            theme: {
-                backgroundColor: { name: 'Background Color', value: '#1B262C', type: 'string' },
-
-                accentColor: { name: 'Accent Color', value: '#FFD460', type: 'string' },
-
-
-                textColor: { name: 'Text Color', value: '#F6F7D7', type: 'string' },
-
-                leftMargin: { name: 'Screen Padding - Left', value: 60, min: 0, type: 'int' },
-                rightMargin: { name: 'Screen Padding - Right', value: 60, min: 0, type: 'int' },
-            },
-        };
-
-        for (const category of Object.values(settings)) {
+        for (const [categoryName, category] of Object.entries(settings)) {
             for (const setting of Object.values(category)) {
-                api.memory.set(setting.name, setting.value = api.memory.get(setting.name) ?? setting.value);
+                const memoryName = categoryName + setting.name;
+
+                api.memory.set(memoryName, setting.value = api.memory.get(memoryName) ?? setting.value);
+                // api.memory.set(memoryName, setting.value);
             }
         }
     }

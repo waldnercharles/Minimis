@@ -21,8 +21,5 @@ Item {
     //     color: "#7715181e"
     // }
 
-    Rectangle {
-        anchors.fill: parent
-        color: api.memory.get(settings.theme.backgroundColor.name)
-    }
+}
 }

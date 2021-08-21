@@ -30,7 +30,7 @@ FocusScope {
 
     Component.onCompleted: {
         root.categories = Object.keys(settings).map(k => ({
-            name: capitalize(k),
+            name: k,
             settings: Object.values(settings[k])
         }));
     }
@@ -48,6 +48,7 @@ FocusScope {
 
     ListView {
         id: categoriesListView
+        property var currentCategory: root.categories[categoriesListView.currentIndex]
 
         focus: true
         anchors {
@@ -56,6 +57,7 @@ FocusScope {
         }
 
         width: parent.width / 5.0
+        keyNavigationWraps: true
 
         model: root.categories
         delegate: Item {
@@ -64,10 +66,10 @@ FocusScope {
             property bool selected: ListView.isCurrentItem
 
             Text {
-                text: modelData.name
+                text: capitalize(modelData.name)
                 color: settings.theme.textColor.value
                 font.family: subtitleFont.name
-                font.pixelSize: vpx(24)
+                font.pixelSize: vpx(22)
                 verticalAlignment: Text.AlignVCenter
                 opacity: selected ? 1 : 0.2
                 
@@ -94,7 +96,7 @@ FocusScope {
     ListView {
         id: settingsListView
 
-        model: root.categories[categoriesListView.currentIndex].settings
+        model: categoriesListView.currentCategory.settings
 
         anchors {
             top: categoriesListView.top; bottom: parent.bottom; left: categoriesListView.right; right: header.right
@@ -106,9 +108,11 @@ FocusScope {
         highlightMoveDuration: 100
         clip: true
 
+        keyNavigationWraps: true
+
         delegate: FocusScope {
             property bool selected: ListView.isCurrentItem && settingsListView.focus
-            property var value: api.memory.get(modelData.name)
+            property var value: api.memory.get(categoriesListView.currentCategory.name + modelData.name)
 
             width: ListView.view.width; height: rowHeight
 
@@ -198,7 +202,7 @@ FocusScope {
                     newValue = Math.min(newValue, modelData.max);
                 }
 
-                api.memory.set(modelData.name, newValue);
+                api.memory.set(categoriesListView.currentCategory.name + modelData.name, newValue);
             }
 
             function decrementSettingValue() {
@@ -227,7 +231,7 @@ FocusScope {
                     newValue = Math.min(newValue, modelData.max);
                 }
 
-                api.memory.set(modelData.name, newValue);
+                api.memory.set(categoriesListView.currentCategory.name + modelData.name, newValue);
             }
         }
 

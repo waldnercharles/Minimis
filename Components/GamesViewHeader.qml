@@ -33,6 +33,18 @@ FocusScope {
 
                 width: (title.visible ? title.width : logo.width) + vpx(80)
                 height: root.height
+
+                radius: vpx(3)
+
+                layer.enabled: true
+                layer.effect: DropShadow {
+                    anchors.fill: background
+                    horizontalOffset: vpx(0); verticalOffset: vpx(4)
+
+                    samples: 5
+                    color: '#77000000';
+                    source: background
+                }
             }
 
             Image {
@@ -43,17 +55,17 @@ FocusScope {
 
                 fillMode: Image.PreserveAspectFit
                 source: currentCollection ? '../assets/logos/png/' + Utils.getPlatformName(currentCollection.shortName) + '.png' : ''
+                sourceSize: Qt.size(0, logo.height)
                 smooth: true
                 asynchronous: false
-                visible: false
-            }
-
-            ColorOverlay {
-                anchors.fill: logo
-                source: logo
-                color: settings.theme.backgroundColor.value
-
                 visible: !title.visible
+
+                layer.enabled: true
+                layer.effect: ColorOverlay {
+                    anchors.fill: logo
+                    source: logo
+                    color: settings.theme.backgroundColor.value
+                }
             }
 
             Text {
@@ -108,7 +120,7 @@ FocusScope {
 
                             smooth: true
                             asynchronous: true
-                            source: "../assets/icons/settings.svg"
+                            source: "../assets/icons/icon_settings.svg"
                         }
 
                         Keys.onPressed: {

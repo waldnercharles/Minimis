@@ -28,12 +28,12 @@ Item {
             running: settings.game.borderAnimated.value
         }
 
-        layer.enabled: true
+        layer.enabled: settings.performance.artDropShadow.value
         layer.effect: DropShadow {
             anchors.fill: border
-            horizontalOffset: vpx(0); verticalOffset: vpx(4)
+            horizontalOffset: vpx(0); verticalOffset: vpx(3)
 
-            samples: 5
+            samples: 4
             color: '#99000000';
             source: border
         }

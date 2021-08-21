@@ -75,7 +75,7 @@ FocusScope {
                 height: root.height - vpx(30)
                 anchors.centerIn: background
 
-                text: root.text ?? currentCollection.name
+                text: root.text || currentCollection.name
 
                 font.family: titleFont.name
                 font.pixelSize: vpx(36)

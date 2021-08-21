@@ -42,6 +42,7 @@ FocusScope {
     GamesViewHeader {
         id: header
         text: 'Settings'
+        titleOnly: true
     }
 
     property real rowHeight: vpx(50)

@@ -9,6 +9,7 @@ FocusScope {
     id: root
 
     property string text
+    property bool titleOnly 
 
     anchors {
         left: parent.left; right: parent.right; top: parent.top;
@@ -89,6 +90,8 @@ FocusScope {
             ListView {
                 id: buttons
                 focus: true
+
+                visible: !titleOnly
 
                 model: ObjectModel {
                     Item {

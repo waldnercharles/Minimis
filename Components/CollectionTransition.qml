@@ -63,14 +63,12 @@ Rectangle {
 
     onPendingCollectionChanged: {
         if (pendingCollection != currentCollection) {
-        currentCollection = null;
+            debounceTimer.stop();
+            fadeAnimation.stop();
 
-        debounceTimer.stop();
-        fadeAnimation.stop();
+            root.opacity = 1;
 
-        root.opacity = 1;
-
-        debounceTimer.restart();
+            debounceTimer.restart();
         }
     }
 }

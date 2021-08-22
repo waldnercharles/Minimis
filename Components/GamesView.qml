@@ -1,12 +1,15 @@
 import QtQuick 2.3
 import QtMultimedia 5.9
 import QtGraphicalEffects 1.0
+import SortFilterProxyModel 0.2
 
 FocusScope {
     id: root
     anchors.fill: parent
 
     property int savedIndex: 0;
+
+    FilteredCollection { id: filteredCollection }
 
     GamesViewHeader {
         id: header
@@ -34,8 +37,8 @@ FocusScope {
                 if (currentCollection != null) {
                     for (var i = 0; i < currentCollection.games.count; i++) {
                         var game = currentCollection.games.get(i);
-                        if (game.assets[gridContainer.assetKey]) {
-                            return game.assets[gridContainer.assetKey];
+                        if (game && game.assets[gridContainer.assetKey]) {
+                            return game.assets[gridContainer.assetKey] || '';
                         }
                     }
                 }
@@ -58,7 +61,7 @@ FocusScope {
             anchors.leftMargin: vpx(settings.theme.leftMargin.value)
             anchors.rightMargin: vpx(settings.theme.rightMargin.value)
 
-            model: currentCollection != null ? currentCollection.games : null
+            model: filteredCollection.games
 
             property var aspectRatio: settings.game.aspectRatioNative.value ? fakeAsset.height / fakeAsset.width : (settings.game.aspectRatioHeight.value / settings.game.aspectRatioWidth.value)
 
@@ -79,7 +82,7 @@ FocusScope {
                 height: grid.currentItem ? grid.currentItem.height : 0
 
                 game: grid.model ? grid.model.get(grid.currentIndex) : null
-                muted: collectionTransition.pendingCollection != currentCollection
+                muted: collectionTransition.pendingCollection != currentCollection // TODO: FIXME
 
                 scale: grid.currentItem ? grid.currentItem.scale : 0.0
 
@@ -104,7 +107,12 @@ FocusScope {
                 Behavior on scale { PropertyAnimation { duration: 100; } }
 
                 Keys.onPressed: {
-                    if (api.keys.isAccept(event) && !event.isAutoRepeat) {
+                    if (event.isAutoRepeat) {
+                        return;
+                    }
+
+                    if (api.keys.isAccept(event)) {
+                        event.accepted = true;
                         toGameDetailsView(modelData)
                     }
                 }
@@ -135,6 +143,29 @@ FocusScope {
             }
             Keys.onLeftPressed: { sfxNav.play(); moveCurrentIndexLeft() }
             Keys.onRightPressed: { sfxNav.play(); moveCurrentIndexRight() }
+
+            Keys.onPressed: {
+                if (event.isAutoRepeat) {
+                    return;
+                }
+
+                if (api.keys.isPageDown(event)) {
+                    event.accepted = true;
+                    grid.currentIndex = filteredCollection.navigateLetter(grid.currentIndex, 1);
+                    grid.positionViewAtIndex(grid.currentIndex, GridView.SnapPosition);
+                }
+
+                if (api.keys.isPageUp(event)) {
+                    event.accepted = true;
+                    grid.currentIndex = filteredCollection.navigateLetter(grid.currentIndex, -1);
+                    grid.positionViewAtIndex(grid.currentIndex, GridView.SnapPosition);
+                }
+
+                if (api.keys.isFilters(event)) {
+                    event.accepted = true;
+                    filteredCollection.toggleFavorites();
+                }
+            }
         }
 
         layer.enabled: true

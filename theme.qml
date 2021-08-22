@@ -84,7 +84,7 @@ FocusScope {
 
     property var stateHistory: []
 
-    property var currentCollection: api.collections.get(currentCollectionIndex)
+    property var currentCollection: api.collections.get(0)
     property int currentCollectionIndex: 0
 
     property var selectedGame

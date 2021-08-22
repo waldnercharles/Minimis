@@ -82,7 +82,7 @@ FocusScope {
                 height: grid.currentItem ? grid.currentItem.height : 0
 
                 game: grid.model ? grid.model.get(grid.currentIndex) : null
-                muted: collectionTransition.pendingCollection != currentCollection // TODO: FIXME
+                muted: collectionTransition.opacity === 1
 
                 scale: grid.currentItem ? grid.currentItem.scale : 0.0
 
@@ -145,10 +145,6 @@ FocusScope {
             Keys.onRightPressed: { sfxNav.play(); moveCurrentIndexRight() }
 
             Keys.onPressed: {
-                if (event.isAutoRepeat) {
-                    return;
-                }
-
                 if (api.keys.isPageDown(event)) {
                     event.accepted = true;
                     grid.currentIndex = filteredCollection.navigateLetter(grid.currentIndex, 1);
@@ -159,6 +155,10 @@ FocusScope {
                     event.accepted = true;
                     grid.currentIndex = filteredCollection.navigateLetter(grid.currentIndex, -1);
                     grid.positionViewAtIndex(grid.currentIndex, GridView.SnapPosition);
+                }
+
+                if (event.isAutoRepeat) {
+                    return;
                 }
 
                 if (api.keys.isFilters(event)) {

@@ -42,16 +42,22 @@ FocusScope {
             borderColor2: { name: 'Border - Color 2', value: '#ECECEC', type: 'string' },
             borderWidth: { name: 'Border - Width', value: 5, min: 0, type: 'int', },
 
+            cornerRadius: { name: 'Border - Corner Radius', value: 5, min: 0, type: 'int' },
+
             scale: { name: 'Scale', value: 0.95, delta: 0.01, min: 0.01, max: 1.0, type: 'real' },
             scaleSelected: { name: 'Scale - Selected', value: 1.0, delta: 0.01, min: 0.01, type: 'real' },
 
-            cornerRadius: { name: 'Corner Radius', value: 5, min: 0, type: 'int' },
 
             logoScale: { name: 'Logo - Scale', value: 0.75, delta: 0.01, min: 0.01, type: 'real' },
             logoScaleSelected: { name: 'Logo - Scale - Selected', value: 0.85, delta: 0.01, min: 0.01, type: 'real' },
             logoVisible: { name: 'Logo - Visible', value: true, type: 'bool' },
             previewLogoVisible: { name: 'Logo - Visible - Video Preview', value: true, type: 'bool' },
             logoFontSize: { name: 'Logo - Font Size', value: 16, min: 1, type: 'int' },
+
+            letterNavOpacity: { name: 'Jump to Letter - Background Opacity', value: 0.8, delta: 0.01, min: 0.0, max: 1.0, type: 'real' },
+            letterNavSize: { name: 'Jump to Letter - Size', value: 200, type: 'int' },
+            letterNavPauseDuration: { name: 'Jump to Letter - Pause Duration (Milliseconds)', value: 400, delta: 50, min: 0, type: 'int' },
+            letterNavFadeDuration: { name: 'Jump to Letter - Fade Duration (Milliseconds)', value: 400, delta: 50, min: 0, type: 'int' },
         },
         gameDetails: {
             previewEnabled: { name: 'Video Preview - Enabled', value: true, type: 'bool' },

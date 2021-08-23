@@ -2,6 +2,7 @@ import QtQuick 2.3
 import SortFilterProxyModel 0.2
 
 Item {
+    anchors.fill: parent
     property var orderBy: Qt.AscendingOrder
 
     readonly property alias games: games
@@ -80,6 +81,12 @@ Item {
             letterNav.currentLetter = nextLetter = nextChar(nextLetter, direction);
         } while (letterNav.count === 0 && nextLetter != currentLetter)
 
+        letterNavTransition.currentLetter = nextLetter || '#';
+
         return games.mapFromSource(letterNav.mapToSource(0));
+    }
+
+    LetterNavigationTransition {
+        id: letterNavTransition
     }
 }

@@ -185,7 +185,7 @@ FocusScope {
                         newValue = !value;
                         break;
                     case 'int':
-                        newValue = parseInt(value) + 1;
+                        newValue = parseInt(value) + (modelData.delta ? parseInt(modelData.delta) : 1 );
                         break;
                     case 'real':
                         newValue = (parseFloat(value) + parseFloat(modelData.delta)).toFixed(getPrecision(modelData.delta));
@@ -214,7 +214,7 @@ FocusScope {
                         newValue = !value;
                         break;
                     case 'int':
-                        newValue = parseInt(value) - 1;
+                        newValue = parseInt(value) - (modelData.delta ? parseInt(modelData.delta) : 1 );
                         break;
                     case 'real':
                         newValue = (parseFloat(value) - parseFloat(modelData.delta)).toFixed(getPrecision(modelData.delta));

@@ -9,8 +9,6 @@ FocusScope {
 
     property int savedIndex: 0;
 
-    FilteredCollection { id: filteredCollection }
-
     GamesViewHeader {
         id: header
 
@@ -194,6 +192,8 @@ FocusScope {
             }
         }
     }
+
+    FilteredCollection { id: filteredCollection }
 
     CollectionTransition {
         id: collectionTransition

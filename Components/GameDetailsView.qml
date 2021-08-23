@@ -58,7 +58,7 @@ FocusScope {
             opacity: 0
             visible: videoPreview.playlist.itemCount > 0 && opacity > 0
 
-            muted: root.muted
+            muted: true //root.muted 
 
             volume: settings.game.previewVolume.value
         }

@@ -93,8 +93,12 @@ FocusScope {
     property var currentCollection: api.collections.get(0)
     property int currentCollectionIndex: 0
 
+    onCurrentCollectionChanged: savedGameIndex = 0;
+
     property var selectedGame
     property var selectedGameHistory: []
+
+    property int savedGameIndex: 0;
 
     states: [
         State { name: 'gamesView'; PropertyChanges { target: loader; sourceComponent: gamesView } },

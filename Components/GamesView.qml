@@ -7,8 +7,6 @@ FocusScope {
     id: root
     anchors.fill: parent
 
-    property int savedIndex: 0;
-
     GamesViewHeader {
         id: header
 
@@ -111,13 +109,15 @@ FocusScope {
 
                     if (api.keys.isAccept(event)) {
                         event.accepted = true;
+                        savedGameIndex = grid.currentIndex;
                         toGameDetailsView(modelData)
                     }
                 }
             }
 
-            onModelChanged: {
-                grid.currentIndex = gridContainer.focus ? 0 : -1;
+            Component.onCompleted: {
+                grid.currentIndex = gridContainer.focus ? savedGameIndex : -1;
+                grid.positionViewAtIndex(grid.currentIndex, GridView.Center);
             }
 
             Keys.onUpPressed: {
@@ -163,6 +163,11 @@ FocusScope {
                     event.accepted = true;
                     filteredCollection.toggleFavorites();
                 }
+
+                if (api.keys.isCancel(event)) {
+                    event.accepted = true;
+                    header.focus = true;
+                }
             }
         }
 
@@ -185,9 +190,9 @@ FocusScope {
 
         onFocusChanged: {
             if (gridContainer.focus) {
-                grid.currentIndex = savedIndex;
+                grid.currentIndex = savedGameIndex;
             } else {
-                savedIndex = grid.currentIndex;
+                savedGameIndex = grid.currentIndex;
                 grid.currentIndex = -1;
             }
         }
@@ -221,9 +226,11 @@ FocusScope {
 
     function prevCollection() {
         currentCollectionIndex = (currentCollectionIndex + api.collections.count - 1) % api.collections.count;
+        grid.currentIndex = savedGameIndex = 0;
     }
 
     function nextCollection() {
         currentCollectionIndex = (currentCollectionIndex + 1) % api.collections.count;
+        grid.currentIndex = savedGameIndex = 0;
     }
 }

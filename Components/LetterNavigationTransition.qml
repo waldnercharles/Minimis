@@ -48,12 +48,12 @@ Item {
 
         layer.enabled: true
         layer.effect: DropShadow {
-            anchors.fill: logoContainer 
+            anchors.fill: letterText 
             horizontalOffset: vpx(0); verticalOffset: vpx(6)
 
             samples: 10
             color: '#99000000';
-            source: logoContainer
+            source: letterText
         }    
     }
 

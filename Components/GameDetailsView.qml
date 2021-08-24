@@ -60,7 +60,7 @@ FocusScope {
 
             muted: true //root.muted 
 
-            volume: settings.game.previewVolume.value
+            volume: api.memory.get('settings.game.previewVolume')
         }
     }
 
@@ -69,7 +69,7 @@ FocusScope {
         start: Qt.point(0, 0); end: Qt.point(0, parent.height)
         gradient: Gradient {
             GradientStop { position: 0.0; color: 'transparent' }
-            GradientStop { position: 1.0; color: settings.theme.backgroundColor.value }
+            GradientStop { position: 1.0; color: api.memory.get('settings.theme.backgroundColor') }
         }
     }
 
@@ -110,7 +110,7 @@ FocusScope {
         start: Qt.point(0, height)
         end: Qt.point(0, 0)
         gradient: Gradient {
-            GradientStop { position: 0.0; color: settings.theme.backgroundColor.value }
+            GradientStop { position: 0.0; color: api.memory.get('settings.theme.backgroundColor') }
             GradientStop { position: 0.5; color: "transparent" }
         }
     }
@@ -142,7 +142,7 @@ FocusScope {
                 font.pixelSize: metadata.fontSize
                 font.family: subtitleFont.name
                 font.bold: true
-                color: settings.theme.textColor.value
+                color: api.memory.get('settings.theme.textColor')
 
                 verticalAlignment: Text.AlignVCenter
             }
@@ -161,7 +161,7 @@ FocusScope {
                 height: playersText.contentHeight + vpx(10)
 
                 border.width: vpx(2)
-                border.color: settings.theme.accentColor.value
+                border.color: api.memory.get('settings.theme.accentColor')
 
                 radius: vpx(5)
 
@@ -175,7 +175,7 @@ FocusScope {
 
                     font.pixelSize: metadata.fontSize * 0.9
                     font.family: subtitleFont.name
-                    color: settings.theme.textColor.value
+                    color: api.memory.get('settings.theme.textColor')
 
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -197,7 +197,7 @@ FocusScope {
 
                     font.pixelSize: metadata.fontSize * 0.9
                     font.family: subtitleFont.name
-                    color: settings.theme.textColor.value
+                    color: api.memory.get('settings.theme.textColor')
 
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -227,7 +227,7 @@ FocusScope {
                     layer.effect: ColorOverlay {
                         anchors.fill: ratingStars
                         source: ratingStars
-                        color: settings.theme.textColor.value
+                        color: api.memory.get('settings.theme.textColor')
                     }
                 }
             }

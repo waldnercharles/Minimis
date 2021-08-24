@@ -13,7 +13,7 @@ Item {
         videoPreview.stop();
         videoPreview.playlist.clear();
 
-        if (settings.game.previewEnabled.value) {
+        if (api.memory.get('settings.game.previewEnabled')) {
             videoDelay.restart();
         }
     }
@@ -62,14 +62,14 @@ Item {
 
             muted: root.muted
 
-            volume: settings.game.previewVolume.value
+            volume: api.memory.get('settings.game.previewVolume')
         }
 
         layer.enabled: true
         layer.effect: OpacityMask {
             maskSource: Rectangle {
                 width: videoPreview.width; height: videoPreview.height
-                radius: vpx(settings.game.cornerRadius.value)
+                radius: vpx(api.memory.get('settings.game.cornerRadius'))
             }
         }
     }

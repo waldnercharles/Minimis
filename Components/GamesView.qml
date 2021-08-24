@@ -23,7 +23,7 @@ FocusScope {
 
         focus: true
 
-        property var assetKey: settings.game.art.values[settings.game.art.value]
+        property var assetKey: settingsMetadata.game.art.values[api.memory.get('settings.game.art')]
         property var gradientHeight: 0.0133
 
         Image {
@@ -54,14 +54,14 @@ FocusScope {
 
             focus: true
 
-            anchors.leftMargin: vpx(settings.theme.leftMargin.value)
-            anchors.rightMargin: vpx(settings.theme.rightMargin.value)
+            anchors.leftMargin: vpx(api.memory.get('settings.theme.leftMargin'))
+            anchors.rightMargin: vpx(api.memory.get('settings.theme.rightMargin'))
 
             model: filteredCollection.games
 
-            property var aspectRatio: settings.game.aspectRatioNative.value ? fakeAsset.height / fakeAsset.width : (settings.game.aspectRatioHeight.value / settings.game.aspectRatioWidth.value)
+            property var aspectRatio: api.memory.get('settings.game.aspectRatioNative') ? fakeAsset.height / fakeAsset.width : (api.memory.get('settings.game.aspectRatioHeight') / api.memory.get('settings.game.aspectRatioWidth'))
 
-            cellWidth: width / settings.game.gameViewColumns.value
+            cellWidth: width / api.memory.get('settings.game.gameViewColumns')
             cellHeight: cellWidth * aspectRatio
 
             // cacheBuffer: (height / cellHeight * settings.game.gameViewColumns.value)
@@ -70,7 +70,7 @@ FocusScope {
             displayMarginEnd: cellHeight * 2
 
             anchors.fill: parent
-            anchors.topMargin: (cellHeight + vpx(settings.game.borderWidth.value)) * (settings.game.scaleSelected.value - 1.0) / 2.0 + parent.height * gridContainer.gradientHeight * 2
+            anchors.topMargin: (cellHeight + vpx(api.memory.get('settings.game.borderWidth'))) * (api.memory.get('settings.game.scaleSelected') - 1.0) / 2.0 + parent.height * gridContainer.gradientHeight * 2
             anchors.bottomMargin: anchors.topMargin
 
             highlight: GamesViewItemHighlight {
@@ -122,7 +122,7 @@ FocusScope {
 
             Keys.onUpPressed: {
                 sfxNav.play();
-                if (grid.currentIndex < settings.game.gameViewColumns.value) {
+                if (grid.currentIndex < api.memory.get('settings.game.gameViewColumns')) {
                     header.focus = true;
                 } else {
                     moveCurrentIndexUp();
@@ -131,10 +131,10 @@ FocusScope {
             Keys.onDownPressed: {
                 sfxNav.play();
 
-                const gamesOnFinalRow = model.count % settings.game.gameViewColumns.value
+                const gamesOnFinalRow = model.count % api.memory.get('settings.game.gameViewColumns')
 
                 if (gamesOnFinalRow > 0 && model.count - currentIndex > gamesOnFinalRow) {
-                    currentIndex = Math.min(currentIndex + settings.game.gameViewColumns.value, model.count - 1);
+                    currentIndex = Math.min(currentIndex + api.memory.get('settings.game.gameViewColumns'), model.count - 1);
                 } else {
                     moveCurrentIndexDown();
                 }
@@ -205,7 +205,6 @@ FocusScope {
         anchors.fill: parent
 
         pendingCollection: api.collections.get(currentCollectionIndex)
-
     }
 
     Keys.onPressed: {

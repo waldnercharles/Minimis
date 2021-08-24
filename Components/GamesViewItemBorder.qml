@@ -4,11 +4,10 @@ import QtGraphicalEffects 1.0
 Item {
     id: root
 
-    property int borderWidth: settings.game.borderWidth.value
-    property string borderColor1: settings.game.borderColor1.value
-    property string borderColor2: settings.game.borderColor2.value
-
-    property int cornerRadius: vpx(settings.game.cornerRadius.value)
+    property int borderWidth: api.memory.get('settings.game.borderWidth')
+    property string borderColor1: api.memory.get('settings.game.borderColor1')
+    property string borderColor2: api.memory.get('settings.game.borderColor2')
+    property int cornerRadius: vpx(api.memory.get('settings.game.cornerRadius'))
 
     Rectangle {
         id: border
@@ -25,10 +24,10 @@ Item {
             ColorAnimation { from: borderColor2; to: borderColor1; duration: 500 }
             PauseAnimation { duration: 300 }
 
-            running: settings.game.borderAnimated.value
+            running: api.memory.get('settings.game.borderAnimated')
         }
 
-        layer.enabled: settings.performance.artDropShadow.value
+        layer.enabled: api.memory.get('settings.performance.artDropShadow')
         layer.effect: DropShadow {
             anchors.fill: border
             horizontalOffset: vpx(0); verticalOffset: vpx(3)

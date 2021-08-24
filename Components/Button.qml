@@ -18,7 +18,7 @@ FocusScope {
         anchors.fill: button
 
         radius: vpx(5)
-        color: selected ? settings.theme.accentColor.value : settings.theme.textColor.value
+        color: selected ? api.memory.get('settings.theme.accentColor') : api.memory.get('settings.theme.textColor')
 
         opacity: selected ? 1 : 0.4
 
@@ -54,7 +54,7 @@ FocusScope {
             layer.effect: ColorOverlay {
                 anchors.fill: icon
                 source: icon
-                color: selected ? settings.theme.backgroundColor.value : settings.theme.textColor.value
+                color: selected ? api.memory.get('settings.theme.backgroundColor') : api.memory.get('settings.theme.textColor')
             }
 
             visible: icon.status != Image.Null && icon.status != Image.Error
@@ -66,8 +66,7 @@ FocusScope {
             font.family: subtitleFont.name
             font.pixelSize: vpx(16)
             font.bold: true
-            color: selected ? settings.theme.backgroundColor.value : settings.theme.textColor.value
-
+            color: selected ? api.memory.get('settings.theme.backgroundColor'): api.memory.get('settings.theme.textColor')
             anchors { top: parent.top; bottom: parent.bottom; left: icon.right }
             anchors.leftMargin: icon.visible ? vpx(0) : parent.height / 4.0
 

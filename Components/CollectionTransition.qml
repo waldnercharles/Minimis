@@ -9,7 +9,7 @@ Rectangle {
 
     property var pendingCollection
 
-    color: settings.theme.backgroundColor.value
+    color: api.memory.get('settings.theme.backgroundColor')
     opacity: 0
 
     SequentialAnimation {
@@ -51,7 +51,7 @@ Rectangle {
                 id: colorMask
                 anchors.fill: logo
                 source: logo
-                color: settings.theme.accentColor.value
+                color: api.memory.get('settings.theme.accentColor')
             }
         }
 
@@ -67,7 +67,7 @@ Rectangle {
             font.bold: true
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            color: settings.theme.accentColor.value
+            color: api.memory.get('settings.theme.accentColor')
 
             visible: logo.status == Image.Null || logo.status == Image.Error
         }

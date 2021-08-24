@@ -13,15 +13,15 @@ FocusScope {
 
     anchors {
         left: parent.left; right: parent.right; top: parent.top;
-        leftMargin: vpx(settings.theme.leftMargin.value)
-        rightMargin: vpx(settings.theme.rightMargin.value)
+        leftMargin: vpx(api.memory.get('settings.theme.leftMargin'))
+        rightMargin: vpx(api.memory.get('settings.theme.rightMargin'))
     }
 
     height: vpx(75)
 
     Rectangle {
         anchors.fill: parent
-        color: settings.theme.backgroundColor.value
+        color: api.memory.get('settings.theme.backgroundColor')
 
         Item {
             id: container
@@ -30,7 +30,7 @@ FocusScope {
 
             Rectangle {
                 id: background
-                color: settings.theme.accentColor.value
+                color: api.memory.get('settings.theme.accentColor')
 
                 width: (title.visible ? title.width : logo.width) + vpx(80)
                 height: root.height
@@ -65,7 +65,7 @@ FocusScope {
                 layer.effect: ColorOverlay {
                     anchors.fill: logo
                     source: logo
-                    color: settings.theme.backgroundColor.value
+                    color: api.memory.get('settings.theme.backgroundColor')
                 }
             }
 
@@ -82,7 +82,7 @@ FocusScope {
                 font.bold: true
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                color: settings.theme.backgroundColor.value
+                color: api.memory.get('settings.theme.backgroundColor')
 
                 visible: root.text || logo.status === Image.Null || logo.status === Image.Error
             }
@@ -111,7 +111,7 @@ FocusScope {
                             anchors.fill: parent;
 
                             radius: height / 2.0
-                            color: settingsButton.selected ? settings.theme.accentColor.value : "white"
+                            color: settingsButton.selected ? api.memory.get('settings.theme.accentColor'): api.memory.get('settings.theme.textColor')
                             opacity: settingsButton.selected ? 1.0 : 0.1
                         }
 

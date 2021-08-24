@@ -12,8 +12,8 @@ Item {
 
     SequentialAnimation {
         id: fadeAnimation;
-        PauseAnimation { duration: settings.game.letterNavPauseDuration.value }
-        OpacityAnimator { target: root; from: 1; to: 0; duration: settings.game.letterNavFadeDuration.value; }
+        PauseAnimation { duration: api.memory.get('settings.game.letterNavPauseDuration') }
+        OpacityAnimator { target: root; from: 1; to: 0; duration: api.memory.get('settings.game.letterNavFadeDuration'); }
     }
 
     Rectangle {
@@ -23,8 +23,8 @@ Item {
         height: letterText.height * 1.2; width: height
         radius: height / 4
 
-        color: settings.theme.backgroundColor.value
-        opacity: settings.game.letterNavOpacity.value
+        color: api.memory.get('settings.theme.backgroundColor')
+        opacity: api.memory.get('settings.game.letterNavOpacity')
     }
 
     Text {
@@ -38,13 +38,13 @@ Item {
         font.hintingPreference: Font.PreferNoHinting
         font.family: titleFont.name
         font.capitalization: Font.AllUppercase
-        font.pixelSize: vpx(settings.game.letterNavSize.value)
+        font.pixelSize: vpx(api.memory.get('settings.game.letterNavSize'))
         font.bold: true
 
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
 
-        color: settings.theme.accentColor.value
+        color: api.memory.get('settings.theme.accentColor')
 
         layer.enabled: true
         layer.effect: DropShadow {

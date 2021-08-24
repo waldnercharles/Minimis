@@ -8,7 +8,7 @@ Item {
     property bool selected: false
 
     onSelectedChanged: {
-        const playPreview = modelData && modelData.assets.videoList.length > 0 && settings.game.previewEnabled.value;
+        const playPreview = modelData && modelData.assets.videoList.length > 0 && api.memory.get('settings.game.previewEnabled');
 
         if (selected && playPreview)
             fadescreenshot.restart();
@@ -16,7 +16,7 @@ Item {
             fadescreenshot.stop();
             grayBackground.opacity = 1;
             screenshot.opacity = 1;
-            if (settings.game.logoVisible.value) {
+            if (api.memory.get('settings.game.logoVisible')) {
                 logo.opacity = 1;
             } else {
                 logo.opacity = 0;
@@ -26,7 +26,7 @@ Item {
 
     Behavior on scale { NumberAnimation { duration: 100; } }
 
-    scale: selected ? settings.game.scaleSelected.value : settings.game.scale.value
+    scale: selected ? api.memory.get('settings.game.scaleSelected'): api.memory.get('settings.game.scale')
     z: selected ? 10 : 1
 
     Timer {
@@ -37,7 +37,7 @@ Item {
             grayBackground.opacity = 0;
             screenshot.opacity = 0;
 
-            if (settings.game.previewLogoVisible.value) {
+            if (api.memory.get('settings.game.previewLogoVisible')) {
                 logo.opacity = 1;
             } else {
                 logo.opacity = 0;
@@ -56,7 +56,7 @@ Item {
             anchors.fill: parent
 
             color: "#1a1a1a"
-            radius: vpx(settings.game.cornerRadius.value)
+            radius: vpx(api.memory.get('settings.game.cornerRadius'))
 
             Behavior on opacity { NumberAnimation { duration: 200 } }
 
@@ -66,19 +66,19 @@ Item {
         Image {
             id: screenshot
             
-            property var assetKey: settings.game.art.values[settings.game.art.value]
+            property var assetKey: settingsMetadata.game.art.values[api.memory.get('settings.game.art')]
 
             anchors.fill: parent
 
             source: modelData.assets[assetKey] || ""
-            sourceSize: settings.performance.artImageResolution.value === 0 ? undefined : Qt.size(screenshot.width, screenshot.height)
+            sourceSize: api.memory.get('settings.performance.artImageResolution')=== 0 ? undefined : Qt.size(screenshot.width, screenshot.height)
 
             asynchronous: true
 
-            cache: settings.performance.artImageCaching.value
-            smooth: settings.performance.artImageSmoothing.value
+            cache: api.memory.get('settings.performance.artImageCaching')
+            smooth: api.memory.get('settings.performance.artImageCaching')
 
-            fillMode: settings.game.aspectRatioNative.value ? Image.Stretch : Image.PreserveAspectCrop
+            fillMode: api.memory.get('settings.game.aspectRatioNative')? Image.Stretch : Image.PreserveAspectCrop
             visible: screenshot.status === Image.Ready && logo.status !== Image.Loading
 
             Behavior on opacity { NumberAnimation { duration: 200 } }
@@ -88,10 +88,10 @@ Item {
                 id: mask
                 maskSource: Rectangle {
                     width: screenshot.width; height: screenshot.height
-                    radius: vpx(settings.game.cornerRadius.value)
+                    radius: vpx(api.memory.get('settings.game.cornerRadius'))
                 }
 
-                layer.enabled: !selected && settings.performance.artDropShadow.value
+                layer.enabled: !selected && api.memory.get('settings.performance.artDropShadow')
                 layer.effect: DropShadow {
                     anchors.fill: screenshot
                     horizontalOffset: vpx(0); verticalOffset: vpx(3)
@@ -108,24 +108,24 @@ Item {
             anchors.fill: parent
 
             source: modelData.assets.logo || ""
-            sourceSize: settings.performance.logoImageResolution.value === 0 ? undefined : Qt.size(logo.width, logo.height)
+            sourceSize: api.memory.get('settings.performance.logoImageResolution')=== 0 ? undefined : Qt.size(logo.width, logo.height)
 
             asynchronous: true
-            smooth: settings.performance.logoImageSmoothing.value
+            smooth: api.memory.get('settings.performance.logoImageSmoothing')
 
-            cache: settings.performance.logoImageCaching.value
+            cache: api.memory.get('settings.performance.logoImageCaching')
 
             fillMode: Image.PreserveAspectFit
 
-            scale: selected ? settings.game.logoScaleSelected.value : settings.game.logoScale.value
+            scale: selected ? api.memory.get('settings.game.logoScaleSelected'): api.memory.get('settings.game.logoScale')
             visible: logo.status === Image.Ready && screenshot.status !== Image.Loading
 
-            opacity: settings.game.logoVisible.value ? 1 : 0
+            opacity: api.memory.get('settings.game.logoVisible')? 1 : 0
 
             Behavior on opacity { NumberAnimation { duration: 200 } }
             Behavior on scale { NumberAnimation { duration: 100; } }
 
-            layer.enabled: settings.performance.logoDropShadow.value
+            layer.enabled: api.memory.get('settings.performance.logoDropShadow')
             layer.effect: DropShadow {
                 anchors.fill: logo
 
@@ -147,7 +147,7 @@ Item {
             color: "white"
 
             font.family: subtitleFont.name
-            font.pixelSize: vpx(settings.game.logoFontSize.value)
+            font.pixelSize: vpx(api.memory.get('settings.game.logoFontSize'))
             font.bold: true
 
             style: Text.Outline; styleColor: "black"

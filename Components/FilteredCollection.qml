@@ -7,13 +7,12 @@ Item {
 
     readonly property alias games: games
 
-    function toggleFavorites() {
-        games.favorites = !games.favorites
-    }
-
-    AllOf {
+    AnyOf {
         id: gameFilters
-        ValueFilter { roleName: 'favorite'; value: true; enabled: games.favorites }
+        ValueFilter { roleName: 'favorite'; value: true; enabled: filterByFavorites }
+        ExpressionFilter { expression: (api.memory.get(`database.mylist.${currentCollection.shortName}.${modelData.title}`) ?? false); enabled: filterByMyList }
+
+        enabled: filterByFavorites || filterByMyList
     }
 
     RoleSorter {

@@ -94,46 +94,46 @@ FocusScope {
                 visible: !titleOnly
 
                 model: ObjectModel {
-                    Item {
-                        id: settingsButton
+                    Button {
+                        icon: '../assets/icons/cog.svg'
 
-                        property bool selected: ListView.isCurrentItem && root.focus
+                        width: parent.height; height: parent.height
+                        circle: true
 
-                        width: buttons.height; height: buttons.height
+                        selected: root.focus && ListView.isCurrentItem
 
-                        anchors {
-                            top: parent.top; bottom: parent.bottom; right: parent.right;
+                        onActivated: {
+                            toSettingsView();
                         }
+                    }
 
-                        Rectangle {
-                            id: settingsButtonBackground
+                    Button {
+                        icon: '../assets/icons/filter.svg'
+                        text: buttons.getFilterText()
 
-                            anchors.fill: parent;
+                        height: parent.height
+                        circle: true
+                        selected: root.focus && ListView.isCurrentItem
 
-                            radius: height / 2.0
-                            color: settingsButton.selected ? api.memory.get('settings.theme.accentColor'): api.memory.get('settings.theme.textColor')
-                            opacity: settingsButton.selected ? 1.0 : 0.1
-                        }
-
-                        Image {
-                            id: settingsButtonIcon
-
-                            anchors.fill: settingsButtonBackground
-                            anchors.margins: settingsButtonBackground.height / 6.0
-
-                            smooth: true
-                            asynchronous: true
-                            source: "../assets/icons/icon_settings.svg"
-                        }
-
-                        Keys.onPressed: {
-                            if (api.keys.isAccept(event) && !event.isAutoRepeat) {
-                                event.accepted = true;
-                                toSettingsView();
+                        onActivated: {
+                            if (!filterByFavorites && !filterByMyList) {
+                                filterByFavorites = true;
+                                filterByMyList = false;
+                            } else if (filterByFavorites && filterByMyList) {
+                                filterByFavorites = false;
+                                filterByMyList = false;
+                            } else if (filterByFavorites) {
+                                filterByFavorites = false;
+                                filterByMyList = true;
+                            } else if (filterByMyList) {
+                                filterByFavorites = true;
+                                filterByMyList = true;
                             }
                         }
                     }
                 }
+
+                spacing: vpx(12)
 
                 orientation: ListView.Horizontal
                 layoutDirection: Qt.RightToLeft
@@ -143,6 +143,24 @@ FocusScope {
 
                 anchors.topMargin: parent.height / 4.0
                 anchors.bottomMargin: anchors.topMargin
+
+                function getFilterText() {
+                    if (!filterByFavorites && !filterByMyList) {
+                        return 'All Games';
+                    }
+
+                    if (filterByFavorites && filterByMyList) {
+                        return 'Favorites and My List';
+                    }
+
+                    if (filterByFavorites) {
+                        return 'Favorites';
+                    }
+
+                    if (filterByMyList) {
+                        return 'My List';
+                    }
+                }
             }
         }
     }

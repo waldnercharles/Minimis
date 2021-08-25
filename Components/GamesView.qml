@@ -159,11 +159,6 @@ FocusScope {
                     return;
                 }
 
-                if (api.keys.isFilters(event)) {
-                    event.accepted = true;
-                    filteredCollection.toggleFavorites();
-                }
-
                 if (api.keys.isCancel(event)) {
                     event.accepted = true;
                     header.focus = true;

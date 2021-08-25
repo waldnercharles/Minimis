@@ -99,6 +99,9 @@ FocusScope {
 
     property int savedGameIndex: 0;
 
+    property bool filterByFavorites: false
+    property bool filterByMyList: false
+
     states: [
         State { name: 'gamesView'; PropertyChanges { target: loader; sourceComponent: gamesView } },
         State { name: 'settingsView'; PropertyChanges { target: loader; sourceComponent: settingsView } },

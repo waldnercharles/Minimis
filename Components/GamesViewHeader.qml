@@ -8,7 +8,7 @@ import "../utils.js" as Utils
 FocusScope {
     id: root
 
-    property string text
+    property string text: ''
     property bool titleOnly 
 
     anchors {
@@ -75,7 +75,7 @@ FocusScope {
                 height: root.height - vpx(30)
                 anchors.centerIn: background
 
-                text: root.text || currentCollection != null ? currentCollection.name : ''
+                text: root.text || (currentCollection != null ? currentCollection.name : '')
 
                 font.family: titleFont.name
                 font.pixelSize: vpx(36)

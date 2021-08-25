@@ -200,4 +200,9 @@ FocusScope {
 
         selectedGame = game;
     }
+
+    function toggleMyList(collection, game) {
+        const key = `database.mylist.${collection.shortName}.${game.title}`;
+        api.memory.set(key, !(api.memory.get(key) ?? false));
+    }
 }

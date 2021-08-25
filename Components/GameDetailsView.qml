@@ -263,24 +263,45 @@ FocusScope {
 
         model: ObjectModel {
             Button {
-                icon: '../assets/icons/icon_play.svg'
+                icon: '../assets/icons/play.svg'
                 text: 'Play Game'
                 height: parent.height
                 selected: ListView.isCurrentItem
-
                 onActivated: {
                     sfxAccept.play();
                     selectedGame.launch();
                 }
             }
             Button {
-                icon: '../assets/icons/icon_info.svg'
+                icon: '../assets/icons/info-circle.svg'
                 text: 'More Info'
                 height: parent.height
                 selected: ListView.isCurrentItem
-
                 onActivated: {
-                    
+                    sfxAccept.play();
+                }
+            }
+            Button {
+                icon: selectedGame.favorite ? '../assets/icons/heart_filled.svg' : '../assets/icons/heart_empty.svg'
+                height: parent.height
+                selected: ListView.isCurrentItem
+                circle: true
+                onActivated: {
+                    sfxAccept.play();
+                    selectedGame.favorite = !selectedGame.favorite;
+                }
+            }
+
+            Button {
+                property var inMyList: (api.memory.get(`database.mylist.${currentCollection.shortName}.${selectedGame.title}`) ?? false)
+                icon: inMyList ? '../assets/icons/check.svg' : '../assets/icons/plus.svg'
+                height: parent.height
+                text: selected ? (inMyList ? 'Remove from My List' : 'Add to My List') : ''
+                selected: ListView.isCurrentItem
+                circle: true
+                onActivated: {
+                    sfxAccept.play();
+                    toggleMyList(currentCollection, selectedGame);
                 }
             }
         }

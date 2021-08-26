@@ -30,27 +30,22 @@ FocusScope {
         height: root.height;
         anchors.verticalCenter: parent.verticalCenter
 
-        property var padding: height * icon.scale / 2
+        property var padding: (height - icon.height) * 0.5
+        spacing: padding * 0.5
 
-        leftPadding: icon.visible ? 0 : padding
-        rightPadding: label.text ? padding : 0
-
-        scale: selected ? 0.9 : 0.85
-        Behavior on scale { NumberAnimation { duration: 100 } }
+        leftPadding: padding
+        rightPadding: padding
 
         Image {
             id: icon
-            width: icon.visible ? root.height : vpx(0);
-            height: icon.width;
 
-            scale: 0.5
-
+            height: button.height * 0.35; width: icon.visible ? height : vpx(0);
             anchors.verticalCenter: parent.verticalCenter
 
             sourceSize: Qt.size(icon.width, icon.height)
 
             fillMode: Image.PreserveAspectFit
-            asynchronous: true
+            asynchronous: false
             smooth: true
 
             Behavior on opacity { NumberAnimation { duration: 100 } }
@@ -69,7 +64,7 @@ FocusScope {
             id: labelFake
 
             font.family: subtitleFont.name
-            font.pixelSize: vpx(16)
+            font.pixelSize: vpx(13)
             font.bold: true
 
             text: label.text
@@ -81,7 +76,7 @@ FocusScope {
             id: label
 
             font.family: subtitleFont.name
-            font.pixelSize: vpx(16)
+            font.pixelSize: vpx(13)
             font.bold: true
             color: selected ? api.memory.get('settings.theme.backgroundColor'): api.memory.get('settings.theme.textColor')
             anchors { top: parent.top; bottom: parent.bottom }

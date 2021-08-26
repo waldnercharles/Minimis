@@ -100,7 +100,7 @@ FocusScope {
     property int savedGameIndex: 0;
 
     property bool filterByFavorites: false
-    property bool filterByMyList: false
+    property bool filterByBookmarks: false
 
     states: [
         State { name: 'gamesView'; PropertyChanges { target: loader; sourceComponent: gamesView } },
@@ -203,8 +203,8 @@ FocusScope {
         selectedGame = game;
     }
 
-    function toggleMyList(collection, game) {
-        const key = `database.mylist.${collection.shortName}.${game.title}`;
+    function toggleBookmarks(collection, game) {
+        const key = `database.bookmarks.${collection.shortName}.${game.title}`;
         api.memory.set(key, !(api.memory.get(key) ?? false));
     }
 }

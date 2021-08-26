@@ -107,6 +107,66 @@ Item {
             }
         }
 
+        Row {
+            id: icons
+
+            property real margins: vpx(9)
+            property real aspectRatio: parent.height / parent.width
+
+            height: parent.width / 18
+            anchors {
+                left: parent.left; right: parent.right; top: parent.top;
+                rightMargin: margins; topMargin: margins * aspectRatio
+            }
+
+            spacing: height * 0.25
+
+            Image {
+                id: bookmarkIcon
+                property bool isBookmarked: (api.memory.get(`database.bookmarks.${currentCollection.shortName}.${modelData.title}`) ?? false)
+
+                width: icons.height; height: icons.height
+
+                source: '../assets/icons/bookmark.svg'
+                sourceSize: Qt.size(bookmarkIcon.width, bookmarkIcon.height)
+
+                fillMode: Image.PreserveAspectFit
+
+                asynchronous: false
+                smooth: true
+
+                visible: isBookmarked
+            }
+
+            Image {
+                id: favoriteIcon
+                width: icons.height; height: icons.height
+
+                source: '../assets/icons/heart_filled.svg'
+                sourceSize: Qt.size(favoriteIcon.width, favoriteIcon.height)
+
+                fillMode: Image.PreserveAspectFit
+
+                asynchronous: false
+                smooth: true
+
+                visible: modelData.favorite
+            }
+
+            layoutDirection: Qt.RightToLeft
+
+            layer.enabled: true
+            layer.effect: ColorOverlay {
+                color: api.memory.get('settings.theme.textColor')
+                layer.enabled: true
+                layer.effect: DropShadow {
+                    horizontalOffset: vpx(0); verticalOffset: vpx(2)
+                    samples: 2
+                    color: '#77000000'
+                } 
+            }
+        }
+
         Text {
             id: textLogo
 

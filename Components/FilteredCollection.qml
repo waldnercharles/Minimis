@@ -10,9 +10,9 @@ Item {
     AnyOf {
         id: gameFilters
         ValueFilter { roleName: 'favorite'; value: true; enabled: filterByFavorites }
-        ExpressionFilter { expression: (api.memory.get(`database.mylist.${currentCollection.shortName}.${modelData.title}`) ?? false); enabled: filterByMyList }
+        ExpressionFilter { expression: (api.memory.get(`database.bookmarks.${currentCollection.shortName}.${modelData.title}`) ?? false); enabled: filterByBookmarks }
 
-        enabled: filterByFavorites || filterByMyList
+        enabled: filterByFavorites || filterByBookmarks
     }
 
     RoleSorter {

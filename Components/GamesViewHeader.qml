@@ -116,18 +116,18 @@ FocusScope {
                         selected: root.focus && ListView.isCurrentItem
 
                         onActivated: {
-                            if (!filterByFavorites && !filterByMyList) {
+                            if (!filterByFavorites && !filterByBookmarks) {
                                 filterByFavorites = true;
-                                filterByMyList = false;
-                            } else if (filterByFavorites && filterByMyList) {
+                                filterByBookmarks = false;
+                            } else if (filterByFavorites && filterByBookmarks) {
                                 filterByFavorites = false;
-                                filterByMyList = false;
+                                filterByBookmarks = false;
                             } else if (filterByFavorites) {
                                 filterByFavorites = false;
-                                filterByMyList = true;
-                            } else if (filterByMyList) {
+                                filterByBookmarks = true;
+                            } else if (filterByBookmarks) {
                                 filterByFavorites = true;
-                                filterByMyList = true;
+                                filterByBookmarks = true;
                             }
                         }
                     }
@@ -145,11 +145,11 @@ FocusScope {
                 anchors.bottomMargin: anchors.topMargin
 
                 function getFilterText() {
-                    if (!filterByFavorites && !filterByMyList) {
+                    if (!filterByFavorites && !filterByBookmarks) {
                         return 'All Games';
                     }
 
-                    if (filterByFavorites && filterByMyList) {
+                    if (filterByFavorites && filterByBookmarks) {
                         return 'Favorites and Bookmarks';
                     }
 
@@ -157,7 +157,7 @@ FocusScope {
                         return 'Favorites';
                     }
 
-                    if (filterByMyList) {
+                    if (filterByBookmarks) {
                         return 'Bookmarks';
                     }
                 }

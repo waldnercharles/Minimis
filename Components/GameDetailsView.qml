@@ -206,8 +206,6 @@ FocusScope {
                     id: ratingStars
 
                     spacing: vpx(4)
-                    anchors.verticalCenter: parent.verticalCenter
-
                     Repeater {
                         model: 5
                         delegate: Image {
@@ -225,8 +223,6 @@ FocusScope {
 
                     layer.enabled: true
                     layer.effect: ColorOverlay {
-                        anchors.fill: ratingStars
-                        source: ratingStars
                         color: api.memory.get('settings.theme.textColor')
                     }
                 }
@@ -236,8 +232,8 @@ FocusScope {
         layer.enabled: true
         layer.effect: DropShadow {
             anchors.fill: metadata
-            horizontalOffset: vpx(0); verticalOffset: vpx(2)
-            samples: 2
+            horizontalOffset: vpx(0); verticalOffset: vpx(3)
+            samples: 4
             color: '#99000000'
             source: metadata
         }
@@ -293,15 +289,15 @@ FocusScope {
             }
 
             Button {
-                property var inMyList: (api.memory.get(`database.mylist.${currentCollection.shortName}.${selectedGame.title}`) ?? false)
-                icon: inMyList ? '../assets/icons/bookmark.svg' : '../assets/icons/plus.svg'
+                property bool isBookmarked: (api.memory.get(`database.bookmarks.${currentCollection.shortName}.${selectedGame.title}`) ?? false)
+                icon: isBookmarked ? '../assets/icons/bookmark.svg' : '../assets/icons/plus.svg'
                 height: parent.height
-                text: selected ? (inMyList ? 'Remove from Bookmarks' : 'Add to Bookmarks') : ''
+                text: selected ? (isBookmarked ? 'Remove from Bookmarks' : 'Add to Bookmarks') : ''
                 selected: ListView.isCurrentItem
                 circle: true
                 onActivated: {
                     sfxAccept.play();
-                    toggleMyList(currentCollection, selectedGame);
+                    toggleBookmarks(currentCollection, selectedGame);
                 }
             }
         }
@@ -309,8 +305,8 @@ FocusScope {
         layer.enabled: true
         layer.effect: DropShadow {
             anchors.fill: buttons
-            horizontalOffset: vpx(0); verticalOffset: vpx(2)
-            samples: 2
+            horizontalOffset: vpx(0); verticalOffset: vpx(3)
+            samples: 4
             color: '#77000000'
             source: buttons
         }

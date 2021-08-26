@@ -6,45 +6,12 @@ Item {
     id: root
 
     property bool selected: false
-
-    // TODO: This should probably be handled outside of the delegate
-    onSelectedChanged: {
-        const playPreview = modelData && modelData.assets.videoList.length > 0 && api.memory.get('settings.game.previewEnabled');
-
-        if (selected && playPreview)
-            fadescreenshot.restart();
-        else {
-            fadescreenshot.stop();
-            grayBackground.opacity = 1;
-            screenshot.opacity = 1;
-            if (api.memory.get('settings.game.logoVisible')) {
-                logo.opacity = 1;
-            } else {
-                logo.opacity = 0;
-            }
-        }
-    }
+    property bool playPreview: false
 
     Behavior on scale { NumberAnimation { duration: 100; } }
 
     scale: selected ? api.memory.get('settings.game.scaleSelected'): api.memory.get('settings.game.scale')
-    z: selected ? 10 : 1
-
-    Timer {
-        id: fadescreenshot
-
-        interval: 800
-        onTriggered: {
-            grayBackground.opacity = 0;
-            screenshot.opacity = 0;
-
-            if (api.memory.get('settings.game.previewLogoVisible')) {
-                logo.opacity = 1;
-            } else {
-                logo.opacity = 0;
-            }
-        }
-    }
+    z: selected ? 3 : 1
 
     Item {
         id: card
@@ -82,6 +49,8 @@ Item {
             fillMode: api.memory.get('settings.game.aspectRatioNative')? Image.Stretch : Image.PreserveAspectCrop
             visible: screenshot.status === Image.Ready && logo.status !== Image.Loading
 
+            opacity: selected && playPreview && modelData.assets.videos.length > 0 ? 0 : 1
+
             Behavior on opacity { NumberAnimation { duration: 200 } }
 
             layer.enabled: true
@@ -109,7 +78,7 @@ Item {
             anchors.fill: parent
 
             source: modelData.assets.logo || ''
-            sourceSize: api.memory.get('settings.performance.logoImageResolution')=== 0 ? undefined : Qt.size(logo.width, logo.height)
+            sourceSize: api.memory.get('settings.performance.logoImageResolution') === 0 ? undefined : Qt.size(logo.width, logo.height)
 
             asynchronous: true
             smooth: api.memory.get('settings.performance.logoImageSmoothing')
@@ -118,10 +87,10 @@ Item {
 
             fillMode: Image.PreserveAspectFit
 
-            scale: selected ? api.memory.get('settings.game.logoScaleSelected'): api.memory.get('settings.game.logoScale')
+            scale: selected ? api.memory.get('settings.game.logoScaleSelected') : api.memory.get('settings.game.logoScale')
             visible: logo.status === Image.Ready && screenshot.status !== Image.Loading
 
-            opacity: api.memory.get('settings.game.logoVisible')? 1 : 0
+            opacity: selected && playPreview ? (api.memory.get('settings.game.previewLogoVisible') ? 1 : 0) : (api.memory.get('settings.game.logoVisible') ? 1 : 0)
 
             Behavior on opacity { NumberAnimation { duration: 200 } }
             Behavior on scale { NumberAnimation { duration: 100; } }

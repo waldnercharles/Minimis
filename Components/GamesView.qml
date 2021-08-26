@@ -45,21 +45,36 @@ FocusScope {
             fillMode: Image.PreserveAspectFit
             source: fakeSource
 
-            asynchronous: true
+            asynchronous: !api.memory.get('settings.game.aspectRatioNative')
             visible: false
+            enabled: false
         }
 
         GridView {
             id: grid
 
+            Timer {
+                id: videoPreviewTimer
+
+                interval: 800
+                onTriggered: {
+                    grid.playPreview = true;
+                }
+            }
+
             focus: true
+
+            anchors.fill: parent
+            anchors.topMargin: (cellHeight + vpx(api.memory.get('settings.game.borderWidth'))) * (api.memory.get('settings.game.scaleSelected') - 1.0) / 2.0 + parent.height * gridContainer.gradientHeight * 2
+            anchors.bottomMargin: anchors.topMargin
 
             anchors.leftMargin: vpx(api.memory.get('settings.theme.leftMargin'))
             anchors.rightMargin: vpx(api.memory.get('settings.theme.rightMargin'))
 
             model: filteredCollection.games
 
-            property var aspectRatio: api.memory.get('settings.game.aspectRatioNative') ? fakeAsset.height / fakeAsset.width : (api.memory.get('settings.game.aspectRatioHeight') / api.memory.get('settings.game.aspectRatioWidth'))
+            property bool playPreview: false
+            property real aspectRatio: api.memory.get('settings.game.aspectRatioNative') ? fakeAsset.height / fakeAsset.width : (api.memory.get('settings.game.aspectRatioHeight') / api.memory.get('settings.game.aspectRatioWidth'))
 
             cellWidth: width / api.memory.get('settings.game.gameViewColumns')
             cellHeight: cellWidth * aspectRatio
@@ -69,11 +84,10 @@ FocusScope {
             displayMarginBeginning: cellHeight * 2
             displayMarginEnd: cellHeight * 2
 
-            anchors.fill: parent
-            anchors.topMargin: (cellHeight + vpx(api.memory.get('settings.game.borderWidth'))) * (api.memory.get('settings.game.scaleSelected') - 1.0) / 2.0 + parent.height * gridContainer.gradientHeight * 2
-            anchors.bottomMargin: anchors.topMargin
 
             highlight: GamesViewItemHighlight {
+                playPreview: grid.playPreview
+
                 width: grid.currentItem ? grid.currentItem.width  : 0
                 height: grid.currentItem ? grid.currentItem.height : 0
 
@@ -99,6 +113,7 @@ FocusScope {
                 height: GridView.view.cellHeight
 
                 selected: GridView.isCurrentItem
+                playPreview: grid.playPreview 
 
                 Behavior on scale { PropertyAnimation { duration: 100; } }
 
@@ -120,7 +135,11 @@ FocusScope {
                 grid.positionViewAtIndex(grid.currentIndex, GridView.Center);
             }
 
+            onCurrentIndexChanged: { grid.resetVideoPreview(); }
+
             Keys.onUpPressed: {
+                event.accepted = true;
+
                 sfxNav.play();
                 if (grid.currentIndex < api.memory.get('settings.game.gameViewColumns')) {
                     header.focus = true;
@@ -128,9 +147,11 @@ FocusScope {
                     moveCurrentIndexUp();
                 }
             }
-            Keys.onDownPressed: {
-                sfxNav.play();
 
+            Keys.onDownPressed: {
+                event.accepted = true;
+
+                sfxNav.play();
                 const gamesOnFinalRow = model.count % api.memory.get('settings.game.gameViewColumns')
 
                 if (gamesOnFinalRow > 0 && model.count - currentIndex > gamesOnFinalRow) {
@@ -139,8 +160,9 @@ FocusScope {
                     moveCurrentIndexDown();
                 }
             }
-            Keys.onLeftPressed: { sfxNav.play(); moveCurrentIndexLeft() }
-            Keys.onRightPressed: { sfxNav.play(); moveCurrentIndexRight() }
+
+            Keys.onLeftPressed: { event.accepted = true; sfxNav.play(); moveCurrentIndexLeft() }
+            Keys.onRightPressed: { event.accepted = true; sfxNav.play(); moveCurrentIndexRight() }
 
             Keys.onPressed: {
                 if (api.keys.isPageDown(event)) {
@@ -163,6 +185,16 @@ FocusScope {
                     event.accepted = true;
                     header.focus = true;
                 }
+            }
+
+            function resetVideoPreview() {
+                if (api.memory.get('settings.game.previewEnabled')) {
+                    videoPreviewTimer.restart();
+                } else {
+                    videoPreviewTimer.stop();
+                }
+
+                grid.playPreview = false;
             }
         }
 
@@ -221,10 +253,14 @@ FocusScope {
     function prevCollection() {
         currentCollectionIndex = (currentCollectionIndex + api.collections.count - 1) % api.collections.count;
         grid.currentIndex = savedGameIndex = 0;
+
+        grid.resetVideoPreview();
     }
 
     function nextCollection() {
         currentCollectionIndex = (currentCollectionIndex + 1) % api.collections.count;
         grid.currentIndex = savedGameIndex = 0;
+
+        grid.resetVideoPreview();
     }
 }

@@ -6,29 +6,25 @@ Item {
     id: root
 
     property var game
+    property bool playPreview: false
     property bool muted: false
 
     onGameChanged: {
-        videoPreview.state = "";
-        videoPreview.stop();
         videoPreview.playlist.clear();
-
-        if (api.memory.get('settings.game.previewEnabled')) {
-            videoDelay.restart();
+        if (game && game.assets.videos.length > 0) {
+            for (var i = 0; i < game.assets.videos.length; i++) {
+                videoPreview.playlist.addItem(game.assets.videos[i]);
+            }
         }
     }
 
-    Timer {
-        id: videoDelay
-        interval: 600
-        onTriggered: {
-            if (game && game.assets.videos.length > 0) {
-                for (var i = 0; i < game.assets.videos.length; i++)
-                    videoPreview.playlist.addItem(game.assets.videos[i]);
-
-                videoPreview.play();
-                videoPreview.state = "playing";
-            }
+    onPlayPreviewChanged: {
+        if (playPreview) {
+            videoPreview.play();
+            videoPreview.state = 'playing'
+        } else {
+            videoPreview.stop();
+            videoPreview.state = '';
         }
     }
 

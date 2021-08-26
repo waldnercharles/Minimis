@@ -296,7 +296,7 @@ FocusScope {
                 property var inMyList: (api.memory.get(`database.mylist.${currentCollection.shortName}.${selectedGame.title}`) ?? false)
                 icon: inMyList ? '../assets/icons/bookmark.svg' : '../assets/icons/plus.svg'
                 height: parent.height
-                text: selected ? (inMyList ? 'Remove from My List' : 'Add to My List') : ''
+                text: selected ? (inMyList ? 'Remove from Bookmarks' : 'Add to Bookmarks') : ''
                 selected: ListView.isCurrentItem
                 circle: true
                 onActivated: {

@@ -150,7 +150,7 @@ FocusScope {
                     }
 
                     if (filterByFavorites && filterByMyList) {
-                        return 'Favorites and My List';
+                        return 'Favorites and Bookmarks';
                     }
 
                     if (filterByFavorites) {
@@ -158,7 +158,7 @@ FocusScope {
                     }
 
                     if (filterByMyList) {
-                        return 'My List';
+                        return 'Bookmarks';
                     }
                 }
             }

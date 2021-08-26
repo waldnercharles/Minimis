@@ -132,7 +132,7 @@ Item {
 
                 fillMode: Image.PreserveAspectFit
 
-                asynchronous: false
+                asynchronous: true
                 smooth: true
 
                 visible: isBookmarked
@@ -147,7 +147,7 @@ Item {
 
                 fillMode: Image.PreserveAspectFit
 
-                asynchronous: false
+                asynchronous: true
                 smooth: true
 
                 visible: modelData.favorite
@@ -158,13 +158,13 @@ Item {
             layer.enabled: true
             layer.effect: ColorOverlay {
                 color: api.memory.get('settings.theme.textColor')
-                layer.enabled: true
-                layer.effect: DropShadow {
-                    horizontalOffset: vpx(0); verticalOffset: vpx(2)
-                    samples: 2
-                    color: '#77000000'
-                } 
-            }
+            //     layer.enabled: true
+            //     layer.effect: DropShadow {
+            //         horizontalOffset: vpx(0); verticalOffset: vpx(2)
+            //         samples: 2
+            //         color: '#77000000'
+            //     } 
+            // }
         }
 
         Text {

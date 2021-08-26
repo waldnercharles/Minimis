@@ -139,7 +139,6 @@ FocusScope {
     }
 
     Component.onCompleted: {
-        
     }
 
     Keys.onPressed: {

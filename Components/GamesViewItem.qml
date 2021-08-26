@@ -161,4 +161,5 @@ Item {
 
             visible: !logo.visible
         }
+    }
 }

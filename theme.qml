@@ -52,7 +52,7 @@ FocusScope {
             logoScaleSelected: { name: 'Logo - Scale - Selected', default: 0.85, delta: 0.01, min: 0.01, type: 'real' },
             logoVisible: { name: 'Logo - Visible', default: true, type: 'bool' },
             previewLogoVisible: { name: 'Logo - Visible - Video Preview', default: true, type: 'bool' },
-            logoFontSize: { name: 'Logo - Font Size', default: 16, min: 1, type: 'int' },
+            logoFontSize: { name: 'Logo - Font Size', default: 20, min: 1, type: 'int' },
 
             letterNavOpacity: { name: 'Jump to Letter - Background Opacity', default: 0.8, delta: 0.01, min: 0.0, max: 1.0, type: 'real' },
             letterNavSize: { name: 'Jump to Letter - Size', default: 200, type: 'int' },

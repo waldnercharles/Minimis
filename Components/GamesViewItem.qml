@@ -7,6 +7,7 @@ Item {
 
     property bool selected: false
 
+    // TODO: This should probably be handled outside of the delegate
     onSelectedChanged: {
         const playPreview = modelData && modelData.assets.videoList.length > 0 && api.memory.get('settings.game.previewEnabled');
 
@@ -107,7 +108,7 @@ Item {
             id: logo
             anchors.fill: parent
 
-            source: modelData.assets.logo || ""
+            source: modelData.assets.logo || ''
             sourceSize: api.memory.get('settings.performance.logoImageResolution')=== 0 ? undefined : Qt.size(logo.width, logo.height)
 
             asynchronous: true
@@ -144,13 +145,13 @@ Item {
             anchors.margins: vpx(10)
 
             text: modelData.title || ''
-            color: "white"
+            color: api.memory.get('settings.theme.textColor')
 
             font.family: subtitleFont.name
             font.pixelSize: vpx(api.memory.get('settings.game.logoFontSize'))
             font.bold: true
 
-            style: Text.Outline; styleColor: "black"
+            style: Text.Outline; styleColor: api.memory.get('settings.theme.backgroundColor')
 
             elide: Text.ElideRight
             wrapMode: Text.WordWrap
@@ -158,28 +159,6 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
-            visible: (logo.status === Image.Null || logo.status === Image.Error) && screenshot.status !== Image.Loading
+            visible: !logo.visible
         }
-
-        Image {
-            id: spinner
-
-            anchors.centerIn: parent
-            anchors.margins: vpx(30)
-
-            source: "../assets/loading-spinner.png"
-            sourceSize: Qt.size(spinner.width, spinner.height)
-
-            asynchronous: false
-            smooth: false
-
-            RotationAnimator on rotation {
-                loops: Animator.Infinite;
-                from: 0; to: 360
-                duration: 800
-            }
-
-            visible: screenshot.status === Image.Loading || logo.status === Image.Loading
-        }
-    }
 }

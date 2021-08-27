@@ -140,6 +140,7 @@ FocusScope {
     }
 
     Component.onCompleted: {
+        reloadSettings();
     }
 
     Keys.onPressed: {

@@ -26,7 +26,27 @@ Item {
             color: "#1a1a1a"
             radius: vpx(api.memory.get('settings.game.cornerRadius'))
 
-            Behavior on opacity { NumberAnimation { duration: 200 } }
+            Text {
+                anchors.fill: parent
+                anchors.margins: vpx(10)
+
+                text: modelData.title || ''
+                color: api.memory.get('settings.theme.textColor')
+
+                font.family: subtitleFont.name
+                font.pixelSize: vpx(api.memory.get('settings.game.logoFontSize'))
+                font.bold: true
+
+                style: Text.Outline; styleColor: api.memory.get('settings.theme.backgroundColor')
+
+                elide: Text.ElideRight
+                wrapMode: Text.WordWrap
+                lineHeight: 1.2
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+
+                visible: logo.status === Image.Loading
+            }
 
             visible: !screenshot.visible
         }
@@ -80,7 +100,7 @@ Item {
                 id: logo
                 anchors.fill: parent
 
-                source: parent.opacity > 0 ? modelData.assets.logo || '' : ''
+                source: opacity > 0 ? modelData.assets.logo || '' : ''
                 sourceSize: api.memory.get('settings.performance.logoImageResolution') === 0 ? undefined : Qt.size(logo.width, logo.height)
 
                 asynchronous: true
@@ -99,7 +119,7 @@ Item {
                 anchors.fill: parent
                 anchors.margins: vpx(10)
 
-                text: parent.opacity > 0 ? modelData.title || '' : ''
+                text: modelData.title || ''
                 color: api.memory.get('settings.theme.textColor')
 
                 font.family: subtitleFont.name
@@ -117,11 +137,11 @@ Item {
                 visible: !logo.visible
             }
 
-            Behavior on opacity { NumberAnimation { duration: 200 } }
-            opacity: selected && playPreview ? (api.memory.get('settings.game.previewLogoVisible') ? 1 : 0) : (api.memory.get('settings.game.logoVisible') ? 1 : 0)
-
             Behavior on scale { NumberAnimation { duration: 100; } }
             scale: selected ? api.memory.get('settings.game.logoScaleSelected') : api.memory.get('settings.game.logoScale')
+
+            Behavior on opacity { NumberAnimation { duration: 200 } }
+            opacity: selected && playPreview ? (api.memory.get('settings.game.previewLogoVisible') ? 1 : 0) : (api.memory.get('settings.game.logoVisible') ? 1 : 0)
 
             layer.enabled: api.memory.get('settings.performance.logoDropShadow')
             layer.effect: DropShadow {

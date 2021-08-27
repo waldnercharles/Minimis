@@ -9,17 +9,16 @@ Item {
     property bool playPreview: false
     property bool muted: false
 
-    onGameChanged: {
-        videoPreview.playlist.clear();
-        if (game && game.assets.videos.length > 0) {
-            for (var i = 0; i < game.assets.videos.length; i++) {
-                videoPreview.playlist.addItem(game.assets.videos[i]);
-            }
-        }
-    }
-
     onPlayPreviewChanged: {
+        videoPreview.playlist.clear();
+
         if (playPreview) {
+            if (game && game.assets.videos.length > 0) {
+                for (var i = 0; i < game.assets.videos.length; i++) {
+                    videoPreview.playlist.addItem(game.assets.videos[i]);
+                }
+            }
+
             videoPreview.play();
             videoPreview.state = 'playing'
         } else {
@@ -28,13 +27,11 @@ Item {
         }
     }
 
+    GamesViewItemBorder { anchors.fill: parent }
+
     Rectangle {
-        id: videoContainer
         anchors.fill: parent
-
-        color: "black"
-        visible: videoPreview.playlist.itemCount > 0 && videoPreview.opacity > 0
-
+        color: 'black'
         Video {
             id: videoPreview
             anchors.fill: parent
@@ -57,8 +54,9 @@ Item {
             opacity: 0
 
             muted: root.muted
-
             volume: api.memory.get('settings.game.previewVolume')
+
+            visible: videoPreview.playlist.itemCount > 0 && videoPreview.opacity > 0
         }
 
         layer.enabled: true
@@ -68,12 +66,5 @@ Item {
                 radius: vpx(api.memory.get('settings.game.cornerRadius'))
             }
         }
-    }
-
-    GamesViewItemBorder {
-        id: border
-        anchors.fill: videoContainer
-
-        z: videoContainer.z - 1
     }
 }

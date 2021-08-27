@@ -29,12 +29,10 @@ Item {
 
         layer.enabled: api.memory.get('settings.performance.artDropShadow')
         layer.effect: DropShadow {
-            anchors.fill: border
             horizontalOffset: vpx(0); verticalOffset: vpx(3)
 
             samples: 4
             color: '#99000000';
-            source: border
         }
     }
 }

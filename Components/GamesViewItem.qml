@@ -73,37 +73,62 @@ Item {
             }
         }
 
-        Image {
-            id: logo
+        Item {
             anchors.fill: parent
 
-            source: modelData.assets.logo || ''
-            sourceSize: api.memory.get('settings.performance.logoImageResolution') === 0 ? undefined : Qt.size(logo.width, logo.height)
+            Image {
+                id: logo
+                anchors.fill: parent
 
-            asynchronous: true
-            smooth: api.memory.get('settings.performance.logoImageSmoothing')
+                source: parent.opacity > 0 ? modelData.assets.logo || '' : ''
+                sourceSize: api.memory.get('settings.performance.logoImageResolution') === 0 ? undefined : Qt.size(logo.width, logo.height)
 
-            cache: api.memory.get('settings.performance.logoImageCaching')
+                asynchronous: true
+                smooth: api.memory.get('settings.performance.logoImageSmoothing')
 
-            fillMode: Image.PreserveAspectFit
+                cache: api.memory.get('settings.performance.logoImageCaching')
 
-            scale: selected ? api.memory.get('settings.game.logoScaleSelected') : api.memory.get('settings.game.logoScale')
-            visible: logo.status === Image.Ready && screenshot.status !== Image.Loading
+                fillMode: Image.PreserveAspectFit
 
-            opacity: selected && playPreview ? (api.memory.get('settings.game.previewLogoVisible') ? 1 : 0) : (api.memory.get('settings.game.logoVisible') ? 1 : 0)
+                visible: logo.status === Image.Ready && screenshot.status !== Image.Loading
+            }
+
+            Text {
+                id: textLogo
+
+                anchors.fill: parent
+                anchors.margins: vpx(10)
+
+                text: parent.opacity > 0 ? modelData.title || '' : ''
+                color: api.memory.get('settings.theme.textColor')
+
+                font.family: subtitleFont.name
+                font.pixelSize: vpx(api.memory.get('settings.game.logoFontSize'))
+                font.bold: true
+
+                style: Text.Outline; styleColor: api.memory.get('settings.theme.backgroundColor')
+
+                elide: Text.ElideRight
+                wrapMode: Text.WordWrap
+                lineHeight: 1.2
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+
+                visible: !logo.visible
+            }
 
             Behavior on opacity { NumberAnimation { duration: 200 } }
+            opacity: playPreview ? (api.memory.get('settings.game.previewLogoVisible') ? 1 : 0) : (api.memory.get('settings.game.logoVisible') ? 1 : 0)
+
             Behavior on scale { NumberAnimation { duration: 100; } }
+            scale: selected ? api.memory.get('settings.game.logoScaleSelected') : api.memory.get('settings.game.logoScale')
 
             layer.enabled: api.memory.get('settings.performance.logoDropShadow')
             layer.effect: DropShadow {
-                anchors.fill: logo
-
                 horizontalOffset: vpx(0); verticalOffset: vpx(4)
 
                 samples: 5
                 color: '#75000000'
-                source: logo
             }
         }
 
@@ -127,7 +152,7 @@ Item {
 
                 width: icons.height; height: icons.height
 
-                source: '../assets/icons/bookmark.svg'
+                source: visible ? '../assets/icons/bookmark.svg' : ''
                 sourceSize: Qt.size(bookmarkIcon.width, bookmarkIcon.height)
 
                 fillMode: Image.PreserveAspectFit
@@ -142,7 +167,7 @@ Item {
                 id: favoriteIcon
                 width: icons.height; height: icons.height
 
-                source: '../assets/icons/heart_filled.svg'
+                source: visible ? '../assets/icons/heart_filled.svg' : ''
                 sourceSize: Qt.size(favoriteIcon.width, favoriteIcon.height)
 
                 fillMode: Image.PreserveAspectFit
@@ -167,28 +192,6 @@ Item {
             }
         }
 
-        Text {
-            id: textLogo
-
-            anchors.fill: parent
-            anchors.margins: vpx(10)
-
-            text: modelData.title || ''
-            color: api.memory.get('settings.theme.textColor')
-
-            font.family: subtitleFont.name
-            font.pixelSize: vpx(api.memory.get('settings.game.logoFontSize'))
-            font.bold: true
-
-            style: Text.Outline; styleColor: api.memory.get('settings.theme.backgroundColor')
-
-            elide: Text.ElideRight
-            wrapMode: Text.WordWrap
-            lineHeight: 1.2
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            visible: !logo.visible
-        }
+        
     }
 }

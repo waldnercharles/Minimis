@@ -259,7 +259,7 @@ FocusScope {
 
         model: ObjectModel {
             Button {
-                icon: '../assets/icons/play.svg'
+                icon: '\uf04b'
                 text: 'Play Game'
                 height: parent.height
                 selected: ListView.isCurrentItem
@@ -269,7 +269,7 @@ FocusScope {
                 }
             }
             Button {
-                icon: '../assets/icons/info-circle.svg'
+                icon: '\uf05a'
                 text: 'More Info'
                 height: parent.height
                 selected: ListView.isCurrentItem
@@ -278,7 +278,7 @@ FocusScope {
                 }
             }
             Button {
-                icon: selectedGame.favorite ? '../assets/icons/heart_filled.svg' : '../assets/icons/heart_empty.svg'
+                icon: selectedGame.favorite ? '\uf004' : '\uf08a' 
                 height: parent.height
                 selected: ListView.isCurrentItem
                 circle: true
@@ -290,7 +290,7 @@ FocusScope {
 
             Button {
                 property bool isBookmarked: (api.memory.get(`database.bookmarks.${currentCollection.shortName}.${selectedGame.title}`) ?? false)
-                icon: isBookmarked ? '../assets/icons/bookmark.svg' : '../assets/icons/plus.svg'
+                icon: isBookmarked ? '\uf02e' : '\uf097'
                 height: parent.height
                 text: selected ? (isBookmarked ? 'Remove from Bookmarks' : 'Add to Bookmarks') : ''
                 selected: ListView.isCurrentItem

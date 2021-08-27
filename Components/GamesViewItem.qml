@@ -5,13 +5,10 @@ import QtGraphicalEffects 1.0
 Item {
     id: root
 
+    property var game
+
     property bool selected: false
     property bool playPreview: false
-
-    Behavior on scale { NumberAnimation { duration: 100; } }
-
-    scale: selected ? api.memory.get('settings.game.scaleSelected'): api.memory.get('settings.game.scale')
-    z: selected ? 3 : 1
 
     Item {
         id: card
@@ -26,28 +23,6 @@ Item {
             color: "#1a1a1a"
             radius: vpx(api.memory.get('settings.game.cornerRadius'))
 
-            Text {
-                anchors.fill: parent
-                anchors.margins: vpx(10)
-
-                text: modelData.title || ''
-                color: api.memory.get('settings.theme.textColor')
-
-                font.family: subtitleFont.name
-                font.pixelSize: vpx(api.memory.get('settings.game.logoFontSize'))
-                font.bold: true
-
-                style: Text.Outline; styleColor: api.memory.get('settings.theme.backgroundColor')
-
-                elide: Text.ElideRight
-                wrapMode: Text.WordWrap
-                lineHeight: 1.2
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-
-                visible: logo.status === Image.Loading
-            }
-
             visible: !screenshot.visible
         }
 
@@ -58,7 +33,7 @@ Item {
 
             anchors.fill: parent
 
-            source: modelData.assets[assetKey] || ""
+            source: game.assets[assetKey] || ''
             sourceSize: api.memory.get('settings.performance.artImageResolution')=== 0 ? undefined : Qt.size(screenshot.width, screenshot.height)
 
             asynchronous: true
@@ -69,7 +44,7 @@ Item {
             fillMode: api.memory.get('settings.game.aspectRatioNative')? Image.Stretch : Image.PreserveAspectCrop
             visible: screenshot.status === Image.Ready && logo.status !== Image.Loading
 
-            opacity: selected && playPreview && modelData.assets.videos.length > 0 ? 0 : 1
+            opacity: selected && playPreview && game.assets.videos.length > 0 ? 0 : 1
 
             Behavior on opacity { NumberAnimation { duration: 200 } }
 
@@ -96,21 +71,25 @@ Item {
         Item {
             anchors.fill: parent
 
+            property bool showLogo: selected && playPreview ? (api.memory.get('settings.game.previewLogoVisible') ? 1 : 0) : (api.memory.get('settings.game.logoVisible') ? 1 : 0)
+
             Image {
                 id: logo
                 anchors.fill: parent
 
-                source: opacity > 0 ? modelData.assets.logo || '' : ''
+                source: game.assets.logo || ''
                 sourceSize: api.memory.get('settings.performance.logoImageResolution') === 0 ? undefined : Qt.size(logo.width, logo.height)
 
                 asynchronous: true
                 smooth: api.memory.get('settings.performance.logoImageSmoothing')
-
                 cache: api.memory.get('settings.performance.logoImageCaching')
 
                 fillMode: Image.PreserveAspectFit
 
                 visible: logo.status === Image.Ready && screenshot.status !== Image.Loading
+
+                Behavior on opacity { NumberAnimation { duration: 200 } }
+                opacity: parent.showLogo ? 1 : 0
             }
 
             Text {
@@ -119,7 +98,7 @@ Item {
                 anchors.fill: parent
                 anchors.margins: vpx(10)
 
-                text: modelData.title || ''
+                text: game.title || ''
                 color: api.memory.get('settings.theme.textColor')
 
                 font.family: subtitleFont.name
@@ -135,13 +114,14 @@ Item {
                 verticalAlignment: Text.AlignVCenter
 
                 visible: !logo.visible
+
+                Behavior on opacity { NumberAnimation { duration: 200 } }
+                opacity: logo.status === Image.Loading || screenshot.status === Image.Loading ? 1 : parent.showLogo ? 1 : 0
             }
 
             Behavior on scale { NumberAnimation { duration: 100; } }
             scale: selected ? api.memory.get('settings.game.logoScaleSelected') : api.memory.get('settings.game.logoScale')
 
-            Behavior on opacity { NumberAnimation { duration: 200 } }
-            opacity: selected && playPreview ? (api.memory.get('settings.game.previewLogoVisible') ? 1 : 0) : (api.memory.get('settings.game.logoVisible') ? 1 : 0)
 
             layer.enabled: api.memory.get('settings.performance.logoDropShadow')
             layer.effect: DropShadow {
@@ -158,7 +138,7 @@ Item {
             property real margins: vpx(9)
             property real aspectRatio: parent.height / parent.width
 
-            height: parent.width / 18
+            height: parent.width / 15
             anchors {
                 left: parent.left; right: parent.right; top: parent.top;
                 rightMargin: margins; topMargin: margins * aspectRatio
@@ -166,50 +146,51 @@ Item {
 
             spacing: height * 0.25
 
-            Image {
+            Text {
                 id: bookmarkIcon
-                property bool isBookmarked: (api.memory.get(`database.bookmarks.${currentCollection.shortName}.${modelData.title}`) ?? false)
 
-                width: icons.height; height: icons.height
+                property bool isBookmarked: (api.memory.get(`database.bookmarks.${currentCollection.shortName}.${game.title}`) ?? false)
+                width: icons.height; height: icons.height;
+                anchors.verticalCenter: parent.verticalCenter
 
-                source: visible ? '../assets/icons/bookmark.svg' : ''
-                sourceSize: Qt.size(bookmarkIcon.width, bookmarkIcon.height)
+                text: isBookmarked ? '\uf02e' : ''
+                font.family: fontawesome.name
+                font.pixelSize: height
 
-                fillMode: Image.PreserveAspectFit
+                color: api.memory.get('settings.theme.textColor')
 
-                asynchronous: true
-                smooth: true
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
 
-                visible: isBookmarked
+                visible: !!text
             }
 
-            Image {
+            Text {
                 id: favoriteIcon
-                width: icons.height; height: icons.height
 
-                source: visible ? '../assets/icons/heart_filled.svg' : ''
-                sourceSize: Qt.size(favoriteIcon.width, favoriteIcon.height)
+                width: icons.height; height: icons.height;
+                anchors.verticalCenter: parent.verticalCenter
 
-                fillMode: Image.PreserveAspectFit
+                text: game.favorite ? '\uf004' : ''
+                font.family: fontawesome.name
+                font.pixelSize: height
 
-                asynchronous: true
-                smooth: true
+                color: api.memory.get('settings.theme.textColor')
 
-                visible: modelData.favorite
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+
+                visible: !!text
             }
 
             layoutDirection: Qt.RightToLeft
 
             layer.enabled: true
-            layer.effect: ColorOverlay {
-                color: api.memory.get('settings.theme.textColor')
-            //     layer.enabled: true
-            //     layer.effect: DropShadow {
-            //         horizontalOffset: vpx(0); verticalOffset: vpx(2)
-            //         samples: 2
-            //         color: '#77000000'
-            //     } 
-            }
+            layer.effect: DropShadow {
+                horizontalOffset: vpx(0); verticalOffset: vpx(2)
+                samples: 2
+                color: '#77000000'
+            } 
         }
 
         

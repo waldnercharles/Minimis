@@ -50,6 +50,9 @@ FocusScope {
             enabled: false
         }
 
+        ComponentCache { id: cache; component: gamesViewItemComponent }
+        Component { id: gamesViewItemComponent; GamesViewItem { } }
+
         GridView {
             id: grid
 
@@ -79,24 +82,24 @@ FocusScope {
             cellWidth: width / api.memory.get('settings.game.gameViewColumns')
             cellHeight: cellWidth * aspectRatio
 
-            // cacheBuffer: (height / cellHeight * settings.game.gameViewColumns.value)
-
             displayMarginBeginning: cellHeight * 2
             displayMarginEnd: cellHeight * 2
 
 
             highlight: GamesViewItemHighlight {
+                property Item currentItem: grid.currentItem
+
                 playPreview: grid.playPreview
 
-                width: grid.currentItem ? grid.currentItem.width  : 0
-                height: grid.currentItem ? grid.currentItem.height : 0
+                width: currentItem ? currentItem.width  : 0
+                height: currentItem ? currentItem.height : 0
 
                 game: grid.model ? grid.model.get(grid.currentIndex) : null
                 muted: collectionTransition.opacity === 1
 
-                scale: grid.currentItem ? grid.currentItem.scale : 0.0
+                scale: currentItem ? currentItem.scale : 0.0
 
-                z: (grid.currentItem ? grid.currentItem.z : 0) - 1
+                z: (currentItem ? currentItem.z : 0) - 1
             }
 
             highlightFollowsCurrentItem: true
@@ -106,16 +109,19 @@ FocusScope {
             preferredHighlightBegin: 0
             preferredHighlightEnd: grid.height
 
-            delegate: GamesViewItem {
-                id: item
+            delegate: Item {
+                id: container
 
                 width: GridView.view.cellWidth
                 height: GridView.view.cellHeight
 
-                selected: GridView.isCurrentItem
-                playPreview: grid.playPreview 
+                property Item item
+                property bool selected: GridView.isCurrentItem
 
-                Behavior on scale { PropertyAnimation { duration: 100; } }
+                scale: selected ? api.memory.get('settings.game.scaleSelected'): api.memory.get('settings.game.scale')
+                z: selected ? 3 : 1
+
+                Behavior on scale { NumberAnimation { duration: 100; } }
 
                 Keys.onPressed: {
                     if (event.isAutoRepeat) {
@@ -128,7 +134,47 @@ FocusScope {
                         toGameDetailsView(modelData)
                     }
                 }
+
+                Component.onCompleted: {
+                    item = cache.get();
+
+                    item.parent = container;
+                    item.anchors.fill = Qt.binding(() => container);
+                    item.selected = Qt.binding(() => container.selected);
+                    item.playPreview = Qt.binding(() => grid.playPreview);
+
+                    item.game = modelData;
+                }
+
+                Component.onDestruction: {
+                    cache.release(item);
+                    item = null;
+                }
             }
+
+            // delegate: GamesViewItem {
+            //     id: item
+
+            //     width: GridView.view.cellWidth
+            //     height: GridView.view.cellHeight
+
+            //     selected: GridView.isCurrentItem
+            //     playPreview: grid.playPreview 
+
+            //     Behavior on scale { PropertyAnimation { duration: 100; } }
+
+            //     Keys.onPressed: {
+            //         if (event.isAutoRepeat) {
+            //             return;
+            //         }
+
+            //         if (api.keys.isAccept(event)) {
+            //             event.accepted = true;
+            //             savedGameIndex = grid.currentIndex;
+            //             toGameDetailsView(modelData)
+            //         }
+            //     }
+            // }
 
             Component.onCompleted: {
                 grid.currentIndex = gridContainer.focus ? savedGameIndex : -1;

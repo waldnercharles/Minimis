@@ -8,7 +8,7 @@ FocusScope {
     property bool circle: false
 
     property alias text: label.text
-    property alias icon: icon.source
+    property alias icon: icon.text
 
     signal activated
 
@@ -36,28 +36,20 @@ FocusScope {
         leftPadding: padding
         rightPadding: padding
 
-        Image {
+        Text {
             id: icon
-
-            height: button.height * 0.35; width: icon.visible ? height : vpx(0);
+            height: button.height * 0.45; width: icon.visible ? height : vpx(0);
             anchors.verticalCenter: parent.verticalCenter
 
-            sourceSize: Qt.size(icon.width, icon.height)
+            font.family: fontawesome.name
+            font.pixelSize: height
 
-            fillMode: Image.PreserveAspectFit
-            asynchronous: false
-            smooth: true
+            color: selected ? api.memory.get('settings.theme.backgroundColor') : api.memory.get('settings.theme.textColor')
 
-            Behavior on opacity { NumberAnimation { duration: 100 } }
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
 
-            layer.enabled: true
-            layer.effect: ColorOverlay {
-                anchors.fill: icon
-                source: icon
-                color: selected ? api.memory.get('settings.theme.backgroundColor') : api.memory.get('settings.theme.textColor')
-            }
-
-            visible: icon.status != Image.Null && icon.status != Image.Error
+            visible: !!text
         }
 
         Text {

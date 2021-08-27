@@ -95,7 +95,7 @@ FocusScope {
 
                 model: ObjectModel {
                     Button {
-                        icon: '../assets/icons/cog.svg'
+                        icon: '\uf013'
 
                         width: parent.height; height: parent.height
                         circle: true
@@ -108,7 +108,7 @@ FocusScope {
                     }
 
                     Button {
-                        icon: '../assets/icons/filter.svg'
+                        icon: '\uf0b0'
                         text: buttons.getFilterText()
 
                         height: parent.height

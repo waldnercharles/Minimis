@@ -118,7 +118,7 @@ Item {
             }
 
             Behavior on opacity { NumberAnimation { duration: 200 } }
-            opacity: playPreview ? (api.memory.get('settings.game.previewLogoVisible') ? 1 : 0) : (api.memory.get('settings.game.logoVisible') ? 1 : 0)
+            opacity: selected && playPreview ? (api.memory.get('settings.game.previewLogoVisible') ? 1 : 0) : (api.memory.get('settings.game.logoVisible') ? 1 : 0)
 
             Behavior on scale { NumberAnimation { duration: 100; } }
             scale: selected ? api.memory.get('settings.game.logoScaleSelected') : api.memory.get('settings.game.logoScale')

@@ -128,7 +128,7 @@ FocusScope {
 
     Component {
         id: gameDetailsView
-        GameDetailsView { focus: true }
+        GameDetailsView { focus: true; game: selectedGame }
     }
 
     Loader {
@@ -154,7 +154,7 @@ FocusScope {
     }
 
     function reloadSettings(overwrite = false) {
-        for (const [categoryKey, category] of Object.entries(this.metadata)) {
+        for (const [categoryKey, category] of Object.entries(metadata)) {
             for (const [settingKey, setting] of Object.entries(category)) {
                 const key = `settings.${categoryKey}.${settingKey}`;
 

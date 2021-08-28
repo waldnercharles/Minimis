@@ -44,7 +44,7 @@ Item {
             fillMode: api.memory.get('settings.game.aspectRatioNative')? Image.Stretch : Image.PreserveAspectCrop
             visible: screenshot.status === Image.Ready && logo.status !== Image.Loading
 
-            opacity: selected && playPreview && game.assets.videos.length > 0 ? 0 : 1
+            opacity: selected && playPreview && game.assets.videoList.length > 0 ? 0 : 1
 
             Behavior on opacity { NumberAnimation { duration: 200 } }
 
@@ -192,7 +192,5 @@ Item {
                 color: '#77000000'
             } 
         }
-
-        
     }
 }

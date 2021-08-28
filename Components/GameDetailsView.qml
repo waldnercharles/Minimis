@@ -5,310 +5,317 @@ import QtQml.Models 2.10
 
 FocusScope {
     id: root
+
     anchors.fill: parent
+    focus: true
 
-    Item {
+    property var game
+    property var gameMedia
+
+    onGameChanged: {
+        const media = [];
+
+        if (game) {
+            game.assets.videoList.forEach(v => media.push(v));
+            game.assets.screenshotList.forEach(v => media.push(v));
+            game.assets.backgroundList.forEach(v => media.push(v));
+        }
+
+        gameMedia = media;
+    }
+
+    ListView {
         anchors.fill: parent
+        focus: true
 
-        Image {
-            id: art
-            anchors.fill: parent
+        highlightMoveDuration: 200
 
-            source: selectedGame.assets.screenshot || ''
-            fillMode: Image.PreserveAspectCrop
-            asynchronous: true
-            smooth: false
+        model: ObjectModel {
+            FocusScope {
+                id: metadataContainer
+                width: root.width; height: root.height;
 
-            cache: false
-        }
+                focus: true
 
-        Timer {
-            id: videoDelay
-            interval: 600
-            onTriggered: {
-                if (selectedGame && selectedGame.assets.videos.length > 0) {
-                    for (var i = 0; i < selectedGame.assets.videos.length; i++)
-                        videoPreview.playlist.addItem(selectedGame.assets.videos[i]);
+                Image {
+                    id: art
+                    anchors.fill: parent
 
-                    videoPreview.play();
-                    videoPreview.state = "playing";
-                }
-            }
-        }
+                    source: game.assets.screenshot || ''
+                    fillMode: Image.PreserveAspectCrop
+                    asynchronous: true
+                    smooth: false
 
-        Video {
-            id: videoPreview
-            anchors.fill: parent
-
-            fillMode: VideoOutput.PreserveAspectCrop
-
-            playlist: Playlist {
-                playbackMode: Playlist.Loop
-            }
-
-            states: State {
-                name: "playing"
-                PropertyChanges { target: videoPreview; opacity: 1 }
-            }
-            transitions: Transition {
-                from: ""; to: "playing"
-                NumberAnimation { properties: 'opacity'; duration: 500 }
-            }
-
-            opacity: 0
-            visible: videoPreview.playlist.itemCount > 0 && opacity > 0
-
-            muted: true //root.muted 
-
-            volume: api.memory.get('settings.game.previewVolume')
-        }
-    }
-
-    LinearGradient {
-        anchors.fill: parent
-        start: Qt.point(0, 0); end: Qt.point(0, parent.height)
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: 'transparent' }
-            GradientStop { position: 1.0; color: api.memory.get('settings.theme.backgroundColor') }
-        }
-    }
-
-    Image {
-        id: logo
-
-        anchors {
-            bottom: metadata.top; left: metadata.left; bottomMargin: vpx(15)
-        }
-
-        width: parent.width / 3.0
-        source: selectedGame.assets.logo || ''
-        sourceSize: Qt.size(logo.width, 0)
-        fillMode: Image.PreserveAspectFit
-
-        asynchronous: true
-        smooth: true
-
-        layer.enabled: true
-        layer.effect: DropShadow {
-            anchors.fill: logo
-            horizontalOffset: vpx(0); verticalOffset: vpx(6)
-            samples: 10
-            color: '#75000000'
-            source: logo
-        }
-
-        cache: false
-    }
-
-    LinearGradient {
-        id: gradient
-        anchors {
-            left: parent.left;
-            bottom: parent.bottom; top: logo.top;
-        }
-
-        start: Qt.point(0, height)
-        end: Qt.point(0, 0)
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: api.memory.get('settings.theme.backgroundColor') }
-            GradientStop { position: 0.5; color: "transparent" }
-        }
-    }
-
-    Item {
-        id: metadata
-
-        anchors {
-            bottom: buttons.top; left: buttons.left; right: logo.right;
-            bottomMargin: vpx(30); leftMargin: vpx(5)
-        }
-
-        height: vpx(50)
-
-        property real fontSize: vpx(18)
-
-        property string year: selectedGame.releaseYear != 0 ? selectedGame.releaseYear : '20XX'
-        property real rating: parseFloat(selectedGame.rating * 5).toPrecision(2)
-        property int players: selectedGame.players
-
-        Row {
-            spacing: vpx(20)
-            anchors.verticalCenter: parent.verticalCenter
-
-            Text {
-                text: metadata.year
-                anchors.verticalCenter: parent.verticalCenter
-
-                font.pixelSize: metadata.fontSize
-                font.family: subtitleFont.name
-                font.bold: true
-                color: api.memory.get('settings.theme.textColor')
-
-                verticalAlignment: Text.AlignVCenter
-            }
-
-            Rectangle {
-                anchors.verticalCenter: parent.verticalCenter
-                width: vpx(4); height: width;
-                radius: height / 2;
-            }
-
-            Rectangle {
-                id: playersBackground
-                anchors.verticalCenter: parent.verticalCenter
-
-                width: playersText.contentWidth + vpx(40)
-                height: playersText.contentHeight + vpx(10)
-
-                border.width: vpx(2)
-                border.color: api.memory.get('settings.theme.accentColor')
-
-                radius: vpx(5)
-
-                color: 'transparent'
-
-                Text {
-                    id: playersText
-                    anchors.centerIn: parent
-
-                    text: '1' + (metadata.players > 1 ? ' - ' + metadata.players + ' Players' : ' Player')
-
-                    font.pixelSize: metadata.fontSize * 0.9
-                    font.family: subtitleFont.name
-                    color: api.memory.get('settings.theme.textColor')
-
-                    verticalAlignment: Text.AlignVCenter
-                }
-            }
-
-            Rectangle {
-                anchors.verticalCenter: parent.verticalCenter
-                width: vpx(4); height: width;
-                radius: height / 2;
-            }
-
-            Row {
-                spacing: vpx(10)
-                anchors.verticalCenter: parent.verticalCenter
-
-                Text {
-                    text: metadata.rating
-                    anchors.verticalCenter: parent.verticalCenter
-
-                    font.pixelSize: metadata.fontSize * 0.9
-                    font.family: subtitleFont.name
-                    color: api.memory.get('settings.theme.textColor')
-
-                    verticalAlignment: Text.AlignVCenter
+                    cache: false
                 }
 
-                Row {
-                    id: ratingStars
+                LinearGradient {
+                    width: parent.width; height: parent.height
 
-                    spacing: vpx(4)
-                    Repeater {
-                        model: 5
-                        delegate: Image {
+                    start: Qt.point(0, 0); end: Qt.point(0, parent.height)
+                    gradient: Gradient {
+                        GradientStop { position: 0.0; color: 'transparent' }
+                        GradientStop { position: 1.0; color: api.memory.get('settings.theme.backgroundColor') }
+                    }
+                }
 
-                            height: metadata.fontSize; width: height
+                Image {
+                    id: logo
 
-                            source: '../assets/icons/star_' + (metadata.rating <= index ? 'empty' : metadata.rating <= index + 0.5 ? 'half' : 'full') + '.png'
-                            sourceSize: Qt.size(width, height)
-                            asynchronous: true
-                            smooth: true
+                    anchors {
+                        bottom: metadata.top; left: metadata.left; bottomMargin: vpx(15)
+                    }
 
-                            fillMode: Image.PreserveAspectFit
+                    width: parent.width / 3.0
+                    source: game.assets.logo || ''
+                    sourceSize: Qt.size(logo.width, 0)
+                    fillMode: Image.PreserveAspectFit
+
+                    asynchronous: true
+                    smooth: true
+
+                    layer.enabled: true
+                    layer.effect: DropShadow {
+                        anchors.fill: logo
+                        horizontalOffset: vpx(0); verticalOffset: vpx(6)
+                        samples: 10
+                        color: '#75000000'
+                        source: logo
+                    }
+
+                    cache: false
+                }
+
+                Item {
+                    id: metadata
+
+                    anchors {
+                        bottom: buttons.top; left: buttons.left; right: logo.right;
+                        bottomMargin: vpx(30); leftMargin: vpx(5)
+                    }
+
+                    height: vpx(50)
+
+                    property real fontSize: vpx(18)
+
+                    property string year: game.releaseYear != 0 ? game.releaseYear : '20XX'
+                    property real rating: parseFloat(game.rating * 5).toPrecision(2)
+                    property int players: game.players
+
+                    Row {
+                        spacing: vpx(20)
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        Text {
+                            text: metadata.year
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            font.pixelSize: metadata.fontSize
+                            font.family: subtitleFont.name
+                            font.bold: true
+                            color: api.memory.get('settings.theme.textColor')
+
+                            verticalAlignment: Text.AlignVCenter
+                        }
+
+                        Rectangle {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: vpx(4); height: width;
+                            radius: height / 2;
+                        }
+
+                        Rectangle {
+                            id: playersBackground
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            width: playersText.contentWidth + vpx(40)
+                            height: playersText.contentHeight + vpx(10)
+
+                            border.width: vpx(2)
+                            border.color: api.memory.get('settings.theme.accentColor')
+
+                            radius: vpx(5)
+
+                            color: 'transparent'
+
+                            Text {
+                                id: playersText
+                                anchors.centerIn: parent
+
+                                text: '1' + (metadata.players > 1 ? ' - ' + metadata.players + ' Players' : ' Player')
+
+                                font.pixelSize: metadata.fontSize * 0.9
+                                font.family: subtitleFont.name
+                                color: api.memory.get('settings.theme.textColor')
+
+                                verticalAlignment: Text.AlignVCenter
+                            }
+                        }
+
+                        Rectangle {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: vpx(4); height: width;
+                            radius: height / 2;
+                        }
+
+                        Row {
+                            spacing: vpx(10)
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            Text {
+                                text: metadata.rating
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                font.pixelSize: metadata.fontSize * 0.9
+                                font.family: subtitleFont.name
+                                color: api.memory.get('settings.theme.textColor')
+
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            Row {
+                                id: ratingStars
+
+                                spacing: vpx(4)
+                                Repeater {
+                                    model: 5
+                                    delegate: Image {
+
+                                        height: metadata.fontSize; width: height
+
+                                        source: '../assets/icons/star_' + (metadata.rating <= index ? 'empty' : metadata.rating <= index + 0.5 ? 'half' : 'full') + '.png'
+                                        sourceSize: Qt.size(width, height)
+                                        asynchronous: true
+                                        smooth: true
+
+                                        fillMode: Image.PreserveAspectFit
+                                    }
+                                }
+
+                                layer.enabled: true
+                                layer.effect: ColorOverlay {
+                                    color: api.memory.get('settings.theme.textColor')
+                                }
+                            }
                         }
                     }
 
                     layer.enabled: true
-                    layer.effect: ColorOverlay {
-                        color: api.memory.get('settings.theme.textColor')
+                    layer.effect: DropShadow {
+                        anchors.fill: metadata
+                        horizontalOffset: vpx(0); verticalOffset: vpx(3)
+                        samples: 4
+                        color: '#99000000'
+                        source: metadata
+                    }
+                }
+
+                ListView {
+                    id: buttons
+
+                    focus: true
+
+                    anchors {
+                        left: parent.left; right: parent.right; bottom: parent.bottom
+                        leftMargin: vpx(50); topMargin: vpx(80); bottomMargin: vpx(80)
+                    }
+
+                    width: parent.width; height: vpx(40)
+                    orientation: ListView.Horizontal
+                    spacing: vpx(10)
+                    keyNavigationWraps: true
+
+                    Keys.onLeftPressed: { sfxNav.play(); decrementCurrentIndex() }
+                    Keys.onRightPressed: { sfxNav.play(); incrementCurrentIndex() }
+
+                    model: ObjectModel {
+                        Button {
+                            icon: '\uf04b'
+                            text: 'Play Game'
+                            height: parent.height
+                            selected: metadataContainer.ListView.isCurrentItem && ListView.isCurrentItem
+                            onActivated: {
+                                sfxAccept.play();
+                                game.launch();
+                            }
+                        }
+                        Button {
+                            icon: '\uf05a'
+                            text: 'More Info'
+                            height: parent.height
+                            selected: metadataContainer.ListView.isCurrentItem && ListView.isCurrentItem
+                            onActivated: {
+                                sfxAccept.play();
+                            }
+                        }
+                        Button {
+                            icon: game.favorite ? '\uf004' : '\uf08a' 
+                            height: parent.height
+                            selected: metadataContainer.ListView.isCurrentItem && ListView.isCurrentItem
+                            circle: true
+                            onActivated: {
+                                sfxAccept.play();
+                                game.favorite = !game.favorite;
+                            }
+                        }
+
+                        Button {
+                            property bool isBookmarked: (api.memory.get(`database.bookmarks.${currentCollection.shortName}.${game.title}`) ?? false)
+                            icon: isBookmarked ? '\uf02e' : '\uf097'
+                            height: parent.height
+                            text: selected ? (isBookmarked ? 'Remove from Bookmarks' : 'Add to Bookmarks') : ''
+                            selected: metadataContainer.ListView.isCurrentItem && ListView.isCurrentItem
+                            circle: true
+                            onActivated: {
+                                sfxAccept.play();
+                                toggleBookmarks(currentCollection, game);
+                            }
+                        }
+                    }
+
+                    layer.enabled: true
+                    layer.effect: DropShadow {
+                        anchors.fill: buttons
+                        horizontalOffset: vpx(0); verticalOffset: vpx(3)
+                        samples: 4
+                        color: '#77000000'
+                        source: buttons
                     }
                 }
             }
-        }
 
-        layer.enabled: true
-        layer.effect: DropShadow {
-            anchors.fill: metadata
-            horizontalOffset: vpx(0); verticalOffset: vpx(3)
-            samples: 4
-            color: '#99000000'
-            source: metadata
-        }
-    }
+            ListView {
+                width: root.width; height: vpx(200)
+                orientation: ListView.Horizontal
 
-    ListView {
-        id: buttons
+                spacing: vpx(12)
 
-        focus: true
+                model: gameMedia
 
-        anchors {
-            left: parent.left; right: parent.right; bottom: parent.bottom
-            leftMargin: vpx(50); topMargin: vpx(80); bottomMargin: vpx(80)
-        }
+                delegate: Item {
+                    id: item
+                    width: vpx(200); height: width
 
-        width: parent.width; height: vpx(40)
-        orientation: ListView.Horizontal
-        spacing: vpx(10)
-        keyNavigationWraps: true
+                    property string asset: modelData
+                    property bool isVideo: asset.endsWith('.mp4') || asset.endsWith('.webm')
 
-        Keys.onLeftPressed: { sfxNav.play(); decrementCurrentIndex() }
-        Keys.onRightPressed: { sfxNav.play(); incrementCurrentIndex() }
+                    property bool selected: ListView.isCurrentItem
 
-        model: ObjectModel {
-            Button {
-                icon: '\uf04b'
-                text: 'Play Game'
-                height: parent.height
-                selected: ListView.isCurrentItem
-                onActivated: {
-                    sfxAccept.play();
-                    selectedGame.launch();
+                    GamesViewItemBorder {
+                        anchors.fill: parent
+
+                        visible: selected
+                    }
+
+                    Image {
+                        anchors.fill: parent
+
+                        source: !isVideo ? asset : ''
+                        asynchronous: true
+                        fillMode: Image.PreserveAspectCrop
+                    }
                 }
             }
-            Button {
-                icon: '\uf05a'
-                text: 'More Info'
-                height: parent.height
-                selected: ListView.isCurrentItem
-                onActivated: {
-                    sfxAccept.play();
-                }
-            }
-            Button {
-                icon: selectedGame.favorite ? '\uf004' : '\uf08a' 
-                height: parent.height
-                selected: ListView.isCurrentItem
-                circle: true
-                onActivated: {
-                    sfxAccept.play();
-                    selectedGame.favorite = !selectedGame.favorite;
-                }
-            }
-
-            Button {
-                property bool isBookmarked: (api.memory.get(`database.bookmarks.${currentCollection.shortName}.${selectedGame.title}`) ?? false)
-                icon: isBookmarked ? '\uf02e' : '\uf097'
-                height: parent.height
-                text: selected ? (isBookmarked ? 'Remove from Bookmarks' : 'Add to Bookmarks') : ''
-                selected: ListView.isCurrentItem
-                circle: true
-                onActivated: {
-                    sfxAccept.play();
-                    toggleBookmarks(currentCollection, selectedGame);
-                }
-            }
-        }
-
-        layer.enabled: true
-        layer.effect: DropShadow {
-            anchors.fill: buttons
-            horizontalOffset: vpx(0); verticalOffset: vpx(3)
-            samples: 4
-            color: '#77000000'
-            source: buttons
         }
     }
 }

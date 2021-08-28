@@ -13,9 +13,9 @@ Item {
         videoPreview.playlist.clear();
 
         if (playPreview) {
-            if (game && game.assets.videos.length > 0) {
-                for (var i = 0; i < game.assets.videos.length; i++) {
-                    videoPreview.playlist.addItem(game.assets.videos[i]);
+            if (game && game.assets.videoList.length > 0) {
+                for (var i = 0; i < game.assets.videoList.length; i++) {
+                    videoPreview.playlist.addItem(game.assets.videoList[i]);
                 }
             }
 

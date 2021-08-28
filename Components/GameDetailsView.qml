@@ -7,6 +7,8 @@ FocusScope {
     id: root
 
     anchors.fill: parent
+    anchors.leftMargin: vpx(api.memory.get('settings.theme.leftMargin'));
+    anchors.rightMargin: vpx(api.memory.get('settings.theme.rightMargin'));
     focus: true
 
     property var game
@@ -38,8 +40,10 @@ FocusScope {
                 focus: true
 
                 Image {
-                    id: art
+                    id: background
                     anchors.fill: parent
+                    anchors.leftMargin: -vpx(api.memory.get('settings.theme.leftMargin'));
+                    anchors.rightMargin: -vpx(api.memory.get('settings.theme.rightMargin'));
 
                     source: game.assets.screenshot || ''
                     fillMode: Image.PreserveAspectCrop
@@ -50,7 +54,7 @@ FocusScope {
                 }
 
                 LinearGradient {
-                    width: parent.width; height: parent.height
+                    anchors.fill: background
 
                     start: Qt.point(0, 0); end: Qt.point(0, parent.height)
                     gradient: Gradient {
@@ -217,7 +221,7 @@ FocusScope {
 
                     anchors {
                         left: parent.left; right: parent.right; bottom: parent.bottom
-                        leftMargin: vpx(50); topMargin: vpx(80); bottomMargin: vpx(80)
+                        topMargin: vpx(80); bottomMargin: vpx(80)
                     }
 
                     width: parent.width; height: vpx(40)
@@ -284,35 +288,129 @@ FocusScope {
                 }
             }
 
-            ListView {
+            FocusScope {
+                id: mediaScope
+
                 width: root.width; height: vpx(200)
-                orientation: ListView.Horizontal
 
-                spacing: vpx(12)
+                ListView {
+                    id: mediaListView
 
-                model: gameMedia
+                    focus: true
 
-                delegate: Item {
-                    id: item
-                    width: vpx(200); height: width
+                    width: root.width; height: vpx(200)
+                    orientation: ListView.Horizontal
 
-                    property string asset: modelData
-                    property bool isVideo: asset.endsWith('.mp4') || asset.endsWith('.webm')
+                    spacing: vpx(12)
+                    model: gameMedia
 
-                    property bool selected: ListView.isCurrentItem
+                    highlightResizeDuration: 0
+                    highlightMoveDuration: 0
+                    highlightRangeMode: ListView.ApplyRange
 
-                    GamesViewItemBorder {
-                        anchors.fill: parent
+                    highlight: GamesViewItemBorder {
+                        property Item currentItem: mediaListView.currentItem
 
-                        visible: selected
+                        width: currentItem ? currentItem.width : undefined
+                        height: currentItem ? currentItem.height : undefined
+
+                        scale: currentItem ? currentItem.scale : undefined
+
+                        z: currentItem ? currentItem.z - 1 : undefined
+
+                        visible: currentItem != null && mediaScope.focus
                     }
 
-                    Image {
-                        anchors.fill: parent
+                    delegate: Item {
+                        id: item
+                        width: isVideo ? assetVideo.width : assetImage.width; height: vpx(150)
 
-                        source: !isVideo ? asset : ''
-                        asynchronous: true
-                        fillMode: Image.PreserveAspectCrop
+                        property string asset: modelData
+                        property bool isVideo: asset.endsWith('.mp4') || asset.endsWith('.webm')
+
+                        property bool selected: mediaScope.focus && ListView.isCurrentItem
+
+                        GamesViewItemBorder { anchors.fill: parent; visible: selected }
+
+                        Rectangle {
+                            anchors.fill: item
+                            color: 'black'
+                        }
+
+                        Image {
+                            id: assetImage
+                            height: item.height
+
+                            source: !isVideo ? asset : ''
+                            sourceSize: Qt.size(width, height)
+                            asynchronous: true
+
+                            fillMode: Image.PreserveAspectFit
+
+                            visible: !isVideo
+
+                            opacity: selected ? 1.0 : 0.6
+                        }
+
+                        Video {
+                            id: assetVideo
+                            source: isVideo ? asset : ''
+
+                            width: metaData.resolution ? metaData.resolution.width / metaData.resolution.height * height : 0
+                            height: item.height
+
+                            loops: MediaPlayer.Infinite
+
+                            visible: isVideo
+                            muted: true
+
+                            autoPlay: true
+
+                            opacity: selected ? 1.0 : 0.6
+                        }
+
+                        Text {
+                            id: icon
+                            height: item.height * 0.25; width: height
+                            anchors.centerIn: parent
+
+                            text: isVideo ? '\uf04b' : ''
+
+                            font.family: fontawesome.name
+                            font.pixelSize: height
+
+                            color: api.memory.get('settings.theme.textColor')
+
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+
+                            layer.enabled: true
+                            layer.effect: DropShadow {
+                                horizontalOffset: vpx(0); verticalOffset: vpx(3)
+
+                                samples: 4
+                                color: '#99000000';
+                            }
+                        }
+
+                        layer.enabled: true
+                        layer.effect: OpacityMask {
+                            id: mask
+                            maskSource: Rectangle {
+                                width: item.width; height: item.height
+                                radius: vpx(api.memory.get('settings.game.cornerRadius'))
+                            }
+
+                            layer.enabled: !selected && api.memory.get('settings.performance.artDropShadow')
+                            layer.effect: DropShadow {
+                                anchors.fill: item
+                                horizontalOffset: vpx(0); verticalOffset: vpx(3)
+
+                                samples: 4
+                                color: '#99000000';
+                                source: mask
+                            }
+                        }
                     }
                 }
             }

@@ -85,6 +85,11 @@ FocusScope {
             displayMarginBeginning: cellHeight * 2
             displayMarginEnd: cellHeight * 2
 
+            highlightMoveDuration: 0
+            highlightRangeMode: GridView.ApplyRange
+
+            preferredHighlightBegin: 0
+            preferredHighlightEnd: grid.height
 
             highlight: GamesViewItemHighlight {
                 property Item currentItem: grid.currentItem
@@ -101,14 +106,7 @@ FocusScope {
 
                 z: (currentItem ? currentItem.z : 0) - 1
             }
-
-            highlightFollowsCurrentItem: true
-            highlightMoveDuration: 0
-
-            highlightRangeMode: GridView.ApplyRange
-            preferredHighlightBegin: 0
-            preferredHighlightEnd: grid.height
-
+            
             delegate: Item {
                 id: container
 

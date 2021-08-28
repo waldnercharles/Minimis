@@ -23,6 +23,7 @@ Item {
             color: "#1a1a1a"
             radius: vpx(api.memory.get('settings.game.cornerRadius'))
 
+            opacity: screenshot.opacity
             visible: !screenshot.visible
         }
 
@@ -34,14 +35,14 @@ Item {
             anchors.fill: parent
 
             source: game.assets[assetKey] || ''
-            sourceSize: api.memory.get('settings.performance.artImageResolution')=== 0 ? undefined : Qt.size(screenshot.width, screenshot.height)
+            sourceSize: api.memory.get('settings.performance.artImageResolution') === 0 ? undefined : Qt.size(screenshot.width, screenshot.height)
 
             asynchronous: true
 
             cache: api.memory.get('settings.performance.artImageCaching')
             smooth: api.memory.get('settings.performance.artImageCaching')
 
-            fillMode: api.memory.get('settings.game.aspectRatioNative')? Image.Stretch : Image.PreserveAspectCrop
+            fillMode: api.memory.get('settings.game.aspectRatioNative') ? Image.Stretch : Image.PreserveAspectCrop
             visible: screenshot.status === Image.Ready && logo.status !== Image.Loading
 
             opacity: selected && playPreview && game.assets.videoList.length > 0 ? 0 : 1

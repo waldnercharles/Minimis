@@ -108,6 +108,24 @@ FocusScope {
                     }
 
                     Button {
+                        icon: orderByDirection === Qt.AscendingOrder ? '\uf160' : '\uf161 '
+                        text: `Order by ${capitalizeFirstLetter(orderBy[orderByIndex])}`
+
+                        height: parent.height
+                        circle: true
+                        selected: root.focus && ListView.isCurrentItem
+
+                        onActivated: {
+                            if (orderByDirection === Qt.AscendingOrder) {
+                                orderByDirection = Qt.DescendingOrder;
+                            } else {
+                                orderByDirection = Qt.AscendingOrder;
+                                orderByIndex = (orderByIndex + 1) % orderBy.length
+                            }
+                        }
+                    }
+
+                    Button {
                         icon: '\uf0b0'
                         text: buttons.getFilterText()
 

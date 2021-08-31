@@ -8,24 +8,6 @@ FocusScope {
     property var categories: []
     property var currentCategory: categories[categoriesListView.currentIndex]
 
-    function getPrecision(a) {
-        if (!isFinite(a)) {
-            return 0;
-        }
-
-        var e = 1, p = 0;
-        while (Math.round(a * e) / e !== a) {
-            e *= 10;
-            p++;
-        }
-
-        return p;
-    }
-
-    function capitalizeFirstLetter([ first, ...rest ], locale = 'en-US') {
-        return first.toLocaleUpperCase(locale) + rest.join('');
-    }
-
     function capitalize(str) {
         return capitalizeFirstLetter(str).split(/([A-Z]?[^A-Z]*)/g).join(' ');
     }
@@ -192,7 +174,7 @@ FocusScope {
                         newValue = parseInt(value) + (settingMetadata.delta ? parseInt(settingMetadata.delta) : 1 );
                         break;
                     case 'real':
-                        newValue = (parseFloat(value) + parseFloat(settingMetadata.delta)).toFixed(getPrecision(settingMetadata.delta));
+                        newValue = parseFloat((parseFloat(value) + parseFloat(settingMetadata.delta)).toFixed(getPrecision(settingMetadata.delta)));
                         break;
                     case 'array':
                         newValue = (parseInt(value) + settingMetadata.values.length + 1) % settingMetadata.values.length
@@ -221,7 +203,7 @@ FocusScope {
                         newValue = parseInt(value) - (settingMetadata.delta ? parseInt(settingMetadata.delta) : 1 );
                         break;
                     case 'real':
-                        newValue = (parseFloat(value) - parseFloat(settingMetadata.delta)).toFixed(getPrecision(settingMetadata.delta));
+                        newValue = parseFloat((parseFloat(value) - parseFloat(settingMetadata.delta)).toFixed(getPrecision(settingMetadata.delta)));
                         break;
                     case 'array':
                         newValue = (parseInt(value) + settingMetadata.values.length - 1) % settingMetadata.values.length

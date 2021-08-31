@@ -211,13 +211,13 @@ FocusScope {
             Keys.onPressed: {
                 if (api.keys.isPageDown(event)) {
                     event.accepted = true;
-                    grid.currentIndex = filteredCollection.navigateLetter(grid.currentIndex, 1);
+                    grid.currentIndex = filteredCollection.navigate(grid.currentIndex, 1) ?? grid.currentIndex;
                     grid.positionViewAtIndex(grid.currentIndex, GridView.SnapPosition);
                 }
 
                 if (api.keys.isPageUp(event)) {
                     event.accepted = true;
-                    grid.currentIndex = filteredCollection.navigateLetter(grid.currentIndex, -1);
+                    grid.currentIndex = filteredCollection.navigate(grid.currentIndex, -1) ?? grid.currentIndex;
                     grid.positionViewAtIndex(grid.currentIndex, GridView.SnapPosition);
                 }
 

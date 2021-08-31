@@ -5,8 +5,8 @@ Item {
     id: root
 
     property int borderWidth: api.memory.get('settings.game.borderWidth')
-    property string borderColor1: api.memory.get('settings.game.borderColor1')
-    property string borderColor2: api.memory.get('settings.game.borderColor2')
+    property string borderColor1: api.memory.get('settings.theme.borderColor1')
+    property string borderColor2: api.memory.get('settings.theme.borderColor2')
     property int cornerRadius: vpx(api.memory.get('settings.game.cornerRadius'))
 
     Rectangle {
@@ -29,9 +29,9 @@ Item {
 
         layer.enabled: api.memory.get('settings.performance.artDropShadow')
         layer.effect: DropShadow {
-            horizontalOffset: vpx(0); verticalOffset: vpx(3)
+            horizontalOffset: vpx(0); verticalOffset: vpx(4)
 
-            samples: 4
+            samples: 5
             color: '#99000000';
         }
     }

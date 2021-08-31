@@ -39,8 +39,6 @@ FocusScope {
             previewVolume: { name: 'Video Preview - Volume', default: 0.0, delta: 0.1, min: 0.0, type: 'real' },
 
             borderAnimated: { name: 'Border - Animate', default: true, type: 'bool' },
-            borderColor1: { name: 'Border - Color 1', default: '#FFC85C', type: 'string' },
-            borderColor2: { name: 'Border - Color 2', default: '#ECECEC', type: 'string' },
             borderWidth: { name: 'Border - Width', default: 5, min: 0, type: 'int', },
 
             cornerRadius: { name: 'Border - Corner Radius', default: 5, min: 0, type: 'int' },
@@ -48,17 +46,19 @@ FocusScope {
             scale: { name: 'Scale', default: 0.95, delta: 0.01, min: 0.01, max: 1.0, type: 'real' },
             scaleSelected: { name: 'Scale - Selected', default: 1.0, delta: 0.01, min: 0.01, type: 'real' },
 
-
             logoScale: { name: 'Logo - Scale', default: 0.75, delta: 0.01, min: 0.01, type: 'real' },
             logoScaleSelected: { name: 'Logo - Scale - Selected', default: 0.85, delta: 0.01, min: 0.01, type: 'real' },
             logoVisible: { name: 'Logo - Visible', default: true, type: 'bool' },
             previewLogoVisible: { name: 'Logo - Visible - Video Preview', default: true, type: 'bool' },
             logoFontSize: { name: 'Logo - Font Size', default: 20, min: 1, type: 'int' },
-
-            letterNavOpacity: { name: 'Jump to Letter - Background Opacity', default: 0.8, delta: 0.01, min: 0.0, max: 1.0, type: 'real' },
-            letterNavSize: { name: 'Jump to Letter - Size', default: 200, type: 'int' },
-            letterNavPauseDuration: { name: 'Jump to Letter - Pause Duration (Milliseconds)', default: 400, delta: 50, min: 0, type: 'int' },
-            letterNavFadeDuration: { name: 'Jump to Letter - Fade Duration (Milliseconds)', default: 400, delta: 50, min: 0, type: 'int' },
+        },
+        gameNavigation: {
+            yearIncrement: { name: 'Year - Increment', default: 10, delta: 1, min: 1, type: 'int' },
+            ratingIncrement: { name: 'Rating - Increment', default: 0.5, delta: 0.1, min: 0.1, max: 5.0, type: 'real' },
+            opacity: { name: 'Overlay - Background Opacity', default: 0.8, delta: 0.01, min: 0.0, max: 1.0, type: 'real' },
+            size: { name: 'Overlay - Size', default: 200, type: 'int' },
+            pauseDuration: { name: 'Overlay - Pause Duration (Milliseconds)', default: 400, delta: 50, min: 0, type: 'int' },
+            fadeDuration: { name: 'Overlay - Fade Duration (Milliseconds)', default: 400, delta: 50, min: 0, type: 'int' },
         },
         gameDetails: {
             previewEnabled: { name: 'Video Preview - Enabled', default: true, type: 'bool' },
@@ -74,6 +74,8 @@ FocusScope {
             // textColor: { name: 'Text Color', default: '#FFE3E3', type: 'string' },
             leftMargin: { name: 'Screen Padding - Left', default: 60, min: 0, type: 'int' },
             rightMargin: { name: 'Screen Padding - Right', default: 60, min: 0, type: 'int' },
+            borderColor1: { name: 'Border - Color 1', default: '#FFC85C', type: 'string' },
+            borderColor2: { name: 'Border - Color 2', default: '#ECECEC', type: 'string' },
         },
         performance: {
             artImageResolution: { name: 'Art - Image Resolution', default: 0, values: ['Native', 'Scaled'], type: 'array' },
@@ -102,6 +104,10 @@ FocusScope {
 
     property bool filterByFavorites: false
     property bool filterByBookmarks: false
+
+    property var orderBy: ['title', 'developer', 'publisher', 'genre', 'releaseYear', 'players', 'rating', 'lastPlayed']
+    property int orderByIndex: 0
+    property int orderByDirection: Qt.AscendingOrder
 
     states: [
         State { name: 'gamesView'; PropertyChanges { target: loader; sourceComponent: gamesView } },
@@ -208,5 +214,23 @@ FocusScope {
     function toggleBookmarks(collection, game) {
         const key = `database.bookmarks.${collection.shortName}.${game.title}`;
         api.memory.set(key, !(api.memory.get(key) ?? false));
+    }
+
+    function getPrecision(a) {
+        if (!isFinite(a)) {
+            return 0;
+        }
+
+        var e = 1, p = 0;
+        while (Math.round(a * e) / e !== a) {
+            e *= 10;
+            p++;
+        }
+
+        return p;
+    }
+
+    function capitalizeFirstLetter([ first, ...rest ], locale = 'en-US') {
+        return first.toLocaleUpperCase(locale) + rest.join('');
     }
 }

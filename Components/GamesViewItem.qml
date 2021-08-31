@@ -24,7 +24,15 @@ Item {
             radius: vpx(api.memory.get('settings.game.cornerRadius'))
 
             opacity: screenshot.opacity
-            visible: !screenshot.visible
+
+            layer.enabled: !selected && api.memory.get('settings.performance.artDropShadow')
+            layer.effect: DropShadow {
+                horizontalOffset: vpx(0); verticalOffset: vpx(4)
+
+                samples: 5
+                color: '#99000000';
+                cached: true
+            }
         }
 
         Image {
@@ -55,16 +63,6 @@ Item {
                 maskSource: Rectangle {
                     width: screenshot.width; height: screenshot.height
                     radius: vpx(api.memory.get('settings.game.cornerRadius'))
-                }
-
-                layer.enabled: !selected && api.memory.get('settings.performance.artDropShadow')
-                layer.effect: DropShadow {
-                    anchors.fill: screenshot
-                    horizontalOffset: vpx(0); verticalOffset: vpx(3)
-
-                    samples: 4
-                    color: '#99000000';
-                    source: mask
                 }
             }
         }

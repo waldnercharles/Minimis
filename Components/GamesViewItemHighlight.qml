@@ -29,11 +29,12 @@ Item {
 
             source: MediaPlayer {
                 id: videoPlayer
-                source: game.assets.videoList[0] || ''
+                source: game && game.assets.videoList.length > 0 ? game.assets.videoList[0] || '' : ''
                 muted: root.muted
                 volume: api.memory.get('settings.game.previewVolume')
                 autoLoad: true
                 autoPlay: playPreview
+                loops: MediaPlayer.Infinite
             }
 
             fillMode: VideoOutput.PreserveAspectCrop

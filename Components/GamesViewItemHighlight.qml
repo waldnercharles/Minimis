@@ -9,14 +9,6 @@ Item {
     property bool playPreview: false
     property bool muted: false
 
-    onPlayPreviewChanged: {
-        if (playPreview) {
-            videoPlayer.play();
-        } else {
-            videoPlayer.pause();
-        }
-    }
-
     GamesViewItemBorder { anchors.fill: parent }
 
     Rectangle {
@@ -29,11 +21,10 @@ Item {
 
             source: MediaPlayer {
                 id: videoPlayer
-                source: game && game.assets.videoList.length > 0 ? game.assets.videoList[0] || '' : ''
+                source: playPreview && game && game.assets.videoList.length > 0 ? game.assets.videoList[0] || '' : ''
                 muted: root.muted
                 volume: api.memory.get('settings.game.previewVolume')
-                autoLoad: true
-                autoPlay: playPreview
+                autoPlay: true
                 loops: MediaPlayer.Infinite
             }
 

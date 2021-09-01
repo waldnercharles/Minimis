@@ -70,7 +70,11 @@ Item {
         Item {
             anchors.fill: parent
 
-            property bool showLogo: selected && playPreview ? (api.memory.get('settings.game.previewLogoVisible') ? 1 : 0) : (api.memory.get('settings.game.logoVisible') ? 1 : 0)
+            property bool isPlayingPreview: selected && playPreview
+            property bool isLoading: logo.status === Image.Loading || screenshot.status === Image.Loading
+            property bool loadOnDemand: api.memory.get('settings.game.logoVisible') !== api.memory.get('settings.game.previewLogoVisible')
+
+            property bool showLogo: isPlayingPreview ? (api.memory.get('settings.game.previewLogoVisible') ? 1 : 0) : (api.memory.get('settings.game.logoVisible') ? 1 : 0)
 
             Image {
                 id: logo
@@ -113,7 +117,7 @@ Item {
                 verticalAlignment: Text.AlignVCenter
 
                 visible: !logo.visible
-                opacity: logo.opacity
+                opacity: !(parent.loadOnDemand && parent.isPlayingPreview) && parent.isLoading ? 1 : logo.opacity
             }
 
             Behavior on scale { NumberAnimation { duration: api.memory.get('settings.game.logoScaleSpeed'); } }

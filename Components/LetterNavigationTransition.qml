@@ -6,7 +6,7 @@ Item {
     id: root
     anchors.fill: parent
 
-    property alias text: letterText.text
+    property string text: ''
     property alias icon: icon.text
 
     opacity: 0
@@ -22,31 +22,30 @@ Item {
         id: letterTextBackground
         anchors.centerIn: overlay
 
-        height: overlay.height * 1.2; width: Math.max(overlay.height, overlay.width) * 1.2
+        height: letterText.contentHeight;
+        width: Math.max(height, (letterText.contentWidth + icon.contentWidth) + height / 2)
         radius: height / 4
 
         color: api.memory.get('settings.theme.backgroundColor')
         opacity: api.memory.get('settings.gameNavigation.opacity')
     }
 
-    Row {
+    Item {
         id: overlay
+
         anchors.centerIn: parent
-
-        height: letterText.height
-        // width: parent.width
-
-        spacing: vpx(api.memory.get('settings.gameNavigation.size')) / 8
+        height: letterText.font.pixelSize; width: parent.width
 
         Text {
             id: icon
             anchors.verticalCenter: parent.verticalCenter
+            anchors.right: letterText.left
 
             antialiasing: true
             renderType: Text.NativeRendering
             font.hintingPreference: Font.PreferNoHinting
             font.family: fontawesome.name
-            font.pixelSize: letterText.font.pixelSize * 0.9
+            font.pixelSize: letterText.font.pixelSize * 0.85
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -57,6 +56,12 @@ Item {
         Text {
             id: letterText
             anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.horizontalCenter
+            anchors.leftMargin: -(contentWidth / 2) + (icon.contentWidth / 2)
+
+            text: `${icon.text ? ' ' : ''}${root.text}`
+
+            width: parent.width / 1.2
 
             antialiasing: true
             renderType: Text.NativeRendering
@@ -69,7 +74,6 @@ Item {
             minimumPointSize: vpx(24)
             fontSizeMode: Text.Fit
 
-            horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
             color: api.memory.get('settings.theme.accentColor')

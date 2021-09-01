@@ -34,6 +34,7 @@ Item {
         anchors.centerIn: parent
 
         height: letterText.height
+        // width: parent.width
 
         spacing: vpx(api.memory.get('settings.gameNavigation.size')) / 8
 

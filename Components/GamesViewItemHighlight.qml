@@ -10,8 +10,6 @@ Item {
     property bool muted: false
 
     onPlayPreviewChanged: {
-        videoPreview.playlist.clear();
-
         if (playPreview) {
             if (game && game.assets.videoList.length > 0) {
                 for (var i = 0; i < game.assets.videoList.length; i++) {
@@ -22,8 +20,9 @@ Item {
             videoPreview.play();
             videoPreview.state = 'playing'
         } else {
-            videoPreview.stop();
+            videoPreview.pause();
             videoPreview.state = '';
+            videoPreview.playlist.clear();
         }
     }
 

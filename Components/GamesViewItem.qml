@@ -51,11 +51,11 @@ Item {
             smooth: api.memory.get('settings.performance.artImageCaching')
 
             fillMode: api.memory.get('settings.game.aspectRatioNative') ? Image.Stretch : Image.PreserveAspectCrop
-            visible: screenshot.status === Image.Ready && logo.status !== Image.Loading
+            visible: screenshot.status === Image.Ready && (logo.status !== Image.Loading || (!api.memory.get('settings.game.logoVisible') && api.memory.get('settings.game.previewLogoVisible')))
 
             opacity: selected && playPreview && game.assets.videoList.length > 0 ? 0 : 1
 
-            Behavior on opacity { NumberAnimation { duration: 200 } }
+            Behavior on opacity { NumberAnimation { from: 1; duration: api.memory.get('settings.game.artFadeSpeed'); } }
 
             layer.enabled: true
             layer.effect: OpacityMask {
@@ -76,7 +76,7 @@ Item {
                 id: logo
                 anchors.fill: parent
 
-                source: game.assets.logo || ''
+                source: opacity != 0 ? game.assets.logo || '' : ''
                 sourceSize: api.memory.get('settings.performance.logoImageResolution') === 0 ? undefined : Qt.size(logo.width, logo.height)
 
                 asynchronous: true
@@ -87,7 +87,7 @@ Item {
 
                 visible: logo.status === Image.Ready && screenshot.status !== Image.Loading
 
-                Behavior on opacity { NumberAnimation { duration: 200 } }
+                Behavior on opacity { NumberAnimation { duration: api.memory.get('settings.game.logoFadeSpeed') } }
                 opacity: parent.showLogo ? 1 : 0
             }
 
@@ -113,12 +113,10 @@ Item {
                 verticalAlignment: Text.AlignVCenter
 
                 visible: !logo.visible
-
-                Behavior on opacity { NumberAnimation { duration: 200 } }
-                opacity: logo.status === Image.Loading || screenshot.status === Image.Loading ? 1 : parent.showLogo ? 1 : 0
+                opacity: logo.opacity
             }
 
-            Behavior on scale { NumberAnimation { duration: 100; } }
+            Behavior on scale { NumberAnimation { duration: api.memory.get('settings.game.logoScaleSpeed'); } }
             scale: selected ? api.memory.get('settings.game.logoScaleSelected') : api.memory.get('settings.game.logoScale')
 
 

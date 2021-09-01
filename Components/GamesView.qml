@@ -7,15 +7,6 @@ FocusScope {
     id: root
     anchors.fill: parent
 
-    GamesViewHeader {
-        id: header
-
-        Keys.onDownPressed: {
-            sfxNav.play();
-            gridContainer.focus = true;
-        }
-    }
-
     FocusScope {
         id: gridContainer
         anchors.fill: parent
@@ -59,7 +50,7 @@ FocusScope {
             Timer {
                 id: videoPreviewTimer
 
-                interval: 800
+                interval: api.memory.get('settings.game.videoPreviewDelay')
                 onTriggered: {
                     grid.playPreview = true;
                 }
@@ -119,7 +110,7 @@ FocusScope {
                 scale: selected ? api.memory.get('settings.game.scaleSelected'): api.memory.get('settings.game.scale')
                 z: selected ? 3 : 1
 
-                Behavior on scale { NumberAnimation { duration: 100; } }
+                Behavior on scale { NumberAnimation { duration: api.memory.get('settings.game.artScaleSpeed'); } }
 
                 Keys.onPressed: {
                     if (event.isAutoRepeat) {
@@ -149,30 +140,6 @@ FocusScope {
                     item = null;
                 }
             }
-
-            // delegate: GamesViewItem {
-            //     id: item
-
-            //     width: GridView.view.cellWidth
-            //     height: GridView.view.cellHeight
-
-            //     selected: GridView.isCurrentItem
-            //     playPreview: grid.playPreview 
-
-            //     Behavior on scale { PropertyAnimation { duration: 100; } }
-
-            //     Keys.onPressed: {
-            //         if (event.isAutoRepeat) {
-            //             return;
-            //         }
-
-            //         if (api.keys.isAccept(event)) {
-            //             event.accepted = true;
-            //             savedGameIndex = grid.currentIndex;
-            //             toGameDetailsView(modelData)
-            //         }
-            //     }
-            // }
 
             Component.onCompleted: {
                 grid.currentIndex = gridContainer.focus ? savedGameIndex : -1;
@@ -242,23 +209,6 @@ FocusScope {
             }
         }
 
-        layer.enabled: true
-        layer.effect: OpacityMask {
-            width: root.width; height: root.height
-
-            maskSource: LinearGradient {
-                width: root.width; height: root.height
-
-                start: Qt.point(0, 0)
-                end: Qt.point(0, root.height)
-
-                gradient: Gradient {
-                    GradientStop { position: gridContainer.gradientHeight / 1.2; color: 'transparent' }
-                    GradientStop { position: gridContainer.gradientHeight; color: 'white' }
-                }
-            }
-        }
-
         onFocusChanged: {
             if (gridContainer.focus) {
                 grid.currentIndex = savedGameIndex;
@@ -266,6 +216,15 @@ FocusScope {
                 savedGameIndex = grid.currentIndex;
                 grid.currentIndex = -1;
             }
+        }
+    }
+
+        GamesViewHeader {
+        id: header
+
+        Keys.onDownPressed: {
+            sfxNav.play();
+            gridContainer.focus = true;
         }
     }
 

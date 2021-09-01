@@ -31,32 +31,39 @@ FocusScope {
                 type: 'array'
             },
 
-            aspectRatioNative: { name: 'Aspect Ratio - Use Native', default: false, type: 'bool' },
-            aspectRatioWidth: { name: 'Aspect Ratio - Width', default: 9.2, delta: 0.1, min: 0.1, type: 'real' },
-            aspectRatioHeight: { name: 'Aspect Ratio - Height', default: 4.3, delta: 0.1, min: 0.1, type: 'real' },
+            aspectRatioNative: { name: 'Art - Aspect Ratio - Use Native', default: false, type: 'bool' },
+            aspectRatioWidth: { name: 'Art - Aspect Ratio - Width', default: 9.2, delta: 0.1, min: 0.1, type: 'real' },
+            aspectRatioHeight: { name: 'Art - Aspect Ratio - Height', default: 4.3, delta: 0.1, min: 0.1, type: 'real' },
+
+            scale: { name: 'Art - Scale', default: 0.95, delta: 0.01, min: 0.01, max: 1.0, type: 'real' },
+            scaleSelected: { name: 'Art - Scale - Selected', default: 1.0, delta: 0.01, min: 0.01, type: 'real' },
+            artScaleSpeed: { name: 'Art - Scale Speed', default: 300, min: 0, delta: 50, type: 'int' },
+            artFadeSpeed: { name: 'Art - Fade Speed', default: 300, min: 0, delta: 50, type: 'int' },
 
             previewEnabled: { name: 'Video Preview - Enabled', default: true, type: 'bool' },
-            previewVolume: { name: 'Video Preview - Volume', default: 0.0, delta: 0.1, min: 0.0, type: 'real' },
+            videoPreviewDelay: { name: 'Video Preview - Delay', default: 1000, min: 0, delta: 50, type: 'int' },
+            previewVolume: { name: 'Video Preview - Volume', default: 0.5, delta: 0.1, min: 0.0, type: 'real' },
 
             borderAnimated: { name: 'Border - Animate', default: true, type: 'bool' },
             borderWidth: { name: 'Border - Width', default: 5, min: 0, type: 'int', },
 
             cornerRadius: { name: 'Border - Corner Radius', default: 5, min: 0, type: 'int' },
 
-            scale: { name: 'Scale', default: 0.95, delta: 0.01, min: 0.01, max: 1.0, type: 'real' },
-            scaleSelected: { name: 'Scale - Selected', default: 1.0, delta: 0.01, min: 0.01, type: 'real' },
-
-            logoScale: { name: 'Logo - Scale', default: 0.75, delta: 0.01, min: 0.01, type: 'real' },
-            logoScaleSelected: { name: 'Logo - Scale - Selected', default: 0.85, delta: 0.01, min: 0.01, type: 'real' },
             logoVisible: { name: 'Logo - Visible', default: true, type: 'bool' },
             previewLogoVisible: { name: 'Logo - Visible - Video Preview', default: true, type: 'bool' },
+
+            logoScale: { name: 'Logo - Scale', default: 0.75, delta: 0.01, min: 0.01, type: 'real' },
+            logoScaleSelected: { name: 'Logo - Scale - Selected', default: 0.75, delta: 0.01, min: 0.01, type: 'real' },
+            logoScaleSpeed: { name: 'Logo - Scale Speed', default: 300, min: 0, delta: 50, type: 'int' },
+            logoFadeSpeed: { name: 'Logo - Fade Speed', default: 300, min: 0, delta: 50, type: 'int' },
+
             logoFontSize: { name: 'Logo - Font Size', default: 20, min: 1, type: 'int' },
         },
         gameNavigation: {
             yearIncrement: { name: 'Year - Increment', default: 10, delta: 1, min: 1, type: 'int' },
             ratingIncrement: { name: 'Rating - Increment', default: 0.5, delta: 0.1, min: 0.1, max: 5.0, type: 'real' },
             opacity: { name: 'Overlay - Background Opacity', default: 0.8, delta: 0.01, min: 0.0, max: 1.0, type: 'real' },
-            size: { name: 'Overlay - Size', default: 200, type: 'int' },
+            size: { name: 'Overlay - Size', default: 160, type: 'int' },
             pauseDuration: { name: 'Overlay - Pause Duration (Milliseconds)', default: 400, delta: 50, min: 0, type: 'int' },
             fadeDuration: { name: 'Overlay - Fade Duration (Milliseconds)', default: 400, delta: 50, min: 0, type: 'int' },
         },

@@ -10,6 +10,11 @@ Item {
     property bool selected: false
     property bool playPreview: false
 
+    readonly property real titlePadding: vpx(api.memory.get('settings.game.titleFontSize') * 0.8)
+    readonly property real titleHeight: api.memory.get('settings.game.titleEnabled') ? title.height + titlePadding : 0
+
+    anchors.bottomMargin: (api.memory.get('settings.game.titleAlwaysVisible') || api.memory.get('settings.game.titleReserveSpace')) ? titleHeight : 0
+
     Item {
         id: card
 
@@ -159,6 +164,7 @@ Item {
                 font.pixelSize: height
 
                 color: api.memory.get('settings.theme.textColor')
+                style: Text.Outline; styleColor: api.memory.get('settings.theme.backgroundColor')
 
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
@@ -177,6 +183,7 @@ Item {
                 font.pixelSize: height
 
                 color: api.memory.get('settings.theme.textColor')
+                style: Text.Outline; styleColor: api.memory.get('settings.theme.backgroundColor')
 
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
@@ -185,13 +192,45 @@ Item {
             }
 
             layoutDirection: Qt.RightToLeft
+        }
 
-            layer.enabled: true
-            layer.effect: DropShadow {
-                horizontalOffset: vpx(0); verticalOffset: vpx(2)
-                samples: 2
-                color: '#77000000'
-            } 
+        Rectangle {
+            id: titleBackground
+            anchors.centerIn: title;
+
+            width: title.width + height; height: title.height * 1.6;
+            radius: height / 2
+
+            color: api.memory.get('settings.theme.textColor')
+
+            border.width: vpx(2)
+            border.color: api.memory.get('settings.theme.backgroundColor')
+
+            opacity: title.opacity * api.memory.get('settings.game.titleBackgroundOpacity')
+            visible: title.visible
+        }
+
+        Text {
+            id: title
+
+            anchors.top: card.bottom;
+            anchors.topMargin: titlePadding
+
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            text: game ? game.title : ''
+            color: api.memory.get('settings.theme.textColor')
+            opacity: selected ? 1 : 0.2
+
+            font.family: subtitleFont.name
+            font.pixelSize: vpx(api.memory.get('settings.game.titleFontSize'))
+
+            elide: Text.ElideRight
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            visible: api.memory.get('settings.game.titleEnabled') && (api.memory.get('settings.game.titleAlwaysVisible') || selected)
         }
     }
 }

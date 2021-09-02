@@ -43,6 +43,27 @@ FocusScope {
 
         ComponentCache { id: cache; component: gamesViewItemComponent }
         Component { id: gamesViewItemComponent; GamesViewItem { } }
+        Component {
+            id: highlight
+
+            GamesViewItemHighlight {
+                playPreview: grid.playPreview
+
+                width: grid.currentItem ? grid.currentItem.width : undefined
+                height: (grid.currentItem && grid.currentItem.item) ? grid.currentItem.height - (api.memory.get('settings.game.titleReserveSpace') || api.memory.get('settings.game.titleAlwaysVisible') ? grid.currentItem.item.titleHeight : undefined) : undefined
+
+                game: grid.model ? grid.model.get(grid.currentIndex) : undefined
+                muted: collectionTransition.opacity === 1
+
+                scale: grid.currentItem ? grid.currentItem.scale : 0
+
+                x: grid.currentItem ? grid.currentItem.x : 0
+                y: grid.currentItem ? grid.currentItem.y : 0
+                z: grid.currentItem ? grid.currentItem.z - 1 : 0
+
+                visible: grid.currentItem && grid.currentItem.item
+            }
+        }
 
         GridView {
             id: grid
@@ -76,28 +97,12 @@ FocusScope {
             displayMarginBeginning: cellHeight * 2
             displayMarginEnd: cellHeight * 2
 
-            highlightMoveDuration: 0
             highlightRangeMode: GridView.ApplyRange
+            highlightFollowsCurrentItem: false
 
             preferredHighlightBegin: 0
             preferredHighlightEnd: grid.height
 
-            highlight: GamesViewItemHighlight {
-                property Item currentItem: grid.currentItem
-
-                playPreview: grid.playPreview
-
-                width: currentItem ? currentItem.width  : 0
-                height: currentItem ? currentItem.height : 0
-
-                game: grid.model ? grid.model.get(grid.currentIndex) : null
-                muted: collectionTransition.opacity === 1
-
-                scale: currentItem ? currentItem.scale : 0.0
-
-                z: (currentItem ? currentItem.z : 0) - 1
-            }
-            
             delegate: Item {
                 id: container
 
@@ -140,6 +145,8 @@ FocusScope {
                     item = null;
                 }
             }
+
+            highlight: highlight
 
             Component.onCompleted: {
                 grid.currentIndex = gridContainer.focus ? savedGameIndex : -1;

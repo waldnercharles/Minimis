@@ -35,6 +35,12 @@ FocusScope {
             aspectRatioWidth: { name: 'Art - Aspect Ratio - Width', default: 9.2, delta: 0.1, min: 0.1, type: 'real' },
             aspectRatioHeight: { name: 'Art - Aspect Ratio - Height', default: 4.3, delta: 0.1, min: 0.1, type: 'real' },
 
+            titleEnabled: { name: 'Title - Enabled', default: true, type: 'bool' },
+            titleAlwaysVisible: { name: 'Title - Always Visible', default: true, type: 'bool' },
+            titleReserveSpace: { name: 'Title - Reserve Space', default: true, type: 'bool' },
+            titleFontSize: { name: 'Title - Font Size', default: 12, type: 'int' },
+            titleBackgroundOpacity: { name: 'Title - Background Opacity', default: 0.15, delta: 0.01, min: 0.0, max: 1.0, type: 'real' },
+
             scale: { name: 'Art - Scale', default: 0.95, delta: 0.01, min: 0.01, max: 1.0, type: 'real' },
             scaleSelected: { name: 'Art - Scale - Selected', default: 1.0, delta: 0.01, min: 0.01, type: 'real' },
             artScaleSpeed: { name: 'Art - Scale Duration', default: 300, min: 0, delta: 50, type: 'int' },
@@ -60,7 +66,7 @@ FocusScope {
             logoFontSize: { name: 'Logo - Font Size', default: 20, min: 1, type: 'int' },
         },
         gameNavigation: {
-            yearIncrement: { name: 'Year - Increment', default: 10, delta: 1, min: 1, type: 'int' },
+            yearIncrement: { name: 'Year - Increment', default: 1, delta: 1, min: 1, type: 'int' },
             ratingIncrement: { name: 'Rating - Increment', default: 0.5, delta: 0.1, min: 0.1, max: 5.0, type: 'real' },
             opacity: { name: 'Overlay - Background Opacity', default: 0.8, delta: 0.01, min: 0.0, max: 1.0, type: 'real' },
             size: { name: 'Overlay - Size', default: 160, type: 'int' },

@@ -18,7 +18,7 @@ Item {
         'developer': { type: 'string' },
         'publisher': { type: 'string' },
         'genre': { type: 'string' },
-        'releaseYear': { type: 'number', delta: api.memory.get('settings.gameNavigation.yearIncrement') },
+        'releaseYear': { type: 'number', delta: api.memory.get('settings.gameNavigation.yearIncrement'), getText: (value) => value > 0 ? value : 'N/A' },
         'players': { type: 'number', icon: '\uf007', getText: (value) => value > 1 ? `1-${value}` : '1' },
         'rating': {
             type: 'number',
@@ -68,11 +68,14 @@ Item {
         property real minimumValue: currentValue
         property real maximumValue: currentValue + delta
 
+        property bool ignoreMin: false
+        property bool ignoreMax: false
+
         expression: {
-            currentValue;
+            currentValue; ignoreMin; ignoreMax;
 
             const value = Math.round(modelData[sorter.roleName] * factor);
-            return minimumValue <= value && value < maximumValue;
+            return (ignoreMin || minimumValue <= value) && (ignoreMax || value < maximumValue);
         }
 
         enabled: metadata && metadata.type === 'number' 
@@ -94,10 +97,6 @@ Item {
         sourceModel: currentCollection.games
         filters: gameFilters
         sorters: sorter
-
-        function get(index) {
-            return currentCollection.games.get(games.mapToSource(index));
-        }
     }
 
     function nextChar(c, modifier) {
@@ -135,7 +134,7 @@ Item {
                 textFilter.currentLetter = nextLetter = nextChar(nextLetter, direction);
             } while (nav.count === 0 && nextLetter != currentLetter)
 
-            const value = currentCollection.games.get(nav.mapToSource(0))[sorter.roleName];
+            const value = nav.get(0)[sorter.roleName];
             navOverlay.text = metadata.getText ? metadata.getText(value) : value;
         }
 
@@ -145,10 +144,10 @@ Item {
 
             const getMinimum = (value) => delta * Math.floor(value / delta);
 
-            const firstValue = getMinimum(Math.round(games.get(0)[sorter.roleName] * factor));
-            const lastValue = getMinimum(Math.round(games.get(games.count - 1)[sorter.roleName] * factor));
+            const firstValue = getMinimum(Math.round((games.get(0)[sorter.roleName] ?? 0) * factor));
+            const lastValue = getMinimum(Math.round((games.get(games.count - 1)[sorter.roleName] ?? 0) * factor))
 
-            let prev = getMinimum(Math.round(currentValue * factor));
+            let prev = getMinimum(Math.round((currentValue ?? 0) * factor));
             let curr = prev;
             do {
                 curr = getMinimum(curr) + delta * direction;
@@ -171,7 +170,18 @@ Item {
                     return null;
                 }
 
+                numberFilter.ignoreMin = false;
+                numberFilter.ignoreMax = false;
                 numberFilter.currentValue = curr;
+
+                if (nav.count === 0) {
+                    if (direction > 0) { numberFilter.ignoreMax = true; }
+                    if (direction < 0) { numberFilter.ignoreMin = true; }
+
+                    if (nav.count > 0) {
+                        curr = getMinimum(Math.round(nav.get(0)[sorter.roleName] * factor));
+                    }
+                }
             } while (nav.count === 0)
 
             const precision = factor !== delta ? Math.round(factor / delta) : 0;

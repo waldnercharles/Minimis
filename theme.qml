@@ -37,17 +37,17 @@ FocusScope {
 
             titleEnabled: { name: 'Title - Enabled', default: true, type: 'bool' },
             titleAlwaysVisible: { name: 'Title - Always Visible', default: true, type: 'bool' },
-            titleFontSize: { name: 'Title - Font Size', default: 12, type: 'int' },
+            titleFontSize: { name: 'Title - Font Size', default: 14, type: 'int' },
             titleBackgroundOpacity: { name: 'Title - Background Opacity', default: 0.15, delta: 0.01, min: 0.0, max: 1.0, type: 'real' },
 
             scale: { name: 'Art - Scale', default: 0.95, delta: 0.01, min: 0.01, max: 1.0, type: 'real' },
             scaleSelected: { name: 'Art - Scale - Selected', default: 1.0, delta: 0.01, min: 0.01, type: 'real' },
-            artScaleSpeed: { name: 'Art - Scale Duration', default: 300, min: 0, delta: 50, type: 'int' },
-            artFadeSpeed: { name: 'Art - Fade Duration', default: 300, min: 0, delta: 50, type: 'int' },
+            artScaleSpeed: { name: 'Art - Scale Duration', default: 200, min: 0, delta: 50, type: 'int' },
+            artFadeSpeed: { name: 'Art - Fade Duration', default: 200, min: 0, delta: 50, type: 'int' },
 
             previewEnabled: { name: 'Video Preview - Enabled', default: true, type: 'bool' },
             videoPreviewDelay: { name: 'Video Preview - Delay', default: 1000, min: 0, delta: 50, type: 'int' },
-            previewVolume: { name: 'Video Preview - Volume', default: 0.5, delta: 0.1, min: 0.0, type: 'real' },
+            previewVolume: { name: 'Video Preview - Volume', default: 0.0, delta: 0.1, min: 0.0, max: 1.0, type: 'real' },
 
             borderAnimated: { name: 'Border - Animate', default: true, type: 'bool' },
             borderWidth: { name: 'Border - Width', default: 5, min: 0, type: 'int', },
@@ -59,8 +59,8 @@ FocusScope {
 
             logoScale: { name: 'Logo - Scale', default: 0.75, delta: 0.01, min: 0.01, type: 'real' },
             logoScaleSelected: { name: 'Logo - Scale - Selected', default: 0.75, delta: 0.01, min: 0.01, type: 'real' },
-            logoScaleSpeed: { name: 'Logo - Scale Duration', default: 300, min: 0, delta: 50, type: 'int' },
-            logoFadeSpeed: { name: 'Logo - Fade Duration', default: 300, min: 0, delta: 50, type: 'int' },
+            logoScaleSpeed: { name: 'Logo - Scale Duration', default: 200, min: 0, delta: 50, type: 'int' },
+            logoFadeSpeed: { name: 'Logo - Fade Duration', default: 200, min: 0, delta: 50, type: 'int' },
 
             logoFontSize: { name: 'Logo - Font Size', default: 20, min: 1, type: 'int' },
         },

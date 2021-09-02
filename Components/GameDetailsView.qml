@@ -102,7 +102,7 @@ FocusScope {
 
                     property real fontSize: vpx(18)
 
-                    property string year: game.releaseYear != 0 ? game.releaseYear : '20XX'
+                    property string year: game.releaseYear != 0 ? game.releaseYear : 'N/A'
                     property real rating: parseFloat(game.rating * 5).toPrecision(2)
                     property int players: game.players
 

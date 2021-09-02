@@ -36,7 +36,7 @@ FocusScope {
         focus: true
         anchors {
             top: header.bottom; bottom: parent.bottom; left: header.left;
-            topMargin: vpx(20)
+            topMargin: vpx(20); leftMargin: vpx(api.memory.get('settings.theme.leftMargin'))
         }
 
         width: parent.width / 5.0
@@ -82,7 +82,8 @@ FocusScope {
         model: currentCategory.value
 
         anchors {
-            top: categoriesListView.top; bottom: parent.bottom; left: categoriesListView.right; right: header.right
+            top: categoriesListView.top; bottom: parent.bottom; left: categoriesListView.right; right: header.right;
+            rightMargin: vpx(api.memory.get('settings.theme.rightMargin'))
         }
 
         preferredHighlightBegin: settingsListView.height / 2 - rowHeight

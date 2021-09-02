@@ -13,8 +13,6 @@ FocusScope {
 
     anchors {
         left: parent.left; right: parent.right; top: parent.top;
-        leftMargin: vpx(api.memory.get('settings.theme.leftMargin'))
-        rightMargin: vpx(api.memory.get('settings.theme.rightMargin'))
     }
 
     height: vpx(75)
@@ -25,8 +23,9 @@ FocusScope {
 
         Item {
             id: container
-
             anchors.fill: parent
+            anchors.leftMargin: vpx(api.memory.get('settings.theme.leftMargin'))
+            anchors.rightMargin: vpx(api.memory.get('settings.theme.rightMargin'))
 
             Rectangle {
                 id: background
@@ -36,16 +35,6 @@ FocusScope {
                 height: root.height
 
                 radius: vpx(3)
-
-                layer.enabled: true
-                layer.effect: DropShadow {
-                    anchors.fill: background
-                    horizontalOffset: vpx(0); verticalOffset: vpx(4)
-
-                    samples: 5
-                    color: '#77000000';
-                    source: background
-                }
             }
 
             Image {

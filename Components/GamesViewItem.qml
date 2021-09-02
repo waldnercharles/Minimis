@@ -10,10 +10,8 @@ Item {
     property bool selected: false
     property bool playPreview: false
 
-    readonly property real titlePadding: vpx(api.memory.get('settings.game.titleFontSize') * 0.8)
-    readonly property real titleHeight: api.memory.get('settings.game.titleEnabled') ? title.height + titlePadding : 0
-
-    anchors.bottomMargin: (api.memory.get('settings.game.titleAlwaysVisible') || api.memory.get('settings.game.titleReserveSpace')) ? titleHeight : 0
+    property real titlePadding: 0
+    property real titleHeight: 0
 
     Item {
         id: card
@@ -198,7 +196,7 @@ Item {
             id: titleBackground
             anchors.centerIn: title;
 
-            width: title.width + height; height: title.height * 1.6;
+            width: title.width + title.height; height: title.height + titlePadding * 2;
             radius: height / 2
 
             color: api.memory.get('settings.theme.textColor')
@@ -213,8 +211,10 @@ Item {
         Text {
             id: title
 
+            height: titleHeight
+
             anchors.top: card.bottom;
-            anchors.topMargin: titlePadding
+            anchors.topMargin: titlePadding * 2
 
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -224,6 +224,8 @@ Item {
 
             font.family: subtitleFont.name
             font.pixelSize: vpx(api.memory.get('settings.game.titleFontSize'))
+
+            fontSizeMode: Text.VerticalFit
 
             elide: Text.ElideRight
 

@@ -37,7 +37,6 @@ FocusScope {
 
             titleEnabled: { name: 'Title - Enabled', default: true, type: 'bool' },
             titleAlwaysVisible: { name: 'Title - Always Visible', default: true, type: 'bool' },
-            titleReserveSpace: { name: 'Title - Reserve Space', default: true, type: 'bool' },
             titleFontSize: { name: 'Title - Font Size', default: 12, type: 'int' },
             titleBackgroundOpacity: { name: 'Title - Background Opacity', default: 0.15, delta: 0.01, min: 0.0, max: 1.0, type: 'real' },
 

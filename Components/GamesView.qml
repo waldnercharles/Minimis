@@ -43,23 +43,24 @@ FocusScope {
 
         ComponentCache { id: cache; component: gamesViewItemComponent }
         Component { id: gamesViewItemComponent; GamesViewItem { } }
+
         Component {
             id: highlight
 
             GamesViewItemHighlight {
-                playPreview: grid.playPreview
-
                 width: grid.currentItem ? grid.currentItem.width : undefined
-                height: (grid.currentItem && grid.currentItem.item) ? grid.currentItem.height - (api.memory.get('settings.game.titleReserveSpace') || api.memory.get('settings.game.titleAlwaysVisible') ? grid.currentItem.item.titleHeight : undefined) : undefined
-
-                game: grid.model ? grid.model.get(grid.currentIndex) : undefined
-                muted: collectionTransition.opacity === 1
-
-                scale: grid.currentItem ? grid.currentItem.scale : 0
+                height: grid.currentItem ? grid.currentItem.height : undefined 
 
                 x: grid.currentItem ? grid.currentItem.x : 0
                 y: grid.currentItem ? grid.currentItem.y : 0
                 z: grid.currentItem ? grid.currentItem.z - 1 : 0
+
+                scale: grid.currentItem ? grid.currentItem.scale : 0
+
+                playPreview: grid.playPreview
+
+                game: grid.model ? grid.model.get(grid.currentIndex) : undefined
+                muted: collectionTransition.opacity === 1
 
                 visible: grid.currentItem && grid.currentItem.item
             }
@@ -67,6 +68,12 @@ FocusScope {
 
         GridView {
             id: grid
+
+            readonly property bool titleEnabled: api.memory.get('settings.game.titleEnabled')
+            readonly property real titlePadding: titleEnabled ? vpx(api.memory.get('settings.game.titleFontSize') * 0.5) : 0
+            readonly property real titleHeight: titleEnabled ? vpx(api.memory.get('settings.game.titleFontSize')) : 0
+
+            readonly property real reservedSpace: titleEnabled ? titleHeight + titlePadding * 3 : 0
 
             Timer {
                 id: videoPreviewTimer
@@ -92,7 +99,7 @@ FocusScope {
             property real aspectRatio: api.memory.get('settings.game.aspectRatioNative') ? fakeAsset.height / fakeAsset.width : (api.memory.get('settings.game.aspectRatioHeight') / api.memory.get('settings.game.aspectRatioWidth'))
 
             cellWidth: width / api.memory.get('settings.game.gameViewColumns')
-            cellHeight: cellWidth * aspectRatio
+            cellHeight: cellWidth * aspectRatio + reservedSpace
 
             displayMarginBeginning: cellHeight * 2
             displayMarginEnd: cellHeight * 2
@@ -107,7 +114,7 @@ FocusScope {
                 id: container
 
                 width: GridView.view.cellWidth
-                height: GridView.view.cellHeight
+                height: GridView.view.cellHeight - grid.reservedSpace
 
                 property Item item
                 property bool selected: GridView.isCurrentItem
@@ -136,6 +143,9 @@ FocusScope {
                     item.anchors.fill = Qt.binding(() => container);
                     item.selected = Qt.binding(() => container.selected);
                     item.playPreview = Qt.binding(() => grid.playPreview);
+
+                    item.titleHeight = Qt.binding(() => grid.titleHeight);
+                    item.titlePadding = Qt.binding(() => grid.titlePadding);
 
                     item.game = modelData;
                 }

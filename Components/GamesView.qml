@@ -136,6 +136,13 @@ FocusScope {
                     }
                 }
 
+                Rectangle {
+                    anchors.fill: parent
+                    color: 'black'
+                    opacity: selected ? 0.0 : api.memory.get('settings.game.darkenAmount')
+                    z: 10
+                }
+
                 Component.onCompleted: {
                     item = cache.get();
 

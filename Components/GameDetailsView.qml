@@ -342,13 +342,10 @@ FocusScope {
                             height: item.height
 
                             source: !isVideo ? asset : ''
-                            sourceSize: Qt.size(width, height)
                             asynchronous: true
 
                             fillMode: Image.PreserveAspectFit
-
                             visible: !isVideo
-
                             opacity: selected ? 1.0 : 0.6
                         }
 

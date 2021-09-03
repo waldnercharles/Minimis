@@ -49,6 +49,8 @@ FocusScope {
             videoPreviewDelay: { name: 'Video Preview - Delay', default: 1000, min: 0, delta: 50, type: 'int' },
             previewVolume: { name: 'Video Preview - Volume', default: 0.0, delta: 0.1, min: 0.0, max: 1.0, type: 'real' },
 
+            darkenAmount: { name: 'Darken', default: 0.1, delta: 0.01, min: 0.0, max: 1.0, type: 'real' },
+
             borderAnimated: { name: 'Border - Animate', default: true, type: 'bool' },
             borderWidth: { name: 'Border - Width', default: 5, min: 0, type: 'int', },
 

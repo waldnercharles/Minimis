@@ -22,7 +22,7 @@ FocusScope {
 
     property var settingsMetadata: ({
         game: {
-            gameViewColumns: { name: 'Number of Columns', default: 3, type: 'int', min: 1 },
+            gameViewColumns: { name: 'Number of Columns', default: 4, type: 'int', min: 1 },
 
             art: {
                 name: 'Art',
@@ -37,11 +37,11 @@ FocusScope {
 
             titleEnabled: { name: 'Title - Enabled', default: true, type: 'bool' },
             titleAlwaysVisible: { name: 'Title - Always Visible', default: true, type: 'bool' },
-            titleFontSize: { name: 'Title - Font Size', default: 14, type: 'int' },
-            titleBackgroundOpacity: { name: 'Title - Background Opacity', default: 0.15, delta: 0.01, min: 0.0, max: 1.0, type: 'real' },
+            titleFontSize: { name: 'Title - Font Size', default: 16, type: 'int' },
+            titleBackgroundOpacity: { name: 'Title - Background Opacity', default: 0.05, delta: 0.01, min: 0.0, max: 1.0, type: 'real' },
 
-            scale: { name: 'Art - Scale', default: 0.95, delta: 0.01, min: 0.01, max: 1.0, type: 'real' },
-            scaleSelected: { name: 'Art - Scale - Selected', default: 1.0, delta: 0.01, min: 0.01, type: 'real' },
+            scale: { name: 'Art - Scale', default: 0.95, delta: 0.01, min: 0, max: 1.0, type: 'real' },
+            scaleSelected: { name: 'Art - Scale - Selected', default: 1.0, delta: 0.01, min: 0, type: 'real' },
             artScaleSpeed: { name: 'Art - Scale Duration', default: 200, min: 0, delta: 50, type: 'int' },
             artFadeSpeed: { name: 'Art - Fade Duration', default: 200, min: 0, delta: 50, type: 'int' },
 
@@ -52,7 +52,7 @@ FocusScope {
             darkenAmount: { name: 'Darken', default: 0.1, delta: 0.01, min: 0.0, max: 1.0, type: 'real' },
 
             borderAnimated: { name: 'Border - Animate', default: true, type: 'bool' },
-            borderWidth: { name: 'Border - Width', default: 5, min: 0, type: 'int', },
+            borderWidth: { name: 'Border - Width', default: 3, min: 0, type: 'int', },
 
             cornerRadius: { name: 'Border - Corner Radius', default: 5, min: 0, type: 'int' },
 
@@ -60,7 +60,7 @@ FocusScope {
             previewLogoVisible: { name: 'Logo - Visible - Video Preview', default: true, type: 'bool' },
 
             logoScale: { name: 'Logo - Scale', default: 0.75, delta: 0.01, min: 0.01, type: 'real' },
-            logoScaleSelected: { name: 'Logo - Scale - Selected', default: 0.75, delta: 0.01, min: 0.01, type: 'real' },
+            logoScaleSelected: { name: 'Logo - Scale - Selected', default: 0.75, delta: 0.01, min: 0, type: 'real' },
             logoScaleSpeed: { name: 'Logo - Scale Duration', default: 200, min: 0, delta: 50, type: 'int' },
             logoFadeSpeed: { name: 'Logo - Fade Duration', default: 200, min: 0, delta: 50, type: 'int' },
 
@@ -97,9 +97,9 @@ FocusScope {
             artImageSmoothing: { name: 'Art - Image Smoothing', default: false, type: 'bool' },
             artDropShadow: { name: 'Art - Drop Shadow', default: false, type: 'bool' },
 
-            logoImageResolution: { name: 'Logo - Image Resolution', default: 0, values: ['Native', 'Scaled'], type: 'array' },
+            logoImageResolution: { name: 'Logo - Image Resolution', default: 1, values: ['Native', 'Scaled'], type: 'array' },
             logoImageCaching: { name: 'Logo - Image Caching', default: false, type: 'bool' },
-            logoImageSmoothing: { name: 'Logo - Image Smoothing', default: false, type: 'bool' },
+            logoImageSmoothing: { name: 'Logo - Image Smoothing', default: true, type: 'bool' },
             logoDropShadow: { name: 'Logo - Drop Shadow', default: false, type: 'bool' }
         }
     });

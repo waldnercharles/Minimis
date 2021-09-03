@@ -201,9 +201,6 @@ Item {
 
             color: api.memory.get('settings.theme.textColor')
 
-            border.width: vpx(2)
-            border.color: api.memory.get('settings.theme.backgroundColor')
-
             opacity: title.opacity * api.memory.get('settings.game.titleBackgroundOpacity')
             visible: title.visible
         }
@@ -214,7 +211,7 @@ Item {
             height: titleHeight
 
             anchors.top: card.bottom;
-            anchors.topMargin: titlePadding * 2
+            anchors.topMargin: vpx(api.memory.get('settings.game.borderWidth')) + titlePadding * 2
 
             anchors.horizontalCenter: parent.horizontalCenter
 

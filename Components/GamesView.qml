@@ -10,12 +10,11 @@ FocusScope {
     FocusScope {
         id: gridContainer
         anchors.fill: parent
-        anchors.topMargin: header.height
+        anchors.topMargin: header.height + vpx(8)
 
         focus: true
 
         property var assetKey: settingsMetadata.game.art.values[api.memory.get('settings.game.art')]
-        property var gradientHeight: 0.0133
 
         Image {
             id: fakeAsset
@@ -70,10 +69,10 @@ FocusScope {
             id: grid
 
             readonly property bool titleEnabled: api.memory.get('settings.game.titleEnabled')
-            readonly property real titlePadding: titleEnabled ? vpx(api.memory.get('settings.game.titleFontSize') * 0.5) : 0
+            readonly property real titlePadding: titleEnabled ? vpx(api.memory.get('settings.game.titleFontSize') * 0.25) : 0
             readonly property real titleHeight: titleEnabled ? vpx(api.memory.get('settings.game.titleFontSize')) : 0
 
-            readonly property real reservedSpace: titleEnabled ? titleHeight + titlePadding * 3 : 0
+            readonly property real reservedSpace: titleEnabled ? titleHeight + + vpx(api.memory.get('settings.game.borderWidth')) + titlePadding * 3 : 0
 
             Timer {
                 id: videoPreviewTimer
@@ -87,8 +86,8 @@ FocusScope {
             focus: true
 
             anchors.fill: parent
-            anchors.topMargin: (cellHeight + vpx(api.memory.get('settings.game.borderWidth'))) * (api.memory.get('settings.game.scaleSelected') - 1.0) / 2.0 + parent.height * gridContainer.gradientHeight * 2
-            anchors.bottomMargin: anchors.topMargin
+            anchors.topMargin: ((cellHeight - reservedSpace) * Math.max(api.memory.get('settings.game.scaleSelected') - 1.0, 0)) / 2.0 + vpx(api.memory.get('settings.game.borderWidth'))
+            // anchors.bottomMargin: anchors.topMargin
 
             anchors.leftMargin: vpx(api.memory.get('settings.theme.leftMargin'))
             anchors.rightMargin: vpx(api.memory.get('settings.theme.rightMargin'))

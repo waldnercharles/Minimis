@@ -301,7 +301,6 @@ FocusScope {
                     width: root.width; height: vpx(200)
                     orientation: ListView.Horizontal
 
-                    spacing: vpx(12)
                     model: gameMedia
 
                     highlightResizeDuration: 0
@@ -309,16 +308,14 @@ FocusScope {
                     highlightRangeMode: ListView.ApplyRange
 
                     highlight: GamesViewItemBorder {
-                        property Item currentItem: mediaListView.currentItem
+                        width: mediaListView.currentItem ? mediaListView.currentItem.width : undefined
+                        height: mediaListView.currentItem ? mediaListView.currentItem.height : undefined
 
-                        width: currentItem ? currentItem.width : undefined
-                        height: currentItem ? currentItem.height : undefined
+                        scale: mediaListView.currentItem ? mediaListView.currentItem.scale : undefined
 
-                        scale: currentItem ? currentItem.scale : undefined
+                        z: mediaListView.currentItem ? mediaListView.currentItem.z - 1 : undefined
 
-                        z: currentItem ? currentItem.z - 1 : undefined
-
-                        visible: currentItem != null && mediaScope.focus
+                        visible: mediaListView.currentItem != null && mediaScope.focus
                     }
 
                     delegate: Item {
@@ -395,7 +392,7 @@ FocusScope {
                             id: mask
                             maskSource: Rectangle {
                                 width: item.width; height: item.height
-                                radius: vpx(api.memory.get('settings.game.cornerRadius'))
+                                radius: vpx(api.memory.get('settings.global.cornerRadius'))
                             }
 
                             layer.enabled: !selected && api.memory.get('settings.performance.artDropShadow')

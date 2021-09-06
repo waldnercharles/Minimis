@@ -6,8 +6,20 @@ Item {
     id: root
 
     property var game
-    property bool playPreview: false
+    property Item item
+
     property bool muted: false
+
+    width: item ? item.width : undefined
+    height: item ? item.height : undefined 
+
+    x: item ? item.x : 0
+    y: item ? item.y : 0
+    z: item ? item.z - 1 : 0
+
+    scale: item ? item.scale : 0
+
+    visible: item
 
     GamesViewItemBorder { anchors.fill: parent }
 
@@ -21,9 +33,9 @@ Item {
 
             source: MediaPlayer {
                 id: videoPlayer
-                source: playPreview && game && game.assets.videoList.length > 0 ? game.assets.videoList[0] || '' : ''
+                source: gameItemPlayVideoPreview && game && game.assets.videoList.length > 0 ? game.assets.videoList[0] || '' : ''
                 muted: root.muted
-                volume: api.memory.get('settings.game.previewVolume')
+                volume: api.memory.get('settings.global.previewVolume')
                 autoPlay: true
                 loops: MediaPlayer.Infinite
             }
@@ -35,7 +47,7 @@ Item {
         layer.effect: OpacityMask {
             maskSource: Rectangle {
                 width: videoOutput.width; height: videoOutput.height
-                radius: vpx(api.memory.get('settings.game.cornerRadius'))
+                radius: vpx(api.memory.get('settings.global.cornerRadius'))
             }
         }
     }

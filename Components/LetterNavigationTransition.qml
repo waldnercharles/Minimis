@@ -13,8 +13,8 @@ Item {
 
     SequentialAnimation {
         id: fadeAnimation;
-        PauseAnimation { duration: api.memory.get('settings.gameNavigation.pauseDuration') }
-        NumberAnimation { target: root; property: 'opacity'; to: 0; duration: api.memory.get('settings.gameNavigation.fadeDuration'); }
+        PauseAnimation { duration: api.memory.get('settings.gameCard.navigationPauseDuration') }
+        NumberAnimation { target: root; property: 'opacity'; to: 0; duration: api.memory.get('settings.gameCard.navigationFadeDuration'); }
         PropertyAction { target: root; property: 'text'; value: null }
     }
 
@@ -27,7 +27,7 @@ Item {
         radius: height / 4
 
         color: api.memory.get('settings.theme.backgroundColor')
-        opacity: api.memory.get('settings.gameNavigation.opacity')
+        opacity: api.memory.get('settings.gameCard.navigationOpacity')
     }
 
     Item {
@@ -68,7 +68,7 @@ Item {
             font.hintingPreference: Font.PreferNoHinting
             font.family: titleFont.name
             font.capitalization: Font.Capitalize
-            font.pixelSize: vpx(api.memory.get('settings.gameNavigation.size'))
+            font.pixelSize: vpx(api.memory.get('settings.gameCard.navigationSize'))
             font.bold: true
 
             minimumPointSize: vpx(24)

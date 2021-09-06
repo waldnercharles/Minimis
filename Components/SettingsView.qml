@@ -86,23 +86,33 @@ FocusScope {
             rightMargin: vpx(api.memory.get('settings.theme.rightMargin'))
         }
 
-        preferredHighlightBegin: settingsListView.height / 2 - rowHeight
+        preferredHighlightBegin: 0
         preferredHighlightEnd: settingsListView.height / 2
-        highlightRangeMode: ListView.ApplyRange
+        highlightRangeMode: ListView.StrictlyEnforceRange 
         highlightMoveDuration: 100
         clip: true
 
         keyNavigationWraps: true
 
         delegate: FocusScope {
-            property bool selected: ListView.isCurrentItem && settingsListView.focus
+            readonly property bool selected: ListView.isCurrentItem && settingsListView.focus
 
-            property string settingKey: `settings.${currentCategory.key}.${modelData.key}`
-            property var settingMetadata: modelData.value
+            readonly property string settingKey: `settings.${currentCategory.key}.${modelData.key}`
+            readonly property string parentSettingKey: modelData.value.parent != null ? `settings.${currentCategory.key}.${modelData.value.parent}` : ''
 
+            readonly property bool isEnabled: (!(settingMetadata && settingMetadata.isEnabled) || settingMetadata.isEnabled())
+            readonly property bool isExpanded: !parentSettingKey || api.memory.get(parentSettingKey)
+
+            property var settingMetadata: settingsMetadata[currentCategory.key][modelData.key]
             property var value: api.memory.get(settingKey)
 
-            width: ListView.view.width; height: rowHeight
+            width: ListView.view.width
+            height: isExpanded ? rowHeight : 0
+
+            opacity: isExpanded ? (isEnabled ? 1 : 0.33) : 0
+
+            Behavior on height { NumberAnimation { duration: 200 } }
+            Behavior on opacity { NumberAnimation { duration: 200 } }
 
             Text {
                 id: settingsName
@@ -116,15 +126,17 @@ FocusScope {
 
                 height: parent.height
                 anchors.left: parent.left
-                anchors.leftMargin: vpx(5)
+                anchors.leftMargin: vpx(5) + ((settingMetadata.inset || 0) * vpx(25))
             }
 
             Text {
                 id: settingsValue
 
-                text: capitalizeFirstLetter((settingMetadata.type != 'array' ? value : settingMetadata.values[value]).toString())
+                readonly property bool isHeader: settingMetadata.type === 'header'
+
+                text: isHeader ? (value ? '\uf078' : '\uf054') : (capitalizeFirstLetter((settingMetadata.type != 'array' ? value : settingMetadata.values[value]).toString()))
                 color: api.memory.get('settings.theme.textColor')
-                font.family: subtitleFont.name
+                font.family: isHeader ? fontawesome.name : subtitleFont.name
                 font.pixelSize: vpx(20)
                 verticalAlignment: Text.AlignVCenter
                 opacity: selected ? 1.0 : 0.2
@@ -137,13 +149,31 @@ FocusScope {
             Keys.onLeftPressed: {
                 event.accepted = true;
                 sfxToggle.play();
-                decrementSettingValue();
+                incrementSetting(-1);
             }
 
             Keys.onRightPressed: {
                 event.accepted = true;
                 sfxToggle.play();
-                incrementSettingValue();
+                incrementSetting(1);
+            }
+
+            Keys.onUpPressed: {
+                event.accepted = true;
+                sfxNav.play();
+
+                do {
+                    settingsListView.decrementCurrentIndex();
+                } while (!settingsListView.currentItem.isEnabled || !settingsListView.currentItem.isExpanded)
+            }
+
+            Keys.onDownPressed: {
+                event.accepted = true;
+                sfxNav.play();
+
+                do {
+                    settingsListView.incrementCurrentIndex();
+                } while (!settingsListView.currentItem.isEnabled || !settingsListView.currentItem.isExpanded)
             }
 
             Keys.onPressed: {
@@ -154,7 +184,7 @@ FocusScope {
                 if (api.keys.isAccept(event)) {
                     event.accepted = true;
                     sfxToggle.play();
-                    incrementSettingValue();
+                    incrementSetting(1);
                 }
 
                 if (api.keys.isCancel(event)) {
@@ -164,21 +194,22 @@ FocusScope {
                 }
             }
 
-            function incrementSettingValue() {
+            function incrementSetting(direction = 1) {
                 var newValue = value;
 
                 switch (settingMetadata.type) {
                     case 'bool':
+                    case 'header':
                         newValue = !value;
                         break;
                     case 'int':
-                        newValue = parseInt(value) + (settingMetadata.delta ? parseInt(settingMetadata.delta) : 1 );
+                        newValue = parseInt(value) + (settingMetadata.delta ? parseInt(settingMetadata.delta) : 1 ) * direction;
                         break;
                     case 'real':
-                        newValue = parseFloat((parseFloat(value) + parseFloat(settingMetadata.delta)).toFixed(getPrecision(settingMetadata.delta)));
+                        newValue = parseFloat((parseFloat(value) + parseFloat(settingMetadata.delta) * direction).toFixed(getPrecision(settingMetadata.delta)));
                         break;
                     case 'array':
-                        newValue = (parseInt(value) + settingMetadata.values.length + 1) % settingMetadata.values.length
+                        newValue = (parseInt(value) + settingMetadata.values.length + direction) % settingMetadata.values.length
                         break;
                 }
 
@@ -190,40 +221,9 @@ FocusScope {
                     newValue = Math.min(newValue, settingMetadata.max);
                 }
 
-                api.memory.set(settingKey, newValue);
-            }
-
-            function decrementSettingValue() {
-                var newValue = value;
-
-                switch (settingMetadata.type) {
-                    case 'bool':
-                        newValue = !value;
-                        break;
-                    case 'int':
-                        newValue = parseInt(value) - (settingMetadata.delta ? parseInt(settingMetadata.delta) : 1 );
-                        break;
-                    case 'real':
-                        newValue = parseFloat((parseFloat(value) - parseFloat(settingMetadata.delta)).toFixed(getPrecision(settingMetadata.delta)));
-                        break;
-                    case 'array':
-                        newValue = (parseInt(value) + settingMetadata.values.length - 1) % settingMetadata.values.length
-                        break;
-                }
-
-                if (settingMetadata.min != null) {
-                    newValue = Math.max(newValue, settingMetadata.min);
-                }
-
-                if (settingMetadata.max != null) {
-                    newValue = Math.min(newValue, settingMetadata.max);
-                }
-
+                settingMetadata.onChanged ? settingMetadata.onChanged(newValue) : undefined
                 api.memory.set(settingKey, newValue);
             }
         }
-
-        Keys.onUpPressed: { sfxNav.play(); decrementCurrentIndex() }
-        Keys.onDownPressed: { sfxNav.play(); incrementCurrentIndex() }
     }
 }

@@ -383,7 +383,7 @@ FocusScope {
         }
     }
 
-    function reloadSettings(overwrite = true) {
+    function reloadSettings(overwrite = false) {
         for (const [categoryKey, category] of Object.entries(settingsMetadata)) {
             for (const [settingKey, setting] of Object.entries(category)) {
                 const key = `settings.${categoryKey}.${settingKey}`;

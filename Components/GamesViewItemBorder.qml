@@ -5,8 +5,8 @@ Item {
     id: root
 
     property int borderWidth: api.memory.get('settings.global.borderEnabled') ? vpx(api.memory.get('settings.global.borderWidth')) : 0
-    property string borderColor1: api.memory.get('settings.theme.borderColor1')
-    property string borderColor2: api.memory.get('settings.theme.borderColor2')
+    property string borderColor1: api.memory.get('settings.global.borderColor1')
+    property string borderColor2: api.memory.get('settings.global.borderColor2')
     property int cornerRadius: vpx(api.memory.get('settings.global.cornerRadius'))
 
     Rectangle {

@@ -18,11 +18,11 @@ Item {
         'developer': { type: 'string' },
         'publisher': { type: 'string' },
         'genre': { type: 'string' },
-        'releaseYear': { type: 'number', delta: api.memory.get('settings.gameCard.navigationYearIncrement'), getText: (value) => value > 0 ? value : 'N/A' },
+        'releaseYear': { type: 'number', delta: api.memory.get('settings.global.navigationYearIncrement'), getText: (value) => value > 0 ? value : 'N/A' },
         'players': { type: 'number', icon: '\uf007', getText: (value) => value > 1 ? `1-${value}` : '1' },
         'rating': {
             type: 'number',
-            delta: Math.round(api.memory.get('settings.gameCard.navigationRatingIncrement') * 20),
+            delta: Math.round(api.memory.get('settings.global.navigationRatingIncrement') * 20),
             factor: 100,
             icon: '\uf005',
             getText: (value) => (value * 5).toString()

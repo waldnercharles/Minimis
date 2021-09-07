@@ -94,7 +94,7 @@ FocusScope {
                     id: metadata
 
                     anchors {
-                        bottom: buttons.top; left: buttons.left; right: logo.right;
+                        bottom: buttons.top; left: buttons.left; right: parent.right;
                         bottomMargin: vpx(30); leftMargin: vpx(5)
                     }
 
@@ -126,6 +126,7 @@ FocusScope {
                             anchors.verticalCenter: parent.verticalCenter
                             width: vpx(4); height: width;
                             radius: height / 2;
+                            color: api.memory.get('settings.theme.textColor')
                         }
 
                         Rectangle {
@@ -160,6 +161,7 @@ FocusScope {
                             anchors.verticalCenter: parent.verticalCenter
                             width: vpx(4); height: width;
                             radius: height / 2;
+                            color: api.memory.get('settings.theme.textColor')
                         }
 
                         Row {
@@ -179,26 +181,20 @@ FocusScope {
 
                             Row {
                                 id: ratingStars
+                                anchors.verticalCenter: parent.verticalCenter;
 
                                 spacing: vpx(4)
                                 Repeater {
                                     model: 5
-                                    delegate: Image {
+                                    delegate: Text {
+                                        text: metadata.rating <= index ? '\uf006' : metadata.rating <= index + 0.5 ? '\uf123' : '\uf005'
+                                        anchors.verticalCenter: parent.verticalCenter;
+                                        font.family: fontawesome.name
+                                        font.pixelSize: metadata.fontSize
+                                        color: api.memory.get('settings.theme.textColor')
 
-                                        height: metadata.fontSize; width: height
-
-                                        source: '../assets/icons/star_' + (metadata.rating <= index ? 'empty' : metadata.rating <= index + 0.5 ? 'half' : 'full') + '.png'
-                                        sourceSize: Qt.size(width, height)
-                                        asynchronous: true
-                                        smooth: true
-
-                                        fillMode: Image.PreserveAspectFit
+                                        verticalAlignment: Text.AlignVCenter
                                     }
-                                }
-
-                                layer.enabled: true
-                                layer.effect: ColorOverlay {
-                                    color: api.memory.get('settings.theme.textColor')
                                 }
                             }
                         }
@@ -206,11 +202,9 @@ FocusScope {
 
                     layer.enabled: true
                     layer.effect: DropShadow {
-                        anchors.fill: metadata
                         horizontalOffset: vpx(0); verticalOffset: vpx(3)
                         samples: 4
                         color: '#99000000'
-                        source: metadata
                     }
                 }
 

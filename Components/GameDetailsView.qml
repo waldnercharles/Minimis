@@ -9,7 +9,6 @@ FocusScope {
     anchors.fill: parent
     anchors.leftMargin: vpx(api.memory.get('settings.theme.leftMargin'));
     anchors.rightMargin: vpx(api.memory.get('settings.theme.rightMargin'));
-    focus: true
 
     property var game
     property var gameMedia
@@ -45,7 +44,7 @@ FocusScope {
                     anchors.leftMargin: -vpx(api.memory.get('settings.theme.leftMargin'));
                     anchors.rightMargin: -vpx(api.memory.get('settings.theme.rightMargin'));
 
-                    source: game.assets.screenshot || ''
+                    source: game ? game.assets.screenshot || '' : ''
                     fillMode: Image.PreserveAspectCrop
                     asynchronous: true
                     smooth: false
@@ -71,7 +70,7 @@ FocusScope {
                     }
 
                     width: parent.width / 3.0
-                    source: game.assets.logo || ''
+                    source: game ? game.assets.logo || '' : ''
                     sourceSize: Qt.size(logo.width, 0)
                     fillMode: Image.PreserveAspectFit
 
@@ -102,9 +101,9 @@ FocusScope {
 
                     property real fontSize: vpx(18)
 
-                    property string year: game.releaseYear != 0 ? game.releaseYear : 'N/A'
+                    property string year: (game && game.releaseYear != 0) ? game.releaseYear : 'N/A'
                     property real rating: parseFloat(game.rating * 5).toPrecision(2)
-                    property int players: game.players
+                    property int players: game ? game.players : 0
 
                     Row {
                         spacing: vpx(20)
@@ -247,7 +246,7 @@ FocusScope {
                             }
                         }
                         Button {
-                            icon: game.favorite ? '\uf004' : '\uf08a' 
+                            icon: (game && game.favorite) ? '\uf004' : '\uf08a'
                             height: parent.height
                             selected: metadataContainer.ListView.isCurrentItem && ListView.isCurrentItem
                             circle: true
@@ -258,7 +257,7 @@ FocusScope {
                         }
 
                         Button {
-                            property bool isBookmarked: (api.memory.get(`database.bookmarks.${currentCollection.shortName}.${game.title}`) ?? false)
+                            property bool isBookmarked: game && (api.memory.get(`database.bookmarks.${game.collections.get(0).shortName}.${game.title}`) ?? false)
                             icon: isBookmarked ? '\uf02e' : '\uf097'
                             height: parent.height
                             text: selected ? (isBookmarked ? 'Remove from Bookmarks' : 'Add to Bookmarks') : ''
@@ -266,7 +265,7 @@ FocusScope {
                             circle: true
                             onActivated: {
                                 sfxAccept.play();
-                                toggleBookmarks(currentCollection, game);
+                                toggleBookmarks(game);
                             }
                         }
                     }

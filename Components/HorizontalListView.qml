@@ -4,29 +4,25 @@ import QtGraphicalEffects 1.0
 
 FocusScope {
     id: root
-    readonly property real aspectRatio: api.memory.get('settings.gameLibrary.aspectRatioNative') ? fakeAsset.height / fakeAsset.width : (api.memory.get('settings.gameLibrary.aspectRatioHeight') / api.memory.get('settings.gameLibrary.aspectRatioWidth'))
+
+    property bool aspectRatioNative;
+
+    property real aspectRatioWidth;
+    property real aspectRatioHeight;
+
+    property string assetKey;
+    property bool logoVisible;
+
+    readonly property real aspectRatio: aspectRatioNative ? 1 : aspectRatioHeight / aspectRatioWidth;
+
+    readonly property var currentGame: listView.currentItem ? listView.currentItem.game : undefined
 
     property alias title: listViewTitle.text
     property alias model: listView.model
 
-    anchors.left: parent.left; anchors.right: parent.right
-
-    Component {
-        id: highlightComponent
-
-        GamesViewItemHighlight {
-            game: listView.model ? listView.model.get(listView.currentIndex) : undefined
-            item: listView.currentItem
-
-            muted: false
-        }
-    }
-
-    FakeAsset { id: fakeAsset; collection: currentCollection }
-
     Text {
         id: listViewTitle
-        anchors.left: parent.left; anchors.leftMargin: vpx(10)
+        anchors.left: parent.left
 
         font.family: subtitleFont.name
         font.pixelSize: vpx(18)
@@ -40,12 +36,10 @@ FocusScope {
         anchors.top: listViewTitle.bottom; anchors.topMargin: vpx(10)
         anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom;
 
-        focus: true
+        focus: parent.focus
         orientation: ListView.Horizontal
 
         spacing: vpx(5)
-
-        cacheBuffer: listView.width * model.count
 
         preferredHighlightBegin: 0
         preferredHighlightEnd: listView.width
@@ -55,17 +49,24 @@ FocusScope {
         highlightRangeMode: ListView.ApplyRange
         highlightFollowsCurrentItem: true
 
-        highlight: highlightComponent
+        highlight: GamesViewItemHighlight {
+            game: listView.model ? listView.model.get(listView.currentIndex) : undefined
+            item: listView.currentItem
+
+            visible: listView.focus
+            muted: false
+        }
+
         delegate: GamesViewItem {
             itemHeight: listView.height
-            selected: ListView.isCurrentItem && listView.focus
-
-            scale: selected ? api.memory.get('settings.global.scaleSelected'): api.memory.get('settings.global.scale')
-            z: selected ? 3 : 1
-
-            Behavior on scale { NumberAnimation { duration: api.memory.get('settings.global.animationEnabled') ? api.memory.get('settings.global.animationArtScaleSpeed') : 0; } }
+            itemWidth: root.aspectRatioNative ? undefined : itemHeight / aspectRatio
 
             game: modelData
+            selected: ListView.isCurrentItem && listView.focus
+
+            assetKey: root.assetKey
+            logoVisible: root.logoVisible
+            aspectRatioNative: root.aspectRatioNative
         }
     }
 }

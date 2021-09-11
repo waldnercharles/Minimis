@@ -33,7 +33,7 @@ Item {
 
             source: MediaPlayer {
                 id: videoPlayer
-                source: gameItemPlayVideoPreview && game && game.assets.videoList.length > 0 ? game.assets.videoList[0] || '' : ''
+                source: gameItemPlayVideoPreview && visible && game && game.assets.videoList.length > 0 ? game.assets.videoList[0] || '' : ''
                 muted: root.muted
                 volume: api.memory.get('settings.global.previewVolume')
                 autoPlay: true

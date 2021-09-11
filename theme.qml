@@ -1,7 +1,8 @@
-import QtQuick 2.0
+import QtQuick 2.15
 import QtGraphicalEffects 1.0
 import QtMultimedia 5.9
 import QtQml.Models 2.10
+import SortFilterProxyModel 0.2
 
 import "Components"
 
@@ -81,6 +82,22 @@ FocusScope {
         color: api.memory.get('settings.theme.backgroundColor')
     }
 
+    Image {
+        anchors.centerIn: parent
+        source: opacity > 0 ? 'assets/loading-spinner.png' : ''
+        asynchronous: true
+
+        RotationAnimator on rotation {
+            loops: Animator.Infinite;
+            from: 0;
+            to: 360;
+            duration: 1000
+        }
+
+        opacity: loader.status !== Loader.Ready ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: 250; from: 1 } }
+    }
+
     Component {
         id: homeView
         HomeView { focus: true }
@@ -107,6 +124,9 @@ FocusScope {
 
         focus: true
         asynchronous: true
+
+        opacity: loader.status === Loader.Ready ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: 500; from: 0 } }
     }
 
     Component.onCompleted: {
@@ -175,8 +195,8 @@ FocusScope {
         selectedGame = game;
     }
 
-    function toggleBookmarks(collection, game) {
-        const key = `database.bookmarks.${collection.shortName}.${game.title}`;
+    function toggleBookmarks(game) {
+        const key = `database.bookmarks.${game.collections.get(0).shortName}.${game.title}`;
         api.memory.set(key, !(api.memory.get(key) ?? false));
     }
 

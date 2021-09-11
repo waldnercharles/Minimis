@@ -92,8 +92,6 @@ Item {
     SortFilterProxyModel {
         id: games
 
-        property bool favorites: false
-
         sourceModel: currentCollection.games
         filters: gameFilters
         sorters: sorter

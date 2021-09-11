@@ -62,6 +62,10 @@ FocusScope {
 
                 game: modelData
                 selected: GridView.isCurrentItem
+
+                assetKey: settingsMetadata.gameLibrary.art.values[api.memory.get('settings.gameLibrary.art')]
+                logoVisible: api.memory.get('settings.gameLibrary.logoVisible')
+                aspectRatioNative: api.memory.get('settings.gameLibrary.aspectRatioNative')
             }
 
             highlight: highlightComponent
@@ -130,7 +134,7 @@ FocusScope {
         }
     }
 
-        GamesViewHeader {
+    GamesViewHeader {
         id: header
 
         Keys.onDownPressed: {

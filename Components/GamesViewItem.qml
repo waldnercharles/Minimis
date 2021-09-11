@@ -6,14 +6,16 @@ Item {
     property var game
     property bool selected: false
 
+    property string assetKey;
+    property bool logoVisible;
+    property bool aspectRatioNative;
+
     onSelectedChanged: { gameItemVideoPreviewDebouncer.debounce(); }
     
-    readonly property string assetKey: settingsMetadata.gameLibrary.art.values[api.memory.get('settings.gameLibrary.art')]
-
     readonly property bool isPlayingPreview: selected && gameItemPlayVideoPreview
     readonly property bool isLoading: logo.status === Image.Loading || screenshot.status === Image.Loading
-    readonly property bool loadOnDemand: api.memory.get('settings.gameLibrary.logoVisible') !== api.memory.get('settings.global.previewLogoVisible')
-    readonly property bool showLogo: isPlayingPreview ? (api.memory.get('settings.global.previewLogoVisible') ? 1 : 0) : (api.memory.get('settings.gameLibrary.logoVisible') ? 1 : 0)
+    readonly property bool loadOnDemand: logoVisible !== api.memory.get('settings.global.previewLogoVisible')
+    readonly property bool showLogo: isPlayingPreview ? (api.memory.get('settings.global.previewLogoVisible') ? 1 : 0) : (logoVisible ? 1 : 0)
 
     property alias itemWidth: screenshot.width
     property alias itemHeight: screenshot.height
@@ -59,15 +61,15 @@ Item {
         id: screenshot
 
         source: game.assets[assetKey] || ''
-        sourceSize: api.memory.get('settings.performance.artImageResolution') === 0 ? undefined : Qt.size(screenshot.width, screenshot.height)
+        sourceSize: api.memory.get('settings.performance.artImageResolution') === 0 ? undefined : Qt.size(0, screenshot.height) //((screenshot.width > 0 && screenshot.height > 0) ? Qt.size(screenshot.width, screenshot.height) : undefined)
 
         asynchronous: true
 
         cache: api.memory.get('settings.performance.artImageCaching')
         smooth: api.memory.get('settings.performance.artImageSmoothing')
 
-        fillMode: api.memory.get('settings.gameLibrary.aspectRatioNative') ? Image.PreserveAspectFit : Image.PreserveAspectCrop
-        visible: screenshot.status === Image.Ready && (logo.status !== Image.Loading || (!api.memory.get('settings.gameLibrary.logoVisible') && api.memory.get('settings.global.previewLogoVisible')))
+        fillMode: aspectRatioNative ? Image.PreserveAspectFit : Image.PreserveAspectCrop
+        visible: screenshot.status === Image.Ready && (logo.status !== Image.Loading || (!logoVisible && api.memory.get('settings.global.previewLogoVisible')))
 
         opacity: selected && gameItemPlayVideoPreview && game.assets.videoList.length > 0 ? 0 : 1
 
@@ -158,7 +160,7 @@ Item {
             id: bookmarkIcon
             anchors.verticalCenter: parent.verticalCenter
 
-            readonly property bool isBookmarked: (api.memory.get(`database.bookmarks.${currentCollection.shortName}.${game.title}`) ?? false)
+            readonly property bool isBookmarked: (api.memory.get(`database.bookmarks.${game.collections.get(0).shortName}.${game.title}`) ?? false)
 
             width: icons.height; height: icons.height;
 
@@ -206,9 +208,9 @@ Item {
 
         radius: height / 2
 
-        color: api.memory.get('settings.theme.textColor')
+        color: selected ? api.memory.get('settings.theme.backgroundColor') : api.memory.get('settings.theme.textColor')
 
-        opacity: title.opacity * api.memory.get('settings.global.titleBackgroundOpacity')
+        opacity: selected ? api.memory.get('settings.global.titleBackgroundOpacity') : 0
         visible: title.visible
     }
 
@@ -219,7 +221,7 @@ Item {
 
         anchors.horizontalCenter: parent.horizontalCenter
 
-        width: selected ? undefined : parent.width
+        width: parent.width
         height: gameItemTitleHeight
         color: api.memory.get('settings.theme.textColor')
 

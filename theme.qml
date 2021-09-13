@@ -12,6 +12,8 @@ import "./utils.js" as Utils
 FocusScope {
     id: root
 
+    FontLoader { id: homeFont; source: "assets/fonts/Comfortaa-Light.ttf" }
+
     FontLoader { id: fontawesome; source: "assets/fonts/Fontawesome.otf" }
     FontLoader { id: titleFont; source: "assets/fonts/SourceSansPro-Bold.ttf" }
     FontLoader { id: subtitleFont; source: "assets/fonts/OpenSans-Bold.ttf" }

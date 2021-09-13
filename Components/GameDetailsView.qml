@@ -257,7 +257,7 @@ FocusScope {
                         }
 
                         Button {
-                            property bool isBookmarked: game && (api.memory.get(`database.bookmarks.${game.collections.get(0).shortName}.${game.title}`) ?? false)
+                            readonly property bool isBookmarked: game && (api.memory.get(`database.bookmarks.${game.collections.get(0).shortName}.${game.title}`) ?? false)
                             icon: isBookmarked ? '\uf02e' : '\uf097'
                             height: parent.height
                             text: selected ? (isBookmarked ? 'Remove from Bookmarks' : 'Add to Bookmarks') : ''

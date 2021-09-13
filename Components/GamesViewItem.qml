@@ -153,7 +153,7 @@ Item {
         readonly property real margins: vpx(9)
         readonly property real aspectRatio: parent.height / parent.width
 
-        height: parent.width / 15
+        height: vpx(15)
         spacing: height * 0.25
 
         Text {

@@ -8,6 +8,15 @@ FocusScope {
     id: root
     anchors.fill: parent
 
+    readonly property var currentGame: listView.currentItem ? listView.currentItem.currentGame : undefined
+    property var previousGame: undefined
+
+    onCurrentGameChanged: {
+        if (currentGame != null) {
+            previousGame = currentGame;
+        }
+    }
+
     ShowcaseCollection { id: collectionTypeRecentlyPlayed; collectionType: 1; maxItems: 16 }
     ShowcaseCollection { id: collectionTypeFavorites; collectionType: 2; maxItems: 16 }
     ShowcaseCollection { id: collectionTypeBookmarks; collectionType: 3; maxItems: 16 }
@@ -31,8 +40,7 @@ FocusScope {
             id: showcaseImage
             anchors.fill: parent
 
-            readonly property var currentGame: listView.currentItem ? listView.currentItem.currentGame : undefined
-            source: currentGame ? currentGame.assets['screenshot'] || '' : '' // ? (currentGame.assets['screenshot'] || '') : ''
+            source: currentGame ? currentGame.assets['screenshot'] || '' : (previousGame ? previousGame.assets['screenshot'] : '') // ? (currentGame.assets['screenshot'] || '') : ''
             fillMode: Image.PreserveAspectCrop
             asynchronous: false
 
@@ -42,15 +50,22 @@ FocusScope {
     }
 
     LinearGradient {
-        id: gradient
-
         anchors.fill: background
         start: Qt.point(0, 0)
         end: Qt.point(0, background.height)
         gradient: Gradient {
-            GradientStop { position: 0; color: "#40000000" }
-            GradientStop { position: 0.8; color: "#f0000000" }
+            GradientStop { position: 0.5; color: "#00000000" }
             GradientStop { position: 1; color: "#ff000000" }
+        }
+    }
+
+    LinearGradient {
+        anchors.fill: background
+        start: Qt.point(0, 0)
+        end: Qt.point(background.width, 0)
+        gradient: Gradient {
+            GradientStop { position: 0; color: "#ff000000" }
+            GradientStop { position: 1; color: "#00000000" }
         }
     }
 
@@ -91,16 +106,82 @@ FocusScope {
             sourceModel: showcaseCollectionsListModel
         }
 
+        Item {
+            anchors {
+                top: parent.top; left: parent.left; right: parent.right; bottom: parent.verticalCenter
+            }
+
+            Text {
+                id: title
+
+                text: currentGame ? currentGame.title : previousGame ? previousGame.title : ''
+                anchors {
+                    top: parent.top; left: parent.left;
+                }
+                anchors.topMargin: font.pixelSize / 2
+
+                width: parent.width * 0.75
+
+                antialiasing: true
+                renderType: Text.NativeRendering
+                font.hintingPreference: Font.PreferNoHinting
+                font.pixelSize: parent.height / 5
+                font.family: homeFont.name
+                font.capitalization: Font.AllUppercase 
+                color: api.memory.get('settings.theme.textColor')
+
+                fontSizeMode: Text.Fit
+                verticalAlignment: Text.AlignVCenter
+
+                layer.enabled: true
+                layer.effect: DropShadow {
+                    horizontalOffset: vpx(0); verticalOffset: vpx(1)
+                    samples: 2
+                    color: '#ff000000';
+                }
+            }
+
+            Text {
+                id: description
+
+                text: currentGame ? currentGame.description : previousGame ? previousGame.description : ''
+                anchors {
+                    top: title.bottom; left: parent.left; bottom: parent.bottom
+                }
+                anchors.topMargin: font.pixelSize / 2
+                anchors.bottomMargin: font.pixelSize / 2
+
+                width: parent.width * 0.75
+
+                antialiasing: true
+                renderType: Text.NativeRendering
+                font.hintingPreference: Font.PreferNoHinting
+                font.pixelSize: parent.height / 25
+                font.family: bodyFont.name
+                color: api.memory.get('settings.theme.textColor')
+
+                elide: Text.ElideRight
+
+                lineHeight: 1.1
+                wrapMode: Text.WordWrap
+
+                layer.enabled: true
+                layer.effect: DropShadow {
+                    horizontalOffset: vpx(0); verticalOffset: vpx(1)
+                    samples: 2
+                    color: '#ff000000';
+                }
+            }
+        }
+
         ListView {
             id: listView
             focus: true
 
             anchors {
-                bottom: parent.bottom; left: parent.left; right: parent.right;
+                top: parent.verticalCenter; left: parent.left; right: parent.right; bottom: parent.bottom;
                 bottomMargin: vpx(40)
             }
-
-            height: vpx(300)
 
             preferredHighlightBegin: 0
             preferredHighlightEnd: 0
@@ -111,7 +192,7 @@ FocusScope {
 
             spacing: gameItemTitleMargin + vpx(10)
 
-            cacheBuffer: height * 5
+            cacheBuffer: parent.height * 2.5
             
             model: showcaseCollectionsProxyModel
             delegate: HorizontalListViewFiltered {

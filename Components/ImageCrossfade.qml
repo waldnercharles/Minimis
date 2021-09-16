@@ -25,10 +25,11 @@ Item {
             to: 'img1'
             SequentialAnimation {
                 ParallelAnimation {
-                    NumberAnimation { target: img1; property: 'opacity'; to: 0; easing.type: Easing.InOutQuad; duration: 500  }
-                    NumberAnimation { target: img2; property: 'opacity'; to: 0; easing.type: Easing.InOutQuad; duration: 500  }
+                    NumberAnimation { target: img1; property: 'opacity'; to: 0; duration: img1.opacity * 500  }
+                    NumberAnimation { target: img2; property: 'opacity'; to: 0; duration: img2.opacity * 500  }
                 }
-                PropertyAction { target: img1; property: 'source' }
+                PropertyAction { target: img1; property: 'source'; }
+                PauseAnimation { duration: 250 }
                 NumberAnimation { target: img1; property: 'opacity'; to: 1; easing.type: Easing.InOutQuad; duration: 500  }
             }
         },
@@ -36,10 +37,11 @@ Item {
             to: 'img2'
             SequentialAnimation {
                 ParallelAnimation {
-                    NumberAnimation { target: img1; property: 'opacity'; to: 0; easing.type: Easing.InOutQuad; duration: 500  }
-                    NumberAnimation { target: img2; property: 'opacity'; to: 0; easing.type: Easing.InOutQuad; duration: 500  }
+                    NumberAnimation { target: img1; property: 'opacity'; to: 0; duration: img1.opacity * 500  }
+                    NumberAnimation { target: img2; property: 'opacity'; to: 0; duration: img2.opacity * 500 }
                 }
                 PropertyAction { target: img2; property: 'source' }
+                PauseAnimation { duration: 250 }
                 NumberAnimation { target: img2; property: 'opacity'; to: 1; easing.type: Easing.InOutQuad; duration: 500  }
             }
         }

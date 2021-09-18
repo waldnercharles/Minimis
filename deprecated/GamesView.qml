@@ -16,22 +16,8 @@ FocusScope {
 
         FakeAsset { id: fakeAsset; collection: currentCollection }
 
-        Component { id: gamesViewItemComponent; GamesViewItem { } }
-
-        Component {
-            id: highlightComponent
-
-            GamesViewItemHighlight {
-                game: grid.model ? grid.model.get(grid.currentIndex) : undefined
-                item: grid.currentItem
-
-                muted: collectionTransition.opacity === 1
-            }
-        }
-
         GridView {
             id: grid
-
             focus: true
 
             anchors.fill: parent
@@ -68,7 +54,12 @@ FocusScope {
                 aspectRatioNative: api.memory.get('settings.gameLibrary.aspectRatioNative')
             }
 
-            highlight: highlightComponent
+            highlight: GamesViewItemHighlight {
+                game: grid.model ? grid.model.get(grid.currentIndex) : undefined
+                item: grid.currentItem
+
+                muted: collectionTransition.opacity === 1
+            }
 
             Component.onCompleted: {
                 grid.currentIndex = gridContainer.focus ? savedGameIndex : -1;
@@ -134,14 +125,14 @@ FocusScope {
         }
     }
 
-    GamesViewHeader {
-        id: header
+    // GamesViewHeader {
+    //     id: header
 
-        Keys.onDownPressed: {
-            sfxNav.play();
-            gridContainer.focus = true;
-        }
-    }
+    //     Keys.onDownPressed: {
+    //         sfxNav.play();
+    //         gridContainer.focus = true;
+    //     }
+    // }
 
     FilteredCollection { id: filteredCollection }
 
@@ -152,33 +143,33 @@ FocusScope {
         pendingCollection: api.collections.get(currentCollectionIndex)
     }
 
-    Keys.onPressed: {
-        if (event.isAutoRepeat) {
-            return;
-        }
+    // Keys.onPressed: {
+    //     if (event.isAutoRepeat) {
+    //         return;
+    //     }
 
-        if (api.keys.isPrevPage(event)) {
-            event.accepted = true;
-            prevCollection();
-        }
+    //     if (api.keys.isPrevPage(event)) {
+    //         event.accepted = true;
+    //         prevCollection();
+    //     }
 
-        if (api.keys.isNextPage(event)) {
-            event.accepted = true;
-            nextCollection();
-        }
-    }
+    //     if (api.keys.isNextPage(event)) {
+    //         event.accepted = true;
+    //         nextCollection();
+    //     }
+    // }
 
-    function prevCollection() {
-        currentCollectionIndex = (currentCollectionIndex + api.collections.count - 1) % api.collections.count;
-        grid.currentIndex = savedGameIndex = 0;
+    // function prevCollection() {
+    //     currentCollectionIndex = (currentCollectionIndex + api.collections.count - 1) % api.collections.count;
+    //     grid.currentIndex = savedGameIndex = 0;
 
-        gameItemVideoPreviewDebouncer.debounce();
-    }
+    //     gameItemVideoPreviewDebouncer.debounce();
+    // }
 
-    function nextCollection() {
-        currentCollectionIndex = (currentCollectionIndex + 1) % api.collections.count;
-        grid.currentIndex = savedGameIndex = 0;
+    // function nextCollection() {
+    //     currentCollectionIndex = (currentCollectionIndex + 1) % api.collections.count;
+    //     grid.currentIndex = savedGameIndex = 0;
 
-        gameItemVideoPreviewDebouncer.debounce();
-    }
+    //     gameItemVideoPreviewDebouncer.debounce();
+    // }
 }

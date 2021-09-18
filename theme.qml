@@ -71,68 +71,98 @@ FocusScope {
     }
 
     states: [
-        State { name: 'homeView'; PropertyChanges { target: loader; sourceComponent: homeView } },
-        State { name: 'gamesView'; PropertyChanges { target: loader; sourceComponent: gamesView } },
-        State { name: 'settingsView'; PropertyChanges { target: loader; sourceComponent: settingsView } },
-        State { name: 'gameDetailsView'; PropertyChanges { target: loader; sourceComponent: gameDetailsView } }
+        State { name: 'showcaseView'; PropertyChanges { target: contentLoader; sourceComponent: showcaseViewComponent } },
+        State { name: 'gameDetailsView'; PropertyChanges { target: contentLoader; sourceComponent: showcaseViewComponent } },
+        State { name: 'settingsView'; PropertyChanges { target: contentLoader; sourceComponent: settingsViewComponent } }
     ]
 
-    state: 'gamesView'
+    state: 'showcaseView'
 
-    Rectangle {
+    Background {
         anchors.fill: parent
-        color: api.memory.get('settings.theme.backgroundColor')
-    }
 
-    Image {
-        anchors.centerIn: parent
-        source: opacity > 0 ? 'assets/loading-spinner.png' : ''
-        asynchronous: true
+        source: contentLoader.game ? contentLoader.game.assets.screenshot || '' : ''
 
-        RotationAnimator on rotation {
-            loops: Animator.Infinite;
-            from: 0;
-            to: 360;
-            duration: 1000
+        Image {
+            id: loadingIndicator
+
+            anchors.centerIn: parent
+            source: loadingIndicator.visible ? 'assets/loading-spinner.png' : ''
+            asynchronous: false
+            smooth: true
+
+            RotationAnimator on rotation {
+                loops: Animator.Infinite;
+                from: 0;
+                to: 360;
+                duration: 1000
+
+                running: loadingIndicator.visible
+            }
+
+            visible: opacity > 0
+            opacity: contentLoader.status === Loader.Loading ? 1 : 0
+            Behavior on opacity { SequentialAnimation { NumberAnimation { duration: 300; from: 1 } } }
         }
-
-        opacity: loader.status !== Loader.Ready ? 1 : 0
-        Behavior on opacity { NumberAnimation { duration: 250; from: 1 } }
     }
 
-    Component {
-        id: homeView
-        HomeView { focus: true }
-    }
+    Component { id: settingsViewComponent; SettingsView { anchors.fill: parent; focus: true } }
 
     Component {
-        id: gamesView
-        GamesView { focus: true }
-    }
+        id: showcaseViewComponent;
 
-    Component {
-        id: settingsView
-        SettingsView { focus: true }
-    }
+        FocusScope {
+            anchors.fill: parent
+            focus: true
 
-    Component {
-        id: gameDetailsView
-        GameDetailsView { focus: true; game: selectedGame }
+            readonly property var game: (root.state === 'showcaseView' ? showcaseView.game : gameDetailsView.game)
+
+            ShowcaseView {
+                id: showcaseView
+
+                anchors.fill: parent
+                focus: root.state === 'showcaseView'
+
+                visible: opacity > 0
+                opacity: focus ? 1 : 0
+                Behavior on opacity { NumberAnimation { duration: 300; from: 0 } }
+            }
+
+            GameDetailsView {
+                id: gameDetailsView
+
+                anchors.fill: parent
+                focus: root.state === 'gameDetailsView'
+
+                game: root.selectedGame
+
+                visible: opacity > 0
+                opacity: focus ? 1 : 0
+                Behavior on opacity { NumberAnimation { duration: 300; from: 0 } }
+            }
+        }
     }
 
     Loader {
-        id: loader
+        id: contentLoader
+        readonly property var game: item.game
+
         anchors.fill: parent
 
-        focus: true
         asynchronous: true
 
-        opacity: loader.status === Loader.Ready ? 1 : 0
-        Behavior on opacity { NumberAnimation { duration: 500; from: 0 } }
+        opacity: contentLoader.status === Loader.Ready ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: 300; from: 0 } }
     }
+
+    // CollectionsModal {
+    //     focus: true
+
+    // }
 
     Component.onCompleted: {
         reloadSettings();
+        // const randomArray = Array.from({length: api.allGames.count}, () => Math.random());
     }
 
     Keys.onPressed: {
@@ -187,19 +217,21 @@ FocusScope {
 
     function toGameDetailsView(game) {
         sfxAccept.play();
-        stateHistory.push(root.state);
-        root.state = 'gameDetailsView';
 
         if (selectedGame) {
             selectedGameHistory.push(selectedGame);
         }
 
         selectedGame = game;
+
+        stateHistory.push(root.state);
+        root.state = 'gameDetailsView';
     }
 
     function toggleBookmarks(game) {
         const key = `database.bookmarks.${game.collections.get(0).shortName}.${game.title}`;
         api.memory.set(key, !(api.memory.get(key) ?? false));
+        game.onFavoriteChanged();
     }
 
     function getPrecision(a) {

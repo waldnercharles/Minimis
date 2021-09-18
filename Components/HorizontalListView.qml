@@ -20,53 +20,67 @@ FocusScope {
     property alias title: listViewTitle.text
     property alias model: listView.model
 
-    Text {
-        id: listViewTitle
-        anchors.left: parent.left
+    Column {
+        anchors.fill: parent
+        spacing: vpx(10)
 
-        font.family: subtitleFont.name
-        font.pixelSize: vpx(18)
+        Text {
+            id: listViewTitle
 
-        color: api.memory.get('settings.theme.textColor')
-        opacity: parent.focus ? 1 : 0.2
-    }
+            font.family: subtitleFont.name
+            font.pixelSize: vpx(18)
 
-    ListView {
-        id: listView
-        anchors.top: listViewTitle.bottom; anchors.topMargin: vpx(10)
-        anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom;
-
-        focus: parent.focus
-        orientation: ListView.Horizontal
-
-        spacing: vpx(5)
-
-        preferredHighlightBegin: 0
-        preferredHighlightEnd: listView.width
-
-        highlightResizeDuration: 0
-        highlightMoveDuration: 0
-        highlightRangeMode: ListView.ApplyRange
-        highlightFollowsCurrentItem: true
-
-        highlight: GamesViewItemHighlight {
-            game: listView.model ? listView.model.get(listView.currentIndex) : undefined
-            item: listView.currentItem
-
-            visible: listView.focus
-            muted: false
+            color: api.memory.get('settings.theme.textColor')
+            opacity: root.focus ? 1 : 0.2
         }
 
-        delegate: GamesViewItem {
-            itemHeight: listView.height
-            itemWidth: root.aspectRatioNative ? undefined : itemHeight / aspectRatio
+        ListView {
+            id: listView
 
-            game: modelData
-            selected: ListView.isCurrentItem && listView.focus
+            FlickableDelegateBorder {
+                parent: listView.contentItem
+                currentItem: listView.currentItem
 
-            assetKey: root.assetKey
-            logoVisible: root.logoVisible
-            aspectRatioNative: root.aspectRatioNative
+                visible: listView.focus
+            }
+
+            height: parent.height - y
+            width: parent.width
+
+            focus: root.focus
+            orientation: ListView.Horizontal
+
+            spacing: vpx(5)
+
+            highlightResizeDuration: 0
+            highlightMoveDuration: 300
+            highlightRangeMode: ListView.ApplyRange
+            highlightFollowsCurrentItem: true
+
+            displayMarginBeginning: width * 2
+            displayMarginEnd: width * 2
+
+            highlight: GameDelegateHighlight {
+                item: listView.currentItem
+                visible: listView.focus
+
+                muted: false
+            }
+
+            delegate: GameDelegate {
+                itemHeight: listView.height
+                itemWidth: root.aspectRatioNative ? undefined : itemHeight / root.aspectRatio
+
+                game: modelData
+                selected: ListView.isCurrentItem && listView.focus
+
+                assetKey: root.assetKey
+                logoVisible: root.logoVisible
+                aspectRatioNative: root.aspectRatioNative
+            }
+
+            Keys.onLeftPressed: { sfxNav.play(); event.accepted = false; }
+            Keys.onRightPressed: { sfxNav.play(); event.accepted = false; }
         }
     }
 }

@@ -89,7 +89,7 @@ FocusScope {
         preferredHighlightBegin: 0
         preferredHighlightEnd: settingsListView.height / 2
         highlightRangeMode: ListView.StrictlyEnforceRange 
-        highlightMoveDuration: 100
+        highlightMoveDuration: 300
         clip: true
 
         keyNavigationWraps: true
@@ -111,8 +111,8 @@ FocusScope {
 
             opacity: isExpanded ? (isEnabled ? 1 : 0.33) : 0
 
-            Behavior on height { NumberAnimation { duration: 200 } }
-            Behavior on opacity { NumberAnimation { duration: 200 } }
+            Behavior on height { NumberAnimation { duration: 300 } }
+            Behavior on opacity { NumberAnimation { duration: 300 } }
 
             Text {
                 id: settingsName

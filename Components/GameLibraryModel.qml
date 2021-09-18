@@ -5,6 +5,8 @@ Item {
     anchors.fill: parent
 
     readonly property alias games: games
+    readonly property alias model: games.sourceModel
+
     readonly property var metadata: roleMetadata[sorter.roleName]
 
     property var roleMetadata: ({

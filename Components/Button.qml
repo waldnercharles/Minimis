@@ -30,11 +30,14 @@ FocusScope {
         height: root.height;
         anchors.verticalCenter: parent.verticalCenter
 
-        property var padding: (height - icon.height) * 0.5
+        property var padding: (height - icon.height) * ((circle && text == '') ? 0.5 : 0.8)
         spacing: padding * 0.5
 
         leftPadding: padding
         rightPadding: padding
+
+        Behavior on leftPadding { NumberAnimation { duration: 200 } }
+        Behavior on rightPadding { NumberAnimation { duration: 200 } }
 
         Text {
             id: icon

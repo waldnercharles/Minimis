@@ -17,9 +17,9 @@ FocusScope {
 
     height: vpx(75)
 
-    Rectangle {
+    Item {
         anchors.fill: parent
-        color: api.memory.get('settings.theme.backgroundColor')
+        // color: api.memory.get('settings.theme.backgroundColor')
 
         Item {
             id: container

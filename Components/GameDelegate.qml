@@ -3,6 +3,8 @@ import QtMultimedia 5.9
 import QtGraphicalEffects 1.0
 
 Item {
+    id: root
+
     property var game
     property bool selected: false
 
@@ -20,12 +22,13 @@ Item {
     property alias itemWidth: screenshot.width
     property alias itemHeight: screenshot.height
 
-    width: itemWidth; height: itemHeight
+    width: itemWidth
+    height: itemHeight
 
     scale: api.memory.get('settings.global.scaleEnabled') ? (selected ? api.memory.get('settings.global.scaleSelected'): api.memory.get('settings.global.scale')) : settingsMetadata.global.scale.defaultValue
-    z: selected ? 3 : 1
-
     Behavior on scale { NumberAnimation { duration: api.memory.get('settings.global.animationEnabled') ? api.memory.get('settings.global.animationArtScaleSpeed') : 0; } }
+
+    z: selected ? 255 : 1
 
     Keys.onPressed: {
         if (event.isAutoRepeat) {
@@ -85,62 +88,16 @@ Item {
         }
     }
 
-    Item {
+    GameDelegateLogo {
+        id: logo
         anchors.fill: parent
-        Image {
-            id: logo
-            anchors.fill: parent
 
-            source: opacity != 0 ? game.assets.logo || '' : ''
-            sourceSize: api.memory.get('settings.performance.logoImageResolution') === 0 ? undefined : Qt.size(logo.width, logo.height)
-
-            asynchronous: true
-            smooth: api.memory.get('settings.performance.logoImageSmoothing')
-            cache: api.memory.get('settings.performance.logoImageCaching')
-
-            fillMode: Image.PreserveAspectFit
-
-            visible: logo.status === Image.Ready && screenshot.status !== Image.Loading
-
-            Behavior on opacity { NumberAnimation { duration: api.memory.get('settings.global.animationEnabled') ? api.memory.get('settings.global.logoFadeSpeed') : 0 } }
-            opacity: showLogo ? 1 : 0
-        }
-
-        Text {
-            id: textLogo
-
-            anchors.fill: parent
-            anchors.margins: vpx(10)
-
-            text: game.title || ''
-            color: api.memory.get('settings.theme.textColor')
-
-            font.family: subtitleFont.name
-            font.pixelSize: vpx(api.memory.get('settings.global.logoFontSize'))
-            font.bold: true
-
-            style: Text.Outline; styleColor: api.memory.get('settings.theme.backgroundColor')
-
-            elide: Text.ElideRight
-            wrapMode: Text.WordWrap
-            lineHeight: 1.2
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            visible: !logo.visible
-            opacity: !(loadOnDemand && isPlayingPreview) && isLoading ? 1 : logo.opacity
-        }
-
-        Behavior on scale { NumberAnimation { duration: api.memory.get('settings.global.animationEnabled') ? api.memory.get('settings.global.logoScaleSpeed') : 0; } }
-        scale: api.memory.get('settings.global.logoScaleEnabled') ? (selected ? api.memory.get('settings.global.logoScaleSelected') : api.memory.get('settings.global.logoScale')) : settingsMetadata.global.logoScale.defaultValue
-
-        layer.enabled: api.memory.get('settings.performance.logoDropShadow')
-        layer.effect: DropShadow {
-            horizontalOffset: vpx(0); verticalOffset: vpx(4)
-
-            samples: 5
-            color: '#75000000'
-        }
+        game: root.game
+        isLoading: root.isLoading
+        showLogo: root.showLogo
+        loadOnDemand: root.loadOnDemand
+        isPlayingPreview: root.isPlayingPreview
+        selected: root.selected
     }
 
     Row {

@@ -1,4 +1,4 @@
-function createCollectionMetadata(category, parent, omitType = false) {
+function createCollectionMetadata(category, parent = null, collectionType = false) {
     const metadata = {};
 
     if (parent) {
@@ -11,10 +11,10 @@ function createCollectionMetadata(category, parent, omitType = false) {
     const prefix = parentKey ?? '';
     const fullPrefix = `settings.${category}.${prefix}`
 
-    if (!omitType) {
+    if (collectionType) {
         metadata[`${prefix}type`] = {
             name: 'Type',
-            defaultValue: 2,
+            defaultValue: 0,
             values: [ 'None', 'Recently Played', 'Favorites', 'Bookmarks', 'Random Games' ],
             type: 'array',
             parent: parentKey, inset: inset
@@ -116,7 +116,7 @@ function createMetadata() {
                 { key: 'videoPreview', name: 'Video Preview' },
                 {
                     previewEnabled: { name: 'Enabled', defaultValue: true, type: 'bool' },
-                    previewVolume: { name: 'Volume', defaultValue: 0.5, delta: 0.1, min: 0.0, max: 1.0, type: 'real', isEnabled: () => api.memory.get('settings.global.previewEnabled') },
+                    previewVolume: { name: 'Volume', defaultValue: 0.0, delta: 0.1, min: 0.0, max: 1.0, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.previewEnabled') },
                     videoPreviewDelay: { name: 'Delay', defaultValue: 1000, min: 0, delta: 50, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.previewEnabled') },
                     previewLogoVisible: { name: 'Logo - Visible', defaultValue: true, type: 'bool', inset: 1, isEnabled: () => api.memory.get('settings.global.previewEnabled') }
                 }
@@ -137,8 +137,8 @@ function createMetadata() {
                     scale: { name: 'Card Scaling - Default', defaultValue: 0.95, delta: 0.01, min: 0, max: 1.0, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.scaleEnabled') },
                     scaleSelected: { name: 'Card Scaling - Selected', defaultValue: 1.0, delta: 0.01, min: 0, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.scaleEnabled') },
                     logoScaleEnabled: { name: 'Logo Scaling - Enabled', defaultValue: true, type: 'bool', },
-                    logoScale: { name: 'Logo Scaling - Default', defaultValue: 0.75, delta: 0.01, min: 0.01, type: 'real', inset: 1 },
-                    logoScaleSelected: { name: 'Logo Scaling - Selected', defaultValue: 0.75, delta: 0.01, min: 0, type: 'real', inset: 1 },
+                    logoScale: { name: 'Logo Scaling - Default', defaultValue: 0.75, delta: 0.01, min: 0.01, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.logoScaleEnabled') },
+                    logoScaleSelected: { name: 'Logo Scaling - Selected', defaultValue: 0.85, delta: 0.01, min: 0, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.logoScaleEnabled') },
                 }
             ),
             createHeader(
@@ -147,8 +147,8 @@ function createMetadata() {
                     animationEnabled: { name: 'Enabled', defaultValue: true, type: 'bool', },
                     animationArtScaleSpeed: { name: 'Card Scaling - Duration (Milliseconds)', defaultValue: 200, min: 0, delta: 50, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.animationEnabled') },
                     animationArtFadeSpeed: { name: 'Card Fading - Duration (Milliseconds)', defaultValue: 200, min: 0, delta: 50, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.animationEnabled') },
-                    logoScaleSpeed: { name: 'Logo Scaling - Duration (Milliseconds)', defaultValue: 200, min: 0, delta: 50, type: 'int', inset: 1, },
-                    logoFadeSpeed: { name: 'Logo Fading - Duration (Milliseconds)', defaultValue: 200, min: 0, delta: 50, type: 'int', inset: 1, },
+                    logoScaleSpeed: { name: 'Logo Scaling - Duration (Milliseconds)', defaultValue: 200, min: 0, delta: 50, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.animationEnabled'), },
+                    logoFadeSpeed: { name: 'Logo Fading - Duration (Milliseconds)', defaultValue: 200, min: 0, delta: 50, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.animationEnabled') },
                 }
             ),
             createHeader(
@@ -158,6 +158,8 @@ function createMetadata() {
                     borderAnimated: { name: 'Animated', defaultValue: true, type: 'bool', inset: 1, isEnabled: () => api.memory.get('settings.global.borderEnabled') },
                     borderWidth: { name: 'Width', defaultValue: 3, min: 0, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.borderEnabled') },
                     cornerRadius: { name: 'Corner Radius', defaultValue: 5, min: 0, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.borderEnabled') },
+                    // borderColor1: { name: 'Color 1', defaultValue: '#FFC85C', type: 'string', inset: 1, isEnabled: () => api.memory.get('settings.global.borderEnabled') },
+                    // borderColor2: { name: 'Color 2', defaultValue: '#ECECEC', type: 'string', inset: 1, isEnabled: () => api.memory.get('settings.global.borderEnabled') },
                     borderColor1: { name: 'Color 1', defaultValue: '#FFC85C', type: 'string', inset: 1, isEnabled: () => api.memory.get('settings.global.borderEnabled') },
                     borderColor2: { name: 'Color 2', defaultValue: '#ECECEC', type: 'string', inset: 1, isEnabled: () => api.memory.get('settings.global.borderEnabled') },
                 }
@@ -183,28 +185,33 @@ function createMetadata() {
             )
         ),
         home: Object.assign(
-            createCollectionMetadata('home', { key: 'collection1', name: 'Collection 1' }),
-            createCollectionMetadata('home', { key: 'collection2', name: 'Collection 2' }),
-            createCollectionMetadata('home', { key: 'collection3', name: 'Collection 3' }),
-            createCollectionMetadata('home', { key: 'collection4', name: 'Collection 4' }),
-            createCollectionMetadata('home', { key: 'collection5', name: 'Collection 5' }),
+            createCollectionMetadata('home', { key: 'collection1', name: 'Collection 1' }, true),
+            createCollectionMetadata('home', { key: 'collection2', name: 'Collection 2' }, true),
+            createCollectionMetadata('home', { key: 'collection3', name: 'Collection 3' }, true),
+            createCollectionMetadata('home', { key: 'collection4', name: 'Collection 4' }, true),
+            createCollectionMetadata('home', { key: 'collection5', name: 'Collection 5' }, true),
         ),
         gameLibrary: Object.assign(
             { gameViewColumns: { name: 'Number of Columns', defaultValue: 4, type: 'int', min: 1 } },
-            createCollectionMetadata('gameLibrary', null, true)
+            createCollectionMetadata('gameLibrary')
         ),
         gameDetails: {
             previewEnabled: { name: 'Video Preview - Enabled', defaultValue: true, type: 'bool' },
             previewVolume: { name: 'Video Preview - Volume', defaultValue: 0.0, delta: 0.1, min: 0.0, type: 'real' },
         },
         theme: {
-            backgroundColor: { name: 'Background Color', defaultValue: '#13161B', type: 'string' },
+            // backgroundColor: { name: 'Background Color', defaultValue: '#13161B', type: 'string' },
+            // accentColor: { name: 'Accent Color', defaultValue: '#FFC85C', type: 'string' },
+            // textColor: { name: 'Text Color', defaultValue: '#ECECEC', type: 'string' },
+
+            backgroundColor: { name: 'Background Color', defaultValue: '#343434', type: 'string' },
             accentColor: { name: 'Accent Color', defaultValue: '#FFC85C', type: 'string' },
             textColor: { name: 'Text Color', defaultValue: '#ECECEC', type: 'string' },
 
             // backgroundColor: { name: 'Background Color', defaultValue: '#262A53', type: 'string' },
             // accentColor: { name: 'Accent Color', defaultValue: '#FFA0A0', type: 'string' },
             // textColor: { name: 'Text Color', defaultValue: '#FFE3E3', type: 'string' },
+
             leftMargin: { name: 'Screen Padding - Left', defaultValue: 60, min: 0, type: 'int' },
             rightMargin: { name: 'Screen Padding - Right', defaultValue: 60, min: 0, type: 'int' },
         },
@@ -214,7 +221,7 @@ function createMetadata() {
             artImageSmoothing: { name: 'Art - Image Smoothing', defaultValue: false, type: 'bool' },
             artDropShadow: { name: 'Art - Drop Shadow', defaultValue: true, type: 'bool' },
 
-            logoImageResolution: { name: 'Logo - Image Resolution', defaultValue: 1, values: ['Native', 'Scaled'], type: 'array' },
+            logoImageResolution: { name: 'Logo - Image Resolution', defaultValue: 0, values: ['Native', 'Scaled'], type: 'array' },
             logoImageCaching: { name: 'Logo - Image Caching', defaultValue: false, type: 'bool' },
             logoImageSmoothing: { name: 'Logo - Image Smoothing', defaultValue: true, type: 'bool' },
             logoDropShadow: { name: 'Logo - Drop Shadow', defaultValue: false, type: 'bool' }

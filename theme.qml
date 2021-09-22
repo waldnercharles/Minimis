@@ -24,6 +24,9 @@ FocusScope {
     SoundEffect { id: sfxAccept; source: "assets/sfx/accept.wav" }
     SoundEffect { id: sfxToggle; source: "assets/sfx/toggle.wav" }
 
+    readonly property alias allGames: allGames
+    AllGames { id: allGames }
+
     property var settingsMetadata: Settings.metadata;
 
     property var stateHistory: []
@@ -153,16 +156,12 @@ FocusScope {
 
         opacity: contentLoader.status === Loader.Ready ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: 300; from: 0 } }
+
+        focus: true
     }
-
-    // CollectionsModal {
-    //     focus: true
-
-    // }
 
     Component.onCompleted: {
         reloadSettings();
-        // const randomArray = Array.from({length: api.allGames.count}, () => Math.random());
     }
 
     Keys.onPressed: {

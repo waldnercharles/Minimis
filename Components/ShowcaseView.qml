@@ -15,25 +15,24 @@ FocusScope {
     property var previousGame: undefined
 
     states: [
-        State { name: "full"; PropertyChanges { target: showcase; y: header.height } },
-        State { name: "half"; PropertyChanges { target: showcase; y: root.height * 0.4 } }
+        State {
+            name: "full";
+            PropertyChanges { target: showcase; y: header.height }
+            PropertyChanges { target: showcaseMetadata; y: -showcaseMetadata.height; opacity: 0 }
+        },
+        State { name: "half"; }
     ]
 
     transitions: [
         Transition {
             NumberAnimation { target: showcase; property: 'y'; duration: 300 }
+            NumberAnimation { target: showcase; property: 'height'; duration: 300 }
+            NumberAnimation { target: showcaseMetadata; property: 'y'; duration: 300 }
+            NumberAnimation { target: showcaseMetadata; property: 'opacity'; duration: 300 }
         }
     ]
 
     state: showcase.list.currentIndex < (showcase.list.count - 1) ? 'half' : 'full'
-
-    // Background {
-    //     anchors.fill: parent
-        
-    //     source: root.game ? root.game.assets.screenshot || '' : ''
-
-    //     showBackgroundImage: root.state !== 'full'
-    // }
 
     FocusScope {
         focus: true
@@ -42,13 +41,14 @@ FocusScope {
         anchors.rightMargin: vpx(api.memory.get('settings.theme.rightMargin'));
 
         GameMetadata {
+            id: showcaseMetadata
+
             width: parent.width
-            height: parent.height * 0.4
+            height: parent.height * 0.5
 
             game: root.game
 
-            opacity: root.state === 'full' ? 0 : 1
-            Behavior on opacity { NumberAnimation { from: 0; duration: 200 } }
+            visible: opacity > 0
         }
 
         ShowcaseCollections {
@@ -56,9 +56,11 @@ FocusScope {
             focus: true
 
             width: parent.width
-            height: root.height - header.height 
+            height: parent.height
 
-            rowHeight: (height / 2) * 0.75
+            y: showcaseMetadata.height
+
+            rowHeight: (root.height / 2) * 0.66
 
             onCurrentGameChanged: {
                 if (currentGame != null) {
@@ -84,42 +86,5 @@ FocusScope {
         ShowcaseViewHeader {
             id: header
         }
-
-        // FocusScope {
-        //     id: header
-
-        //     anchors {
-        //         left: parent.left; right: parent.right; top: parent.top;
-        //     }
-
-        //     anchors.topMargin: height / 2.0
-        //     anchors.bottomMargin: anchors.topMargin
-
-        //     height: vpx(40)
-
-        //     Button {
-        //         icon: '\uf013'
-
-        //         anchors.verticalCenter: parent.verticalCenter;
-        //         anchors.right: parent.right
-
-        //         width: parent.height
-        //         height: parent.height;
-
-        //         circle: true
-
-        //         focus: parent.focus
-        //         selected: parent.focus
-
-        //         onActivated: {
-        //             toSettingsView();
-        //         }
-        //     }
-
-        //     Keys.onDownPressed: {
-        //         sfxNav.play();
-        //         showcase.focus = true;
-        //     }
-        // }
     }
 }

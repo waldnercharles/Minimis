@@ -1,4 +1,3 @@
-
 import QtQuick 2.3
 import QtQuick.Layouts 1.15
 import QtGraphicalEffects 1.0
@@ -8,17 +7,20 @@ ColumnLayout {
     property var game
 
     Image {
-        source: root.game ? root.game.assets.logo || '' : ''
-        sourceSize: Qt.size(0, height)
+        id: logo
 
-        Layout.maximumWidth: parent.width * 0.4
+        source: root.game ? root.game.assets.logo || '' : ''
+        sourceSize: Qt.size(parent.width * 0.5, 0)
+
         Layout.fillHeight: true
         Layout.alignment: Qt.AlignBottom | Qt.AlignLeft
 
         Layout.topMargin: vpx(30)
-        Layout.bottomMargin: vpx(10)
+        Layout.bottomMargin: vpx(5)
 
         fillMode: Image.PreserveAspectFit
+        horizontalAlignment: Image.AlignLeft
+        verticalAlignment: Image.AlignBottom
 
         asynchronous: true
         smooth: true
@@ -26,9 +28,9 @@ ColumnLayout {
 
         layer.enabled: true
         layer.effect: DropShadow {
-            horizontalOffset: vpx(0); verticalOffset: vpx(0)
-            samples: 5
-            color: '#ffffffff'
+            horizontalOffset: vpx(0); verticalOffset: vpx(8)
+            samples: 13
+            color: '#77000000'
         }
     }
 
@@ -38,7 +40,7 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.leftMargin: vpx(10)
         Layout.topMargin: vpx(5)
-        Layout.bottomMargin: vpx(30)
+        Layout.bottomMargin: vpx(60)
 
         Layout.alignment: Qt.AlignBottom | Qt.AlignLeft
     }

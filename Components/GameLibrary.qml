@@ -4,6 +4,9 @@ import QtGraphicalEffects 1.0
 import SortFilterProxyModel 0.2
 
 FocusScope {
+    signal openCollectionsMenu
+    signal openNavigationMenu
+
     property alias model: grid.model
 
     readonly property var currentGame: grid.currentItem ? grid.currentItem.game : undefined
@@ -78,7 +81,24 @@ FocusScope {
 
         Keys.onUpPressed: { sfxNav.play(); event.accepted = false; }
         Keys.onDownPressed: { sfxNav.play(); event.accepted = false; }
-        Keys.onLeftPressed: { sfxNav.play(); event.accepted = false; }
-        Keys.onRightPressed: { sfxNav.play(); event.accepted = false; }
+
+        Keys.onLeftPressed: { 
+            sfxNav.play();
+            if ((grid.currentIndex % grid.numberOfColumns) === 0) {
+                openCollectionsMenu();
+                event.accepted = true;
+            } else {
+                event.accepted = false;
+            }
+        }
+        Keys.onRightPressed: {
+            sfxNav.play();
+            if ((grid.currentIndex % grid.numberOfColumns) === (numberOfColumns - 1)) {
+                openNavigationMenu();
+                event.accepted = true;
+            } else {
+                event.accepted = false;
+            }
+        }
     }
 }

@@ -59,7 +59,7 @@ FocusScope {
             id: labelFake
 
             font.family: subtitleFont.name
-            font.pixelSize: vpx(13)
+            font.pixelSize: button.height * 0.4
             font.bold: true
 
             text: label.text
@@ -71,7 +71,7 @@ FocusScope {
             id: label
 
             font.family: subtitleFont.name
-            font.pixelSize: vpx(13)
+            font.pixelSize: button.height * 0.4
             font.bold: true
             color: selected ? api.memory.get('settings.theme.backgroundColor'): api.memory.get('settings.theme.textColor')
             anchors { top: parent.top; bottom: parent.bottom }

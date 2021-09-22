@@ -193,10 +193,13 @@ Item {
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+
+            style: Text.Outline
         }
 
         Text {
             anchors.top: title.bottom
+            anchors.topMargin: gameItemTitlePadding * 0.25
 
             width: parent.width
             height: gameItemTitleHeight
@@ -212,6 +215,8 @@ Item {
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+
+            style: Text.Outline
         }
     }
 

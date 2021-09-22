@@ -5,7 +5,7 @@ import QtGraphicalEffects 1.0
 ListView {
     id: root
 
-    height: vpx(40)
+    height: vpx(33)
 
     anchors {
         left: parent.left
@@ -36,15 +36,39 @@ ListView {
         }
 
         Button {
-            icon: '\uf0b0'
-            text: `Filters`
+            id: sortButton
+            // icon: '\uf0b0'
+            text: `By Title`
 
             height: parent.height
-            circle: true
+            circle: false
             selected: root.focus && ListView.isCurrentItem
 
-            onActivated: {
-            }
+            onActivated: { }
+        }
+
+        Button {
+            id: filterButton
+            // icon: '\uf0b0'
+            text: `All Games`
+
+            height: parent.height
+            circle: false
+            selected: root.focus && ListView.isCurrentItem
+
+            onActivated: { }
+        }
+
+        Button {
+            id: collectionsButton
+            // icon: '\uf0b0'
+            text: currentCollection.name
+
+            height: parent.height
+            circle: false
+            selected: root.focus && ListView.isCurrentItem
+
+            onActivated: { }
         }
     }
 

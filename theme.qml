@@ -49,10 +49,10 @@ FocusScope {
     property int orderByDirection: Qt.AscendingOrder
 
     readonly property bool gameItemTitleEnabled: api.memory.get('settings.global.titleEnabled')
-    readonly property real gameItemTitlePadding: gameItemTitleEnabled ? vpx(api.memory.get('settings.global.titleFontSize') * 0.25) : 0
+    readonly property real gameItemTitlePadding: gameItemTitleEnabled ? vpx(api.memory.get('settings.global.titleFontSize') * 0.5) : 0
     readonly property real gameItemTitleHeight: gameItemTitleEnabled ? vpx(api.memory.get('settings.global.titleFontSize')) : 0
 
-    readonly property real gameItemTitleMargin: gameItemTitleEnabled ? gameItemTitleHeight + (api.memory.get('settings.global.borderEnabled') ? vpx(api.memory.get('settings.global.borderWidth')) : 0) + gameItemTitlePadding * 3 : 0
+    readonly property real gameItemTitleMargin: gameItemTitleEnabled ? gameItemTitleHeight * 2 + (api.memory.get('settings.global.borderEnabled') ? vpx(api.memory.get('settings.global.borderWidth')) : 0) + gameItemTitlePadding * 2 : 0
 
     property bool gameItemPlayVideoPreview: false
 

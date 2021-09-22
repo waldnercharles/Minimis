@@ -27,11 +27,7 @@ ColumnLayout {
         cache: false
 
         layer.enabled: true
-        layer.effect: DropShadow {
-            horizontalOffset: vpx(0); verticalOffset: vpx(8)
-            samples: 13
-            color: '#77000000'
-        }
+        layer.effect: DropShadowHigh { }
     }
 
     GameDetailsMetadata {

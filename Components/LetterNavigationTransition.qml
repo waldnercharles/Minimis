@@ -82,12 +82,7 @@ Item {
     }
 
         layer.enabled: true
-        layer.effect: DropShadow {
-            horizontalOffset: vpx(0); verticalOffset: vpx(6)
-
-            samples: 10
-            color: '#99000000';
-        }
+        layer.effect: DropShadowHigh { }
 
     onTextChanged: {
         if (text) {

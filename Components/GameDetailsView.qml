@@ -171,14 +171,6 @@ FocusScope {
 
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-
-                            layer.enabled: true
-                            layer.effect: DropShadow {
-                                horizontalOffset: vpx(0); verticalOffset: vpx(3)
-
-                                samples: 4
-                                color: '#99000000';
-                            }
                         }
 
                         layer.enabled: true
@@ -190,12 +182,8 @@ FocusScope {
                             }
 
                             layer.enabled: !selected && api.memory.get('settings.performance.artDropShadow')
-                            layer.effect: DropShadow {
+                            layer.effect: DropShadowLow {
                                 anchors.fill: item
-                                horizontalOffset: vpx(0); verticalOffset: vpx(3)
-
-                                samples: 4
-                                color: '#99000000';
                                 source: mask
                             }
                         }

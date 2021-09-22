@@ -66,10 +66,5 @@ Item {
     scale: api.memory.get('settings.global.logoScaleEnabled') ? (selected ? api.memory.get('settings.global.logoScaleSelected') : api.memory.get('settings.global.logoScale')) : settingsMetadata.global.logoScale.defaultValue
 
     layer.enabled: api.memory.get('settings.performance.logoDropShadow')
-    layer.effect: DropShadow {
-        horizontalOffset: vpx(0); verticalOffset: vpx(4)
-
-        samples: 5
-        color: '#75000000'
-    }
+    layer.effect: DropShadowLow { }
 }

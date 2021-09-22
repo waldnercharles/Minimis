@@ -9,7 +9,7 @@ Item {
         id: crossfade
         anchors.fill: parent
 
-        opacity: showBackgroundImage ? 0.66 : 0
+        opacity: showBackgroundImage ? 0.75 : 0
         Behavior on opacity { NumberAnimation { duration: 500 } }
 
         layer.enabled: true
@@ -72,5 +72,7 @@ Item {
 
         smooth: false
         asynchronous: false
+
+        opacity: 0.8
     }
 }

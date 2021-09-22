@@ -92,9 +92,5 @@ Row {
     }
 
     layer.enabled: true
-    layer.effect: DropShadow {
-        horizontalOffset: vpx(0); verticalOffset: vpx(3)
-        samples: 4
-        color: '#99000000'
-    }
+    layer.effect: DropShadowLow { }
 }

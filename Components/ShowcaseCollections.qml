@@ -100,6 +100,9 @@ FocusScope {
 
                     color: api.memory.get('settings.theme.textColor')
                     opacity: selected ? 1 : 0.2
+
+                    layer.enabled: true
+                    layer.effect: DropShadowLow { cached: true }
                 }
 
                 GameLibrary {

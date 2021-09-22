@@ -32,6 +32,9 @@ FocusScope {
 
             color: api.memory.get('settings.theme.textColor')
             opacity: root.focus ? 1 : 0.2
+
+            layer.enabled: true
+            layer.effect: DropShadowLow { cached: true }
         }
 
         ListView {

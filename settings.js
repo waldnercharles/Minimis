@@ -126,8 +126,7 @@ function createMetadata() {
                 {
                     titleEnabled: { name: 'Enabled', defaultValue: true, type: 'bool', },
                     titleAlwaysVisible: { name: 'Always Visible', defaultValue: true, type: 'bool', inset: 1, isEnabled: () => api.memory.get('settings.global.titleEnabled') },
-                    titleFontSize: { name: 'Font Size', defaultValue: 16, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.titleEnabled') },
-                    titleBackgroundOpacity: { name: 'Background Opacity', defaultValue: 0.05, delta: 0.01, min: 0.0, max: 1.0, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.titleEnabled') },
+                    titleFontSize: { name: 'Font Size', defaultValue: 16, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.titleEnabled') }
                 }
             ),
             createHeader(

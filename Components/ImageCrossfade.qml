@@ -8,6 +8,8 @@ Item {
     property int crossfadeDuration: 600
     property int crossfadePauseDuration: 200
 
+    readonly property real progress: Math.max(img1.opacity, img2.opacity)
+
     onSourceChanged: {
         state = state === 'img1' ? 'img2' : 'img1';
     }

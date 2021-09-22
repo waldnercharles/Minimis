@@ -56,7 +56,7 @@ FocusScope {
             focus: true
 
             width: parent.width
-            height: parent.height
+            height: parent.height - header.height
 
             y: showcaseMetadata.height
 

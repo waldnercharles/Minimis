@@ -51,13 +51,7 @@ Item {
         opacity: screenshot.opacity
 
         layer.enabled: !selected && api.memory.get('settings.performance.artDropShadow')
-        layer.effect: DropShadow {
-            horizontalOffset: vpx(0); verticalOffset: vpx(4)
-
-            samples: 5
-            color: '#77000000';
-            cached: true
-        }
+        layer.effect: DropShadowMedium { }
     }
 
     Image {
@@ -156,45 +150,69 @@ Item {
         layoutDirection: Qt.RightToLeft
     }
 
-    Rectangle {
-        id: titleBackground
-        anchors.centerIn: title;
+    // Rectangle {
+    //     id: titleBackground
+    //     anchors.centerIn: title;
 
-        width: title.contentWidth + title.height * 1.5
-        height: title.height + gameItemTitlePadding * 2;
+    //     width: title.contentWidth + title.height * 1.5
+    //     height: title.height + gameItemTitlePadding * 2;
 
-        radius: height / 2
+    //     radius: height / 2
 
-        color: selected ? api.memory.get('settings.theme.backgroundColor') : api.memory.get('settings.theme.textColor')
+    //     color: selected ? api.memory.get('settings.theme.backgroundColor') : api.memory.get('settings.theme.textColor')
 
-        opacity: selected ? api.memory.get('settings.global.titleBackgroundOpacity') : 0
-        visible: title.visible
-    }
+    //     opacity: selected ? api.memory.get('settings.global.titleBackgroundOpacity') : 0
+    //     visible: title.visible
+    // }
 
-    Text {
-        id: title
-        anchors.top: screenshot.bottom;
-        anchors.topMargin: (api.memory.get('settings.global.borderEnabled') ? vpx(api.memory.get('settings.global.borderWidth')) : 0) + gameItemTitlePadding * 2
-
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        width: parent.width
-        height: gameItemTitleHeight
-        color: api.memory.get('settings.theme.textColor')
-
-        text: game ? game.title : ''
-
-        font.family: subtitleFont.name
-        font.pixelSize: vpx(api.memory.get('settings.global.titleFontSize'))
-        fontSizeMode: Text.VerticalFit
-
-        elide: Text.ElideRight
-
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
+    Item
+    {
+        anchors.top: screenshot.bottom
+        anchors.left: screenshot.left
+        anchors.right: screenshot.right
 
         opacity: selected ? 1 : 0.2
         visible: api.memory.get('settings.global.titleEnabled') && (api.memory.get('settings.global.titleAlwaysVisible') || selected)
+
+        Text {
+            id: title
+            anchors.top: parent.top
+            anchors.topMargin: (api.memory.get('settings.global.borderEnabled') ? vpx(api.memory.get('settings.global.borderWidth')) : 0) + gameItemTitlePadding
+
+            width: parent.width
+            height: gameItemTitleHeight
+            color: api.memory.get('settings.theme.textColor')
+
+            text: game ? game.title : ''
+
+            font.family: subtitleFont.name
+            font.pixelSize: vpx(api.memory.get('settings.global.titleFontSize'))
+            fontSizeMode: Text.VerticalFit
+
+            elide: Text.ElideRight
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+        }
+
+        Text {
+            anchors.top: title.bottom
+
+            width: parent.width
+            height: gameItemTitleHeight
+            color: api.memory.get('settings.theme.textColor')
+
+            text: game ? game.releaseYear : ''
+
+            font.family: subtitleFont.name
+            font.pixelSize: vpx(api.memory.get('settings.global.titleFontSize'))
+            fontSizeMode: Text.VerticalFit
+
+            elide: Text.ElideRight
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+        }
     }
 
     Rectangle {

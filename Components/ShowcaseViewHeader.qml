@@ -54,10 +54,5 @@ ListView {
     }
 
     layer.enabled: true
-    layer.effect: DropShadow {
-        horizontalOffset: vpx(0); verticalOffset: vpx(4)
-
-        samples: 5
-        color: '#99000000';
-    }
+    layer.effect: DropShadowLow { }
 }

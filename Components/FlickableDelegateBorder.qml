@@ -23,7 +23,6 @@ Item {
     Item {
         anchors.fill: parent
 
-        
         Rectangle {
             id: border
 
@@ -43,11 +42,7 @@ Item {
             }
 
             layer.enabled: dropShadowEnabled
-            layer.effect: DropShadow {
-                horizontalOffset: vpx(0); verticalOffset: vpx(2)
-                samples: 3
-                color: '#ff000000';
-            }
+            layer.effect: DropShadowMedium { cached: false }
         }
     }
 }

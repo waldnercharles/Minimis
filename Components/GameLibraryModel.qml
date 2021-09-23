@@ -87,16 +87,22 @@ Item {
         id: nav
 
         sourceModel: games.sourceModel
+
         filters: [ gameFilters, textFilter, numberFilter ]
         sorters: sorter
+
+        delayed: true
     }
 
     SortFilterProxyModel {
         id: games
 
         sourceModel: currentCollection.games
+
         filters: gameFilters
         sorters: sorter
+
+        delayed: true
     }
 
     function nextChar(c, modifier) {

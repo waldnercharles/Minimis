@@ -47,7 +47,7 @@ ListView {
         }
 
         Button {
-            readonly property bool isBookmarked: !!root.game && (api.memory.get(`database.bookmarks.${game.collections.get(0).shortName}.${game.title}`) ?? false)
+            readonly property bool isBookmarked: database.games.get(root.game).bookmark ?? false
             icon: isBookmarked ? '\uf02e' : '\uf097'
             height: parent.height
             text: selected ? (isBookmarked ? 'Remove from Bookmarks' : 'Add to Bookmarks') : ''
@@ -55,7 +55,9 @@ ListView {
             circle: true
             onActivated: {
                 sfxAccept.play();
-                toggleBookmarks(game);
+                const gameExt = database.games.get(game);
+
+                gameExt.bookmark = !gameExt.bookmark;
             }
         }
     }

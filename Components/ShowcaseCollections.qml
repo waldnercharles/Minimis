@@ -5,6 +5,8 @@ import QtQml.Models 2.15
 import SortFilterProxyModel 0.2
 import Qt.labs.qmlmodels 1.0
 
+import "Collections"
+
 FocusScope {
     id: root
 
@@ -13,18 +15,18 @@ FocusScope {
 
     property int rowHeight
 
-    ShowcaseCollectionModel { id: collectionTypeRecentlyPlayed; collectionType: 1; maxItems: 16 }
-    ShowcaseCollectionModel { id: collectionTypeFavorites; collectionType: 2; maxItems: 16 }
-    ShowcaseCollectionModel { id: collectionTypeBookmarks; collectionType: 3; maxItems: 16 }
-    ShowcaseCollectionModel { id: collectionTypeRandomGames; collectionType: 4; maxItems: 16 }
+    LastPlayedGamesModel { id: lastPlayedGamesModel; maxItems: 16 }
+    FavoriteGamesModel { id: favoriteGamesModel; maxItems: 16 }
+    BookmarkedGamesModel { id: bookmarkedGamesModel; maxItems: 16 }
+    RandomGamesModel { id: randomGamesModel; maxItems: 16 }
     GameLibraryModel { id: gameLibraryModel; z: 100 }
 
     readonly property var collectionsByType: [
         undefined,
-        collectionTypeRecentlyPlayed,
-        collectionTypeFavorites,
-        collectionTypeBookmarks,
-        collectionTypeRandomGames,
+        lastPlayedGamesModel,
+        favoriteGamesModel,
+        bookmarkedGamesModel,
+        randomGamesModel,
     ]
 
     ListModel {
@@ -48,10 +50,10 @@ FocusScope {
 
         filters: ExpressionFilter {
             expression: {
-                collectionTypeRecentlyPlayed.games.count;
-                collectionTypeFavorites.games.count;
-                collectionTypeBookmarks.games.count;
-                collectionTypeRandomGames.games.count;
+                lastPlayedGamesModel.games.count;
+                favoriteGamesModel.games.count;
+                bookmarkedGamesModel.games.count;
+                randomGamesModel.games.count;
 
                 return type === 'gameLibrary' || (collection != null && collection.games.count > 0);
             }

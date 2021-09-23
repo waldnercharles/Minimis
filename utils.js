@@ -1,6 +1,3 @@
-// This file contains some helper scripts for formatting data
-
-
 // For multiplayer games, show the player count as '1-N'
 function formatPlayers(playerCount) {
     if (playerCount === 1)

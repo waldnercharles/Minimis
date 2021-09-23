@@ -111,7 +111,7 @@ Item {
             id: bookmarkIcon
             anchors.verticalCenter: parent.verticalCenter
 
-            readonly property bool isBookmarked: (api.memory.get(`database.bookmarks.${game.collections.get(0).shortName}.${game.title}`) ?? false)
+            readonly property bool isBookmarked: database.games.get(game).bookmark ?? false // (api.memory.get(`database.bookmarks.${game.collections.get(0).shortName}.${game.title}`) ?? false)
 
             width: icons.height; height: icons.height;
 

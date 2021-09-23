@@ -2,10 +2,11 @@ import QtQuick 2.15
 import QtGraphicalEffects 1.0
 import QtMultimedia 5.9
 import QtQml.Models 2.10
-import SortFilterProxyModel 0.2
 
 import "Components"
+import "Components/Collections"
 
+import "./database.js" as Database
 import "./settings.js" as Settings
 import "./utils.js" as Utils
 
@@ -24,10 +25,8 @@ FocusScope {
     SoundEffect { id: sfxAccept; source: "assets/sfx/accept.wav" }
     SoundEffect { id: sfxToggle; source: "assets/sfx/toggle.wav" }
 
-    readonly property alias allGames: allGames
-    AllGames { id: allGames }
-
-    property var settingsMetadata: Settings.metadata;
+    property var database: Database
+    property var settingsMetadata: Settings.metadata
 
     property var stateHistory: []
 
@@ -225,12 +224,6 @@ FocusScope {
 
         stateHistory.push(root.state);
         root.state = 'gameDetailsView';
-    }
-
-    function toggleBookmarks(game) {
-        const key = `database.bookmarks.${game.collections.get(0).shortName}.${game.title}`;
-        api.memory.set(key, !(api.memory.get(key) ?? false));
-        game.onFavoriteChanged();
     }
 
     function getPrecision(a) {

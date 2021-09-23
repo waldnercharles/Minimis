@@ -2,7 +2,6 @@ import QtQuick 2.3
 import QtMultimedia 5.9
 import QtGraphicalEffects 1.0
 import QtQml.Models 2.15
-import SortFilterProxyModel 0.2
 import QtQuick.Layouts 1.15
 
 FocusScope {

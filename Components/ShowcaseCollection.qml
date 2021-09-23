@@ -1,5 +1,4 @@
 import QtQuick 2.3
-import SortFilterProxyModel 0.2
 
 HorizontalListView { 
     id: listView

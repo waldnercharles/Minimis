@@ -23,6 +23,9 @@ FocusScope {
         color: selected ? api.memory.get('settings.theme.accentColor') : api.memory.get('settings.theme.textColor')
 
         opacity: selected ? 1 : 0.4
+
+        layer.enabled: true
+        layer.effect: DropShadowLow { }
     }
 
     Row {

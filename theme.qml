@@ -53,23 +53,11 @@ FocusScope {
 
     readonly property real gameItemTitleMargin: gameItemTitleEnabled ? gameItemTitleHeight * 2 + (api.memory.get('settings.global.borderEnabled') ? vpx(api.memory.get('settings.global.borderWidth')) : 0) + gameItemTitlePadding * 1.5 : 0
 
-    property bool gameItemPlayVideoPreview: false
-
-    Timer {
-        id: gameItemVideoPreviewDebouncer
+    Debouncer {
+        id: videoPreviewDebouncer
 
         interval: api.memory.get('settings.global.videoPreviewDelay')
-        onTriggered: { gameItemPlayVideoPreview = true; }
-
-        function debounce() {
-            if (api.memory.get('settings.global.previewEnabled')) {
-                gameItemVideoPreviewDebouncer.restart();
-            } else {
-                gameItemVideoPreviewDebouncer.stop();
-            }
-
-            gameItemPlayVideoPreview = false;
-        }
+        enabled: api.memory.get('settings.global.previewEnabled')
     }
 
     states: [
@@ -147,7 +135,7 @@ FocusScope {
 
     Loader {
         id: contentLoader
-        readonly property var game: item.game
+        readonly property var game: item ? item.game : undefined
 
         anchors.fill: parent
 
@@ -158,20 +146,20 @@ FocusScope {
 
         focus: true
 
-        active: allGames != null
+        active: false
     }
 
-    property var allGames: undefined
     Component.onCompleted: {
         reloadSettings();
         const games = api.allGames;
+
         for (let i = games.count - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             games.move(i, j);
             games.move(j + 1, i);
         }
 
-        allGames = games;
+        contentLoader.active = true;
     }
 
     Keys.onPressed: {

@@ -1,7 +1,7 @@
 const _randomValues = {};
 const games = {
     get: function (game) {
-        const key = game ? `database.games.${game.collections.get(0).shortName}.${game.title}` : null;
+        const key = (game != null && game.collections != null) ? `database.games.${game.collections.get(0).shortName}.${game.title}` : null;
 
         return {
             get bookmark() {

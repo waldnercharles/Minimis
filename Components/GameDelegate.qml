@@ -12,9 +12,9 @@ Item {
     property bool logoVisible;
     property bool aspectRatioNative;
 
-    onSelectedChanged: { gameItemVideoPreviewDebouncer.debounce(); }
+    onSelectedChanged: { videoPreviewDebouncer.debounce(); }
     
-    readonly property bool isPlayingPreview: selected && gameItemPlayVideoPreview
+    readonly property bool isPlayingPreview: selected && !videoPreviewDebouncer.running
     readonly property bool isLoading: logo.status === Image.Loading || screenshot.status === Image.Loading
     readonly property bool loadOnDemand: logoVisible !== api.memory.get('settings.global.previewLogoVisible')
     readonly property bool showLogo: isPlayingPreview ? (api.memory.get('settings.global.previewLogoVisible') ? 1 : 0) : (logoVisible ? 1 : 0)
@@ -51,7 +51,7 @@ Item {
         opacity: screenshot.opacity
 
         layer.enabled: !selected && api.memory.get('settings.performance.artDropShadow')
-        layer.effect: DropShadowMedium { }
+        layer.effect: DropShadowMedium { source: grayBackground }
     }
 
     Image {
@@ -68,7 +68,7 @@ Item {
         fillMode: aspectRatioNative ? Image.PreserveAspectFit : Image.PreserveAspectCrop
         visible: screenshot.status === Image.Ready && (logo.status !== Image.Loading || (!logoVisible && api.memory.get('settings.global.previewLogoVisible')))
 
-        opacity: selected && gameItemPlayVideoPreview && game.assets.videoList.length > 0 ? 0 : 1
+        opacity: selected && !videoPreviewDebouncer.running && game.assets.videoList.length > 0 ? 0 : 1
 
         Behavior on opacity { NumberAnimation { from: 1; duration: api.memory.get('settings.global.animationEnabled') ? api.memory.get('settings.global.animationArtFadeSpeed') : 0; } }
 
@@ -220,9 +220,9 @@ Item {
         }
     }
 
-    Rectangle {
-        anchors.fill: parent
-        color: 'black'
-        opacity: selected ? 0.0 : api.memory.get('settings.global.darkenAmount')
+    layer.enabled: true
+    layer.effect: ColorOverlay {
+        property real computedOpacity: Math.round(255.0 * api.memory.get('settings.global.darkenAmount'));
+        color: selected ? '#00000000' : `#${computedOpacity.toString(16)}000000`
     }
 }

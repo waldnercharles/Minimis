@@ -8,7 +8,7 @@ Item {
     SortFilterProxyModel {
         id: proxyModel
 
-        sourceModel: allGames
+        sourceModel: api.allGames
 
         filters: ExpressionFilter {
             expression: {

@@ -162,13 +162,13 @@ FocusScope {
     //     currentCollectionIndex = (currentCollectionIndex + api.collections.count - 1) % api.collections.count;
     //     grid.currentIndex = savedGameIndex = 0;
 
-    //     gameItemVideoPreviewDebouncer.debounce();
+    //     videoPreviewDebouncer.debounce();
     // }
 
     // function nextCollection() {
     //     currentCollectionIndex = (currentCollectionIndex + 1) % api.collections.count;
     //     grid.currentIndex = savedGameIndex = 0;
 
-    //     gameItemVideoPreviewDebouncer.debounce();
+    //     videoPreviewDebouncer.debounce();
     // }
 }

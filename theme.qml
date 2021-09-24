@@ -157,10 +157,21 @@ FocusScope {
         Behavior on opacity { NumberAnimation { duration: 300; from: 0 } }
 
         focus: true
+
+        active: allGames != null
     }
 
+    property var allGames: undefined
     Component.onCompleted: {
         reloadSettings();
+        const games = api.allGames;
+        for (let i = games.count - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            games.move(i, j);
+            games.move(j + 1, i);
+        }
+
+        allGames = games;
     }
 
     Keys.onPressed: {
@@ -170,6 +181,13 @@ FocusScope {
 
         if (api.keys.isCancel(event)) {
             event.accepted = previousScreen();
+        }
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
         }
     }
 

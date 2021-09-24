@@ -8,8 +8,7 @@ Item {
     SortFilterProxyModel {
         id: proxyModel
 
-        sorters: ExpressionSorter { expression: modelLeft.title && modelRight.title && database.games.get(modelLeft).random < database.games.get(modelRight).random }
-        sourceModel: api.allGames
+        sourceModel: allGames
 
         delayed: true
     }

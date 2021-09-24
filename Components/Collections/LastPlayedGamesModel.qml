@@ -8,10 +8,10 @@ Item {
     SortFilterProxyModel {
         id: proxyModel
 
-        sourceModel: api.allGames
+        sourceModel: allGames
 
         sorters: RoleSorter { roleName: 'lastPlayed'; sortOrder: Qt.DescendingOrder }
-        filters: ExpressionFilter { expression: { model.lastPlayed; return model.lastPlayed ? database.games.get(model).played : false } }
+        filters: ExpressionFilter { expression: database.games.get(model).played; }
 
         delayed: true
     }

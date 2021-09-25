@@ -21,7 +21,7 @@ Item {
         id: logo
         anchors.fill: parent
 
-        source: opacity != 0 ? game.assets.logo || '' : ''
+        source: showLogo ? game.assets.logo || '' : ''
         sourceSize: logoImageResolution === 0 ? undefined : Qt.size(logo.width, logo.height)
 
         asynchronous: true

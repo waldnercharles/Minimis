@@ -15,9 +15,11 @@ Item {
     onSelectedChanged: { videoPreviewDebouncer.debounce(); }
     
     readonly property bool isPlayingPreview: selected && !videoPreviewDebouncer.running
-    readonly property bool isLoading: logo.status === Image.Loading || screenshot.status === Image.Loading
+    readonly property bool isLoading: logo.status === Image.Loading || screenshot.status === Image.Loading || debounce.running
     readonly property bool loadOnDemand: logoVisible !== api.memory.get('settings.global.previewLogoVisible')
     readonly property bool showLogo: isPlayingPreview ? (api.memory.get('settings.global.previewLogoVisible') ? 1 : 0) : (logoVisible ? 1 : 0)
+
+    readonly property bool fadeScreenshot: (selected && !videoPreviewDebouncer.running && game.assets.videoList.length > 0);
 
     property alias itemWidth: screenshot.width
     property alias itemHeight: screenshot.height
@@ -41,6 +43,13 @@ Item {
         }
     }
 
+    Timer {
+        id: debounce
+        interval: 200
+        running: true
+        onTriggered: screenshot.source = Qt.binding(() => game.assets[assetKey] || '')
+    }
+
     Rectangle {
         id: grayBackground
         anchors.fill: parent
@@ -48,7 +57,8 @@ Item {
         color: "#1a1a1a"
         radius: vpx(api.memory.get('settings.global.cornerRadius'))
 
-        opacity: screenshot.opacity
+        opacity: fadeScreenshot ? 0 : 1
+        Behavior on opacity { NumberAnimation { from: 1; duration: api.memory.get('settings.global.animationEnabled') ? api.memory.get('settings.global.animationArtFadeSpeed') : 0; } }
 
         layer.enabled: !selected && api.memory.get('settings.performance.artDropShadow')
         layer.effect: DropShadowMedium { source: grayBackground }
@@ -57,7 +67,6 @@ Item {
     Image {
         id: screenshot
 
-        source: game.assets[assetKey] || ''
         sourceSize: api.memory.get('settings.performance.artImageResolution') === 0 ? undefined : Qt.size(0, screenshot.height) //((screenshot.width > 0 && screenshot.height > 0) ? Qt.size(screenshot.width, screenshot.height) : undefined)
 
         asynchronous: true
@@ -68,9 +77,9 @@ Item {
         fillMode: aspectRatioNative ? Image.PreserveAspectFit : Image.PreserveAspectCrop
         visible: screenshot.status === Image.Ready && (logo.status !== Image.Loading || (!logoVisible && api.memory.get('settings.global.previewLogoVisible')))
 
-        opacity: selected && !videoPreviewDebouncer.running && game.assets.videoList.length > 0 ? 0 : 1
+        opacity: fadeScreenshot || screenshot.status != Image.Ready || debounce.running ? 0 : 1
 
-        Behavior on opacity { NumberAnimation { from: 1; duration: api.memory.get('settings.global.animationEnabled') ? api.memory.get('settings.global.animationArtFadeSpeed') : 0; } }
+        Behavior on opacity { NumberAnimation { duration: api.memory.get('settings.global.animationEnabled') ? api.memory.get('settings.global.animationArtFadeSpeed') : 0; } }
 
         layer.enabled: true
         layer.effect: OpacityMask {
@@ -88,7 +97,7 @@ Item {
 
         game: root.game
         isLoading: root.isLoading
-        showLogo: root.showLogo
+        showLogo: root.showLogo && !debounce.running
         loadOnDemand: root.loadOnDemand
         isPlayingPreview: root.isPlayingPreview
         selected: root.selected

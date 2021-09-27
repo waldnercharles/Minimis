@@ -10,12 +10,12 @@ Item {
 
         sourceModel: api.allGames
 
-        filters: ExpressionFilter {
-            expression: {
-                model.title; model.favorite;
-                return model.title ? !!database.games.get(model).bookmark : false;
-            }
-        }
+        // filters: ExpressionFilter {
+        //     expression: {
+        //         model.title; model.favorite;
+        //         return model.title ? !!database.games.get(model).bookmark : false;
+        //     }
+        // }
 
         delayed: true
     }

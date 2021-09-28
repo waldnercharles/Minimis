@@ -71,8 +71,8 @@ FocusScope {
             }
 
             delegate: GameDelegate {
+                itemWidth: root.aspectRatioNative ? undefined : height / root.aspectRatio
                 itemHeight: listView.height
-                itemWidth: root.aspectRatioNative ? undefined : itemHeight / root.aspectRatio
 
                 game: modelData
                 selected: ListView.isCurrentItem && listView.focus
@@ -80,6 +80,8 @@ FocusScope {
                 assetKey: root.assetKey
                 logoVisible: root.logoVisible
                 aspectRatioNative: root.aspectRatioNative
+
+                sourceDebounceDuration: 0
             }
 
             Keys.onLeftPressed: { sfxNav.play(); event.accepted = false; }

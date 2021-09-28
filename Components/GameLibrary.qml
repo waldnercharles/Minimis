@@ -56,8 +56,6 @@ FocusScope {
             item: grid.currentItem
             visible: grid.focus
 
-            z: item.z - 1
-
             muted: false
         }
 

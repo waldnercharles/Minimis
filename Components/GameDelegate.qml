@@ -82,7 +82,7 @@ Item {
 
         color: "#1a1a1a";
         opacity: isPlayingPreview ? 0 : 1
-        Behavior on opacity { OpacityAnimator { duration: animationArtFadeDuration; } enabled: animationEnabled }
+        Behavior on opacity { OpacityAnimator { duration: animationArtFadeDuration; } enabled: animationEnabled && !isLoading  }
     }
 
     Image {
@@ -102,7 +102,7 @@ Item {
         // visible: screenshot.opacity > 0
 
         opacity: isLoading || isPlayingPreview ? 0 : 1
-        Behavior on opacity { OpacityAnimator { duration: animationArtFadeDuration; } enabled: animationEnabled }
+        Behavior on opacity { OpacityAnimator { duration: animationArtFadeDuration; } enabled: animationEnabled && !isLoading }
     }
 
     Image {
@@ -122,10 +122,10 @@ Item {
         fillMode: Image.PreserveAspectFit
 
         opacity: !isLoading && (isPlayingPreview ? logoVisiblePreview : logoVisible) ? 1 : 0
-        Behavior on opacity { OpacityAnimator { duration: animationLogoFadeDuration; } enabled: animationEnabled }
+        Behavior on opacity { OpacityAnimator { duration: animationLogoFadeDuration; } enabled: animationEnabled && !isLoading }
 
         scale: logoScaleEnabled ? (selected ? logoScaleSelected : logoScaleUnselected) : settingsMetadata.global.logoScale.defaultValue
-        Behavior on scale { ScaleAnimator { duration: animationLogoScaleDuration } enabled: animationEnabled }
+        Behavior on scale { ScaleAnimator { duration: animationLogoScaleDuration } enabled: animationEnabled && !isLoading }
     }
 
     Text {
@@ -150,6 +150,6 @@ Item {
         verticalAlignment: Text.AlignVCenter
 
         opacity: (((logoVisiblePreview || (isPlayingPreview ? logoVisiblePreview : logoVisible)) && logo.hasError)) ? 1 : 0
-        Behavior on opacity { OpacityAnimator { duration: animationLogoFadeDuration; } enabled: animationEnabled }
+        Behavior on opacity { OpacityAnimator { duration: animationLogoFadeDuration; } enabled: animationEnabled && !isLoading }
     }
 }

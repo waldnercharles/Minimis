@@ -34,70 +34,6 @@ ListView {
             onActivated: {
                 toSettingsView();
             }
-
-            Rectangle {
-                id: dropdown
-
-                color: '#191a1c'
-
-                anchors.top: parent.bottom
-                anchors.right: parent.right
-
-                anchors.topMargin: vpx(4)
-
-                height: vpx(33) * api.collections.count
-                width: vpx(100)
-
-                ListView {
-                    anchors.fill: parent
-
-                    model: api.collections
-                    delegate: Rectangle {
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-
-                        height: vpx(33)
-
-                        color: ListView.isCurrentItem ? '#22ffffff' : 'transparent'
-
-                        Text {
-                            anchors.fill: parent
-                            text: modelData.name
-
-                            antialiasing: true
-                            renderType: Text.NativeRendering
-                            font.hintingPreference: Font.PreferNoHinting
-                            font.family: subtitleFont.name
-                            font.pixelSize: vpx(33) * 0.4
-
-                            color: api.memory.get('settings.theme.textColor')
-
-                            verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignHCenter
-                        }
-                    }
-                }
-
-                state: 'closed'
-
-                states: [
-                    State { name: 'open' },
-                    State { name: 'closed' }
-                ]
-
-                transitions: Transition { }
-
-                layer.enabled: true
-                layer.effect: OpacityMask {
-                    maskSource: Rectangle {
-                        width: dropdown.width; height: dropdown.height
-                        radius: vpx(2)
-                    }
-
-                    layer.enabled: true
-                    layer.effect: DropShadowLow { }
-                }
-            }
         }
 
         Button {
@@ -133,7 +69,16 @@ ListView {
             circle: false
             selected: root.focus && ListView.isCurrentItem
 
-            onActivated: { }
+            onActivated: {
+                collectionsDropdown.toggle();
+            }
+
+            Dropdown {
+                id: collectionsDropdown
+                Component.onCompleted: {
+                    items = api.collections.toVarArray().map(collection => collection.name);
+                }
+            }
         }
     }
 

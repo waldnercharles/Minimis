@@ -58,7 +58,7 @@ FocusScope {
             visible: !!text
         }
 
-        Text {
+        TextMetrics {
             id: labelFake
 
             font.family: subtitleFont.name
@@ -66,8 +66,6 @@ FocusScope {
             font.bold: true
 
             text: label.text
-
-            visible: false
         }
 
         Text {

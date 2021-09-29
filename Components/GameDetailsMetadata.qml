@@ -2,6 +2,8 @@ import QtQuick 2.3
 import QtGraphicalEffects 1.0
 
 Row {
+    id: root
+
     property var game
 
     property real fontSize: vpx(18)
@@ -61,7 +63,7 @@ Row {
         anchors.verticalCenter: parent.verticalCenter
 
         Text {
-            text: rating
+            text: root.rating
             anchors.verticalCenter: parent.verticalCenter
 
             font.pixelSize: fontSize * 0.9

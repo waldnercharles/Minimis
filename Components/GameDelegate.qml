@@ -1,4 +1,4 @@
-import QtQuick 2.8
+import QtQuick 2.15
 import QtMultimedia 5.9
 import QtGraphicalEffects 1.0
 
@@ -20,6 +20,8 @@ Item {
     property alias itemHeight: screenshot.height
 
     readonly property string textColor: api.memory.get('settings.theme.textColor')
+    readonly property string textOutlineColor: 'black'
+
     readonly property int logoFontSize: vpx(api.memory.get('settings.global.logoFontSize'))
 
     readonly property bool isPlayingPreview: selected && !videoPreviewDebouncer.running
@@ -99,10 +101,11 @@ Item {
         asynchronous: true
 
         fillMode: aspectRatioNative ? Image.PreserveAspectFit : Image.PreserveAspectCrop
-        // visible: screenshot.opacity > 0
+
+        visible: !screenshot.hasError
 
         opacity: isLoading || isPlayingPreview ? 0 : 1
-        Behavior on opacity { OpacityAnimator { duration: animationArtFadeDuration; } enabled: animationEnabled && !isLoading }
+        Behavior on opacity { OpacityAnimator { duration: animationArtFadeDuration; } enabled: animationEnabled && !screenshot.hasError }
     }
 
     Image {
@@ -121,11 +124,13 @@ Item {
 
         fillMode: Image.PreserveAspectFit
 
+        visible: !logo.hasError
+
         opacity: !isLoading && (isPlayingPreview ? logoVisiblePreview : logoVisible) ? 1 : 0
-        Behavior on opacity { OpacityAnimator { duration: animationLogoFadeDuration; } enabled: animationEnabled && !isLoading }
+        Behavior on opacity { OpacityAnimator { duration: animationLogoFadeDuration; } enabled: animationEnabled && !logo.hasError }
 
         scale: logoScaleEnabled ? (selected ? logoScaleSelected : logoScaleUnselected) : settingsMetadata.global.logoScale.defaultValue
-        Behavior on scale { ScaleAnimator { duration: animationLogoScaleDuration } enabled: animationEnabled && !isLoading }
+        Behavior on scale { ScaleAnimator { duration: animationLogoScaleDuration } enabled: animationEnabled && !isLoading && !logo.hasError }
     }
 
     Text {
@@ -141,7 +146,7 @@ Item {
         font.bold: true
 
         style: Text.Outline;
-        styleColor: 'black'
+        styleColor: textOutlineColor
 
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
@@ -149,7 +154,76 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
 
-        opacity: (((logoVisiblePreview || (isPlayingPreview ? logoVisiblePreview : logoVisible)) && logo.hasError)) ? 1 : 0
-        Behavior on opacity { OpacityAnimator { duration: animationLogoFadeDuration; } enabled: animationEnabled && !isLoading }
+        visible: logo.hasError
+
+        opacity: logo.hasError ? logo.opacity : 0
+        Behavior on opacity { OpacityAnimator { duration: animationLogoFadeDuration; } enabled: animationEnabled && !isLoading && logo.hasError }
+    }
+
+    Row {
+        id: icons
+        anchors {
+            left: parent.left; right: parent.right; top: parent.top;
+            rightMargin: margins; topMargin: margins * aspectRatio
+        }
+
+        readonly property real margins: vpx(9)
+        readonly property real aspectRatio: parent.height / parent.width
+
+        height: vpx(15)
+        spacing: height * 0.25
+
+        Text {
+            id: bookmarkIcon
+            anchors.verticalCenter: parent.verticalCenter
+
+            readonly property bool isBookmarked: database.games.get(game).bookmark ?? false
+
+            width: icons.height
+            height: icons.height
+
+            text: isBookmarked ? '\uf02e' : ''
+            font.family: fontawesome.name
+            font.pixelSize: height
+
+            color: textColor
+            style: Text.Outline
+            styleColor: textOutlineColor
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            visible: !!text
+        }
+
+        Text {
+            id: favoriteIcon
+            anchors.verticalCenter: parent.verticalCenter
+
+            width: icons.height
+            height: icons.height
+
+            text: game.favorite ? '\uf004' : ''
+            font.family: fontawesome.name
+            font.pixelSize: height
+
+            color: textColor
+            style: Text.Outline
+            styleColor: textOutlineColor
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            visible: !!text
+        }
+
+        layoutDirection: Qt.RightToLeft
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        color: 'black'
+        opacity: api.memory.get('settings.global.darkenAmount')
+        visible: !selected
     }
 }

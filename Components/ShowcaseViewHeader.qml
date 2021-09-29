@@ -38,45 +38,94 @@ ListView {
 
         Button {
             id: sortButton
-            // icon: '\uf0b0'
-            text: `By Title`
+            text: sortDropdown.items[sortDropdown.checkedIndex]
 
             height: parent.height
             circle: false
             selected: root.focus && ListView.isCurrentItem
 
-            onActivated: { }
+            onActivated: { sortDropdown.toggle() }
+
+            Dropdown {
+                id: sortDropdown
+                focus: parent.selected
+
+                items: ['By Title', 'By Developer', 'By Publisher', 'By Genre', 'By Year', 'By Players', 'By Rating', 'By Last Played']
+                checkedIcon: orderByDirection === Qt.AscendingOrder ? '\uf0d8 ' : '\uf0d7 '
+
+                checkedIndex: orderByIndex
+
+                onActivated: {
+                    if (orderByIndex === checkedIndex) {
+                        orderByDirection = orderByDirection === Qt.AscendingOrder ? Qt.DescendingOrder : Qt.AscendingOrder;
+                    } else {
+                        orderByIndex = checkedIndex;
+                        orderByDirection = Qt.AscendingOrder;
+                    }
+                }
+            }
         }
 
         Button {
             id: filterButton
-            // icon: '\uf0b0'
-            text: `All Games`
+            text: filterDropdownModel.get(filterDropdown.checkedIndex).name
 
             height: parent.height
             circle: false
             selected: root.focus && ListView.isCurrentItem
 
-            onActivated: { }
+            onActivated: { filterDropdown.toggle(); }
+
+            ListModel {
+                id: filterDropdownModel
+
+                ListElement { name: 'All Games' }
+                ListElement { name: 'Favorites' }
+            }
+
+            Dropdown {
+                id: filterDropdown
+                focus: parent.selected
+
+                items: filterDropdownModel
+                roleName: 'name'
+
+                checkedIndex: filterByFavorites ? 1 : 0
+
+                onActivated: {
+                    if (checkedIndex === 0) {
+                        filterByFavorites = false;
+                    }
+
+                    if (checkedIndex === 1) {
+                        filterByFavorites = true;
+                    }
+                }
+            }
         }
 
         Button {
             id: collectionsButton
-            // icon: '\uf0b0'
             text: currentCollection.name
 
             height: parent.height
             circle: false
             selected: root.focus && ListView.isCurrentItem
 
-            onActivated: {
-                collectionsDropdown.toggle();
-            }
+            onActivated: { collectionsDropdown.toggle(); }
 
             Dropdown {
                 id: collectionsDropdown
-                Component.onCompleted: {
-                    items = api.collections.toVarArray().map(collection => collection.name);
+                focus: parent.selected
+
+                items: api.collections
+                roleName: 'name'
+
+                checkedIndex: currentCollectionIndex
+
+                onActivated: {
+                    currentCollectionIndex = checkedIndex;
+                    currentCollection = api.collections.get(checkedIndex);
                 }
             }
         }

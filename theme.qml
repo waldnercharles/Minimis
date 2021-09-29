@@ -43,7 +43,7 @@ FocusScope {
     property bool filterByFavorites: false
     property bool filterByBookmarks: false
 
-    property var orderBy: ['title', 'developer', 'publisher', 'genre', 'releaseYear', 'players', 'rating', 'lastPlayed']
+    property var orderByFields: ['title', 'developer', 'publisher', 'genre', 'releaseYear', 'players', 'rating', 'lastPlayed']
     property int orderByIndex: 0
     property int orderByDirection: Qt.AscendingOrder
 
@@ -51,7 +51,7 @@ FocusScope {
     readonly property real gameItemTitlePadding: gameItemTitleEnabled ? vpx(api.memory.get('settings.global.titleFontSize') * 0.5) : 0
     readonly property real gameItemTitleHeight: gameItemTitleEnabled ? vpx(api.memory.get('settings.global.titleFontSize')) : 0
 
-    readonly property real gameItemTitleMargin: gameItemTitleEnabled ? gameItemTitleHeight * 2 + (api.memory.get('settings.global.borderEnabled') ? vpx(api.memory.get('settings.global.borderWidth')) : 0) + gameItemTitlePadding * 1.5 : 0
+    readonly property real gameItemTitleMargin: gameItemTitleEnabled ? gameItemTitleHeight + (api.memory.get('settings.global.borderEnabled') ? vpx(api.memory.get('settings.global.borderWidth')) : 0) + gameItemTitlePadding * 1.5 : 0
 
     Debouncer {
         id: videoPreviewDebouncer
@@ -208,19 +208,18 @@ FocusScope {
     }
 
     function toGamesView() {
-        sfxAccept.play();
+        // sfxAccept.play();
         stateHistory.push(root.state);
         root.state = 'gamesView';
     }
 
     function toSettingsView() {
-        sfxAccept.play();
         stateHistory.push(root.state);
         root.state = 'settingsView';
     }
 
     function toGameDetailsView(game) {
-        sfxAccept.play();
+        // sfxAccept.play();
 
         if (selectedGame) {
             selectedGameHistory.push(selectedGame);
@@ -248,5 +247,9 @@ FocusScope {
 
     function capitalizeFirstLetter([ first, ...rest ], locale = 'en-US') {
         return first.toLocaleUpperCase(locale) + rest.join('');
+    }
+
+    function capitalize(str) {
+        return capitalizeFirstLetter(str).split(/([A-Z]?[^A-Z]*)/g).join(' ');
     }
 }

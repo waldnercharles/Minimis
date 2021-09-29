@@ -42,6 +42,8 @@ FocusScope {
         cellWidth: width / numberOfColumns
         cellHeight: cellWidth * aspectRatio + gameItemTitleMargin
 
+        cacheBuffer: grid.height
+
         preferredHighlightBegin: 0
         preferredHighlightEnd: grid.height - cellHeight
 

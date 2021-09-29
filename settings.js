@@ -215,6 +215,8 @@ function createMetadata() {
             rightMargin: { name: 'Screen Padding - Right', defaultValue: 60, min: 0, type: 'int' },
         },
         performance: {
+            assetDebounceDuration: { name: 'Asset Debounce Duration', defaultValue: 500, min: 0, delta: 50, type: 'real' },
+
             artImageResolution: { name: 'Art - Image Resolution', defaultValue: 0, values: ['Native', 'Scaled'], type: 'array' },
             artImageCaching: { name: 'Art - Image Caching', defaultValue: false, type: 'bool' },
             artImageSmoothing: { name: 'Art - Image Smoothing', defaultValue: false, type: 'bool' },

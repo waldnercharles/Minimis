@@ -32,17 +32,11 @@ Item {
         // 'lastPlayed': { type: 'number' }
     })
 
-    AnyOf {
-        id: gameFilters
-        ValueFilter { roleName: 'favorite'; value: true; enabled: filterByFavorites }
-        ExpressionFilter { expression: (api.memory.get(`database.bookmarks.${currentCollection.shortName}.${modelData.title}`) ?? false); enabled: filterByBookmarks }
-
-        enabled: filterByFavorites || filterByBookmarks
-    }
+    ValueFilter { id: gameFilters; roleName: 'favorite'; value: true; enabled: filterByFavorites }
 
     RoleSorter {
         id: sorter
-        roleName: orderBy[orderByIndex]
+        roleName: orderByFields[orderByIndex]
         sortOrder: orderByDirection
     }
 

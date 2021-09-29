@@ -10,8 +10,8 @@ ListView {
     spacing: vpx(10)
     keyNavigationWraps: true
 
-    Keys.onLeftPressed: { sfxNav.play(); event.accepted = false; }
-    Keys.onRightPressed: { sfxNav.play(); event.accepted = false; }
+    Keys.onLeftPressed: { event.accepted = false; }
+    Keys.onRightPressed: { event.accepted = false; }
 
     height: vpx(40)
 
@@ -22,7 +22,6 @@ ListView {
             height: parent.height
             selected: root.focus && ListView.isCurrentItem
             onActivated: {
-                sfxAccept.play();
                 game.launch();
             }
         }
@@ -32,7 +31,6 @@ ListView {
             height: parent.height
             selected: root.focus && ListView.isCurrentItem
             onActivated: {
-                sfxAccept.play();
             }
         }
         Button {
@@ -41,7 +39,6 @@ ListView {
             selected: root.focus && ListView.isCurrentItem
             circle: true
             onActivated: {
-                sfxAccept.play();
                 game.favorite = !game.favorite;
             }
         }
@@ -54,7 +51,6 @@ ListView {
             selected: root.focus && ListView.isCurrentItem
             circle: true
             onActivated: {
-                sfxAccept.play();
                 const gameExt = database.games.get(game);
 
                 gameExt.bookmark = !gameExt.bookmark;

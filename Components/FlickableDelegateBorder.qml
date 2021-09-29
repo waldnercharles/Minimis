@@ -17,8 +17,8 @@ Item {
 
     anchors.fill: currentItem
 
-    scale: currentItem.scale
-    z: currentItem.z - 1
+    scale: currentItem ? currentItem.scale : 1
+    z: currentItem ? currentItem.z - 1 : -1
 
     Item {
         anchors.fill: parent

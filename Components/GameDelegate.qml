@@ -14,7 +14,7 @@ Item {
 
     property bool aspectRatioNative
 
-    property int sourceDebounceDuration: 500
+    property int sourceDebounceDuration: api.memory.get('settings.performance.assetDebounceDuration')
 
     property alias itemWidth: screenshot.width
     property alias itemHeight: screenshot.height
@@ -49,6 +49,15 @@ Item {
     readonly property bool logoCached: api.memory.get('settings.performance.logoImageCaching')
     readonly property bool logoSmoothed: api.memory.get('settings.performance.logoImageSmoothing')
 
+    readonly property real overlayOpacity: api.memory.get('settings.global.darkenAmount')
+
+    readonly property bool titleEnabled: api.memory.get('settings.global.titleEnabled') 
+    readonly property bool titleAlwaysVisible: api.memory.get('settings.global.titleAlwaysVisible')
+    readonly property real titleFontSize: vpx(api.memory.get('settings.global.titleFontSize'))
+
+    readonly property bool borderEnabled: api.memory.get('settings.global.borderEnabled')
+    readonly property real borderWidth: api.memory.get('settings.global.borderWidth')
+
     width: screenshot.width
     height: screenshot.height
 
@@ -59,13 +68,7 @@ Item {
 
     onSelectedChanged: { videoPreviewDebouncer.debounce(); }
 
-    layer.enabled: !isLoading
-    layer.effect: OpacityMask {
-        maskSource: Rectangle {
-            width: root.width; height: root.height
-            radius: vpx(api.memory.get('settings.global.cornerRadius'))
-        }
-    }
+    
 
     Timer {
         id: sourceDebounce
@@ -107,7 +110,15 @@ Item {
         visible: !screenshot.hasError
 
         opacity: isLoading || isPlayingPreview ? 0 : 1
-        Behavior on opacity { OpacityAnimator { duration: animationArtFadeDuration; } enabled: animationEnabled && !screenshot.hasError }
+        Behavior on opacity { NumberAnimation { duration: animationArtFadeDuration; } enabled: animationEnabled && !screenshot.hasError }
+
+        layer.enabled: !isLoading && visible
+        layer.effect: OpacityMask {
+            maskSource: Rectangle {
+                width: screenshot.width; height: screenshot.height
+                radius: vpx(api.memory.get('settings.global.cornerRadius'))
+            }
+        }
     }
 
     Image {
@@ -225,7 +236,90 @@ Item {
     Rectangle {
         anchors.fill: parent
         color: 'black'
-        opacity: api.memory.get('settings.global.darkenAmount')
+        opacity: overlayOpacity
         visible: !selected
+    }
+
+    Item
+    {
+        anchors.top: root.bottom
+        anchors.left: root.left
+        anchors.right: root.right
+
+        opacity: selected ? 1 : 0.2
+        visible: titleEnabled && (titleAlwaysVisible || selected)
+
+        Text {
+            id: title
+            anchors.top: parent.top
+            anchors.topMargin: (borderEnabled ? borderWidth : 0) + gameItemTitlePadding
+
+            width: parent.width
+            height: gameItemTitleHeight
+            color: textColor
+
+            text: game ? game.title : ''
+
+            font.family: subtitleFont.name
+            font.pixelSize: titleFontSize
+            fontSizeMode: Text.VerticalFit
+
+            elide: Text.ElideRight
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            style: Text.Outline
+        }
+
+        // Row {
+        //     anchors.top: title.bottom
+        //     anchors.topMargin: gameItemTitlePadding * 0.25
+
+        //     width: childrenRect.width
+        //     height: gameItemTitleHeight
+
+        //     anchors.horizontalCenter: parent.horizontalCenter
+
+        //     readonly property string orderByField: orderByFields[orderByIndex]
+
+        //     spacing: vpx(3)
+
+        //     Text {
+        //         color: textColor
+
+        //         text: parent.orderByField === 'players' ? '\uf007' : ''
+        //         height: parent.height
+
+        //         font.family: fontawesome.name
+        //         font.pixelSize: titleFontSize * 0.9
+        //         fontSizeMode: Text.VerticalFit
+
+        //         horizontalAlignment: Text.AlignHCenter
+        //         verticalAlignment: Text.AlignVCenter
+
+        //         style: Text.Outline
+
+        //         visible: text != ''
+        //     }
+
+        //     Text {
+        //         color: textColor
+
+        //         text: game ? (orderByIndex > 0 ? game[parent.orderByField] : game.releaseYear) : ''
+        //         height: parent.height
+
+        //         font.family: subtitleFont.name
+        //         font.pixelSize: titleFontSize
+        //         fontSizeMode: Text.VerticalFit
+
+        //         elide: Text.ElideRight
+
+        //         horizontalAlignment: Text.AlignHCenter
+        //         verticalAlignment: Text.AlignVCenter
+
+        //         style: Text.Outline
+        //     }
+        // }
     }
 }

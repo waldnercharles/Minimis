@@ -4,7 +4,7 @@ import QtGraphicalEffects 1.0
 FocusScope {
     id: root
 
-    property bool selected
+    property bool selected: false
     property bool circle: false
 
     property alias text: label.text
@@ -13,6 +13,8 @@ FocusScope {
     signal activated
 
     width: buttonBackground.width
+
+    onSelectedChanged: { if (selected) { sfxNav.play(); } }
 
     Rectangle {
         id: buttonBackground
@@ -89,6 +91,7 @@ FocusScope {
         if (api.keys.isAccept(event) && !event.isAutoRepeat) {
             event.accepted = true;
             activated();
+            sfxAccept.play();
         }
     }
 }

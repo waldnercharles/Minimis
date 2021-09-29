@@ -28,7 +28,6 @@ FocusScope {
 
     ListView {
         id: listView
-        focus: true
 
         anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
 
@@ -49,6 +48,8 @@ FocusScope {
                 id: gameDetails
                 width: listView.width
                 height: listView.height 
+
+                readonly property bool selected: root.focus && ListView.isCurrentItem
 
                 ColumnLayout {
                     anchors {
@@ -73,7 +74,7 @@ FocusScope {
                     GameDetailsButtons {
                         game: root.game
 
-                        focus: gameDetails.focus
+                        focus: selected
 
                         Layout.fillWidth: true
                         Layout.topMargin: vpx(25)
@@ -90,7 +91,7 @@ FocusScope {
                 ListView {
                     id: mediaListView
 
-                    focus: true
+                    focus: parent.focus
 
                     width: root.width; height: vpx(200)
                     orientation: ListView.Horizontal

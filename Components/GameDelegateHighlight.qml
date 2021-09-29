@@ -13,7 +13,7 @@ Item {
 
     scale: item ? item.scale : 0
 
-    z: item.z - 1
+    z: item ? item.z - 1 : -1
 
     visible: item
 

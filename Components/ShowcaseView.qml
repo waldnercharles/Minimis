@@ -82,8 +82,6 @@ FocusScope {
             }
         }
 
-        ShowcaseViewHeader {
-            id: header
-        }
+        ShowcaseViewHeader { id: header }
     }
 }

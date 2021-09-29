@@ -59,7 +59,7 @@ Item {
 
     onSelectedChanged: { videoPreviewDebouncer.debounce(); }
 
-    layer.enabled: true
+    layer.enabled: !isLoading
     layer.effect: OpacityMask {
         maskSource: Rectangle {
             width: root.width; height: root.height
@@ -85,6 +85,8 @@ Item {
         color: "#1a1a1a";
         opacity: isPlayingPreview ? 0 : 1
         Behavior on opacity { OpacityAnimator { duration: animationArtFadeDuration; } enabled: animationEnabled && !isLoading  }
+
+        radius: vpx(api.memory.get('settings.global.cornerRadius'))
     }
 
     Image {
@@ -177,7 +179,7 @@ Item {
             id: bookmarkIcon
             anchors.verticalCenter: parent.verticalCenter
 
-            readonly property bool isBookmarked: database.games.get(game).bookmark ?? false
+            readonly property bool isBookmarked: !isLoading && (database.games.get(game).bookmark ?? false)
 
             width: icons.height
             height: icons.height
@@ -203,7 +205,7 @@ Item {
             width: icons.height
             height: icons.height
 
-            text: game.favorite ? '\uf004' : ''
+            text: !isLoading && game.favorite ? '\uf004' : ''
             font.family: fontawesome.name
             font.pixelSize: height
 

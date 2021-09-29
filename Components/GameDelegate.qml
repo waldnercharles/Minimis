@@ -68,6 +68,17 @@ Item {
 
     onSelectedChanged: { videoPreviewDebouncer.debounce(); }
 
+    Keys.onPressed: {
+        if (event.isAutoRepeat) {
+            return;
+        }
+
+        if (api.keys.isAccept(event)) {
+            event.accepted = true;
+            sfxAccept.play();
+            toGameDetailsView(game);
+        }
+    }
     
 
     Timer {

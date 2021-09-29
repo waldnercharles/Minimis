@@ -6,6 +6,8 @@ ColumnLayout {
     id: root
     property var game
 
+    property int bottomMargin: vpx(35)
+
     Image {
         id: logo
 
@@ -16,7 +18,6 @@ ColumnLayout {
         Layout.alignment: Qt.AlignBottom | Qt.AlignLeft
 
         Layout.topMargin: vpx(30)
-        Layout.bottomMargin: vpx(5)
 
         fillMode: Image.PreserveAspectFit
         horizontalAlignment: Image.AlignLeft
@@ -35,8 +36,8 @@ ColumnLayout {
 
         Layout.fillWidth: true
         Layout.leftMargin: vpx(10)
-        Layout.topMargin: vpx(5)
-        Layout.bottomMargin: vpx(60)
+        Layout.topMargin: vpx(20)
+        Layout.bottomMargin: root.bottomMargin
 
         Layout.alignment: Qt.AlignBottom | Qt.AlignLeft
     }

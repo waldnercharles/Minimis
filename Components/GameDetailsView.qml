@@ -29,6 +29,8 @@ FocusScope {
     ListView {
         id: listView
 
+        focus: parent.focus
+
         anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
 
         displayMarginBeginning: height
@@ -58,26 +60,22 @@ FocusScope {
                         bottom: parent.bottom
                     }
 
-                    // GameDetailsLogo {
-                    //     game: root.game
-                    //     width: parent.width / 3.0
-                    // }
+                    GameMetadata {
+                        width: parent.width
+                        height: parent.height * 0.5
 
-                    GameDetailsMetadata {
                         game: root.game
 
-                        Layout.fillWidth: true
-                        Layout.leftMargin: vpx(10)
-                        Layout.topMargin: vpx(20)
+                        bottomMargin: vpx(10)
                     }
 
                     GameDetailsButtons {
                         game: root.game
 
-                        focus: selected
+                        focus: gameDetails.selected
 
                         Layout.fillWidth: true
-                        Layout.topMargin: vpx(25)
+                        Layout.topMargin: vpx(15)
                         Layout.bottomMargin: vpx(50)
                     }
                 }

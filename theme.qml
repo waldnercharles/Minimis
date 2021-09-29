@@ -142,7 +142,7 @@ FocusScope {
         asynchronous: true
 
         opacity: contentLoader.status === Loader.Ready ? 1 : 0
-        Behavior on opacity { NumberAnimation { duration: 300; from: 0 } }
+        Behavior on opacity { OpacityAnimator { duration: 300; from: 0 } }
 
         focus: true
 

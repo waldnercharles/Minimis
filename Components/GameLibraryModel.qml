@@ -34,11 +34,22 @@ Item {
 
     ValueFilter { id: gameFilters; roleName: 'favorite'; value: true; enabled: filterByFavorites }
 
+    FilterSorter {
+        id: playCountSorter
+        ValueFilter {
+            roleName: 'playCount'
+            value: 0
+            inverted: true
+        }
+        enabled: orderByFields[orderByIndex] === 'lastPlayed'
+        sortOrder: orderByDirection
+    }
+
     RoleSorter {
         id: sorter
         roleName: orderByFields[orderByIndex]
         sortOrder: orderByDirection
-    }
+    } 
 
     RegExpFilter {
         id: textFilter
@@ -83,7 +94,7 @@ Item {
         sourceModel: games.sourceModel
 
         filters: [ gameFilters, textFilter, numberFilter ]
-        sorters: sorter
+        sorters: [ playCountSorter, sorter ]
 
         delayed: true
     }
@@ -94,7 +105,7 @@ Item {
         sourceModel: currentCollection.games
 
         filters: gameFilters
-        sorters: sorter
+        sorters: [ playCountSorter, sorter ]
 
         delayed: true
     }

@@ -120,8 +120,6 @@ FocusScope {
 
                         property bool selected: mediaScope.focus && ListView.isCurrentItem
 
-                        // GamesViewItemBorder { anchors.fill: parent; visible: selected }
-
                         Rectangle {
                             anchors.fill: item
                             color: 'black'

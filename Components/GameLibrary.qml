@@ -24,7 +24,7 @@ FocusScope {
         property real aspectRatio: api.memory.get('settings.gameLibrary.aspectRatioNative') ? fakeAsset.height / fakeAsset.width : (api.memory.get('settings.gameLibrary.aspectRatioHeight') / api.memory.get('settings.gameLibrary.aspectRatioWidth'))
 
         anchors.fill: parent
-        anchors.topMargin: ((cellHeight - gameItemTitleMargin) * inverseSelectedScale) / 2.0 + borderWidth
+        anchors.topMargin: ((cellHeight - gameDelegateTitleMargin) * inverseSelectedScale) / 2.0 + borderWidth
         anchors.bottomMargin: anchors.topMargin
 
         anchors.leftMargin: (parent.width / numberOfColumns) * inverseSelectedScale / 2 + borderWidth
@@ -32,7 +32,7 @@ FocusScope {
 
         focus: parent.focus
 
-        FlickableDelegateBorder {
+        DelegateBorder {
             parent: grid.contentItem
             currentItem: grid.currentItem
 
@@ -40,7 +40,7 @@ FocusScope {
         }
 
         cellWidth: width / numberOfColumns
-        cellHeight: cellWidth * aspectRatio + gameItemTitleMargin
+        cellHeight: cellWidth * aspectRatio + gameDelegateTitleMargin
 
         cacheBuffer: grid.height
 
@@ -63,7 +63,7 @@ FocusScope {
 
         delegate: GameDelegate {
             itemWidth: GridView.view.cellWidth
-            itemHeight: GridView.view.cellHeight - gameItemTitleMargin
+            itemHeight: GridView.view.cellHeight - gameDelegateTitleMargin
 
             game: modelData
             selected: GridView.isCurrentItem && grid.focus

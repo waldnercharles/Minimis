@@ -40,7 +40,7 @@ FocusScope {
         ListView {
             id: listView
 
-            FlickableDelegateBorder {
+            DelegateBorder {
                 parent: listView.contentItem
                 currentItem: listView.currentItem
 
@@ -52,8 +52,6 @@ FocusScope {
 
             focus: root.focus
             orientation: ListView.Horizontal
-
-            spacing: vpx(5)
 
             highlightResizeDuration: 0
             highlightMoveDuration: 300

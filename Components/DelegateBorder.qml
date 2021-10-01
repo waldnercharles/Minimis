@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtGraphicalEffects 1.0
 
-Item {
+Rectangle {
     property Item currentItem
 
     readonly property bool borderEnabled: api.memory.get('settings.global.borderEnabled')
@@ -14,35 +14,24 @@ Item {
 
     readonly property int cornerRadius: vpx(api.memory.get('settings.global.cornerRadius'))
 
-
     anchors.fill: currentItem
+    anchors.margins: -borderWidth
 
     scale: currentItem ? currentItem.scale : 1
     z: currentItem ? currentItem.z - 1 : -1
 
-    Item {
-        anchors.fill: parent
+    color: borderEnabled ? borderColor1 : 'transparent'
+    radius: cornerRadius
 
-        Rectangle {
-            id: border
+    SequentialAnimation on color {
+        loops: Animation.Infinite
+        ColorAnimation { from: borderColor1; to: borderColor2; duration: 500 }
+        ColorAnimation { from: borderColor2; to: borderColor1; duration: 500 }
+        PauseAnimation { duration: 300 }
 
-            anchors.fill: parent
-            anchors.margins: -borderWidth
-
-            color: borderColor1
-            radius: cornerRadius
-
-            SequentialAnimation on color {
-                loops: Animation.Infinite
-                ColorAnimation { from: borderColor1; to: borderColor2; duration: 500 }
-                ColorAnimation { from: borderColor2; to: borderColor1; duration: 500 }
-                PauseAnimation { duration: 300 }
-
-                running: borderAnimated
-            }
-
-            layer.enabled: dropShadowEnabled
-            layer.effect: DropShadowMedium { cached: false }
-        }
+        running: borderEnabled && borderAnimated
     }
+
+    layer.enabled: dropShadowEnabled
+    layer.effect: DropShadowMedium { }
 }

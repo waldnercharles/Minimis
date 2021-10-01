@@ -24,7 +24,7 @@ Item {
 
     readonly property int logoFontSize: vpx(api.memory.get('settings.global.logoFontSize'))
 
-    readonly property bool isPlayingPreview: selected && !videoPreviewDebouncer.running
+    readonly property bool isPlayingPreview: selected && !videoPreviewDebouncer.running && game && game.assets.videoList.length > 0
     readonly property bool isLoading: sourceDebounce.running || screenshot.status === Image.Loading || (logoVisible && logo.status === Image.Loading)
 
     readonly property bool scaleEnabled: api.memory.get('settings.global.scaleEnabled')
@@ -51,12 +51,7 @@ Item {
 
     readonly property real overlayOpacity: api.memory.get('settings.global.darkenAmount')
 
-    readonly property bool titleEnabled: api.memory.get('settings.global.titleEnabled') 
-    readonly property bool titleAlwaysVisible: api.memory.get('settings.global.titleAlwaysVisible')
     readonly property real titleFontSize: vpx(api.memory.get('settings.global.titleFontSize'))
-
-    readonly property bool borderEnabled: api.memory.get('settings.global.borderEnabled')
-    readonly property real borderWidth: api.memory.get('settings.global.borderWidth')
 
     width: screenshot.width
     height: screenshot.height
@@ -106,7 +101,7 @@ Item {
     Image {
         id: screenshot
 
-        readonly property string src: game.assets[assetKey] || ''
+        readonly property string src: game && game.assets[assetKey] || ''
         readonly property bool hasError: status === Image.Error || src == ''
 
         source: ''
@@ -136,7 +131,7 @@ Item {
         id: logo
         anchors.fill: parent
 
-        readonly property string src: (logoVisible || logoVisiblePreview) ? game.assets.logo || '' : ''
+        readonly property string src: (logoVisible || logoVisiblePreview) ? game && game.assets.logo || '' : ''
         readonly property bool hasError: status === Image.Error || src == ''
 
         source: ''
@@ -227,7 +222,7 @@ Item {
             width: icons.height
             height: icons.height
 
-            text: !isLoading && game.favorite ? '\uf004' : ''
+            text: !isLoading && game && game.favorite ? '\uf004' : ''
             font.family: fontawesome.name
             font.pixelSize: height
 
@@ -251,86 +246,12 @@ Item {
         visible: !selected
     }
 
-    Item
-    {
-        anchors.top: root.bottom
+    GameDelegateTitle {
+        anchors.top: grayBackground.bottom
         anchors.left: root.left
         anchors.right: root.right
 
-        opacity: selected ? 1 : 0.2
-        visible: titleEnabled && (titleAlwaysVisible || selected)
-
-        Text {
-            id: title
-            anchors.top: parent.top
-            anchors.topMargin: (borderEnabled ? borderWidth : 0) + gameItemTitlePadding
-
-            width: parent.width
-            height: gameItemTitleHeight
-            color: textColor
-
-            text: game ? game.title : ''
-
-            font.family: subtitleFont.name
-            font.pixelSize: titleFontSize
-            fontSizeMode: Text.VerticalFit
-
-            elide: Text.ElideRight
-
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            style: Text.Outline
-        }
-
-        // Row {
-        //     anchors.top: title.bottom
-        //     anchors.topMargin: gameItemTitlePadding * 0.25
-
-        //     width: childrenRect.width
-        //     height: gameItemTitleHeight
-
-        //     anchors.horizontalCenter: parent.horizontalCenter
-
-        //     readonly property string orderByField: orderByFields[orderByIndex]
-
-        //     spacing: vpx(3)
-
-        //     Text {
-        //         color: textColor
-
-        //         text: parent.orderByField === 'players' ? '\uf007' : ''
-        //         height: parent.height
-
-        //         font.family: fontawesome.name
-        //         font.pixelSize: titleFontSize * 0.9
-        //         fontSizeMode: Text.VerticalFit
-
-        //         horizontalAlignment: Text.AlignHCenter
-        //         verticalAlignment: Text.AlignVCenter
-
-        //         style: Text.Outline
-
-        //         visible: text != ''
-        //     }
-
-        //     Text {
-        //         color: textColor
-
-        //         text: game ? (orderByIndex > 0 ? game[parent.orderByField] : game.releaseYear) : ''
-        //         height: parent.height
-
-        //         font.family: subtitleFont.name
-        //         font.pixelSize: titleFontSize
-        //         fontSizeMode: Text.VerticalFit
-
-        //         elide: Text.ElideRight
-
-        //         horizontalAlignment: Text.AlignHCenter
-        //         verticalAlignment: Text.AlignVCenter
-
-        //         style: Text.Outline
-        //     }
-        // }
+        game: root.game
+        selected: root.selected
     }
 }

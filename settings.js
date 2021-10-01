@@ -113,34 +113,6 @@ function createMetadata() {
     const metadata = {
         global: Object.assign(
             createHeader(
-                { key: 'videoPreview', name: 'Video Preview' },
-                {
-                    previewEnabled: { name: 'Enabled', defaultValue: true, type: 'bool' },
-                    previewVolume: { name: 'Volume', defaultValue: 0.0, delta: 0.1, min: 0.0, max: 1.0, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.previewEnabled') },
-                    videoPreviewDelay: { name: 'Delay', defaultValue: 1000, min: 0, delta: 50, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.previewEnabled') },
-                    previewLogoVisible: { name: 'Logo - Visible', defaultValue: true, type: 'bool', inset: 1, isEnabled: () => api.memory.get('settings.global.previewEnabled') }
-                }
-            ),
-            createHeader(
-                { key: 'title', name: 'Card Title' },
-                {
-                    titleEnabled: { name: 'Enabled', defaultValue: true, type: 'bool', },
-                    titleAlwaysVisible: { name: 'Always Visible', defaultValue: true, type: 'bool', inset: 1, isEnabled: () => api.memory.get('settings.global.titleEnabled') },
-                    titleFontSize: { name: 'Font Size', defaultValue: 16, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.titleEnabled') }
-                }
-            ),
-            createHeader(
-                { key: 'scaling', name: 'Scaling' },
-                {
-                    scaleEnabled: { name: 'Card Scaling - Enabled', defaultValue: true, type: 'bool', },
-                    scale: { name: 'Card Scaling - Default', defaultValue: 0.95, delta: 0.01, min: 0, max: 1.0, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.scaleEnabled') },
-                    scaleSelected: { name: 'Card Scaling - Selected', defaultValue: 1.0, delta: 0.01, min: 0, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.scaleEnabled') },
-                    logoScaleEnabled: { name: 'Logo Scaling - Enabled', defaultValue: true, type: 'bool', },
-                    logoScale: { name: 'Logo Scaling - Default', defaultValue: 0.75, delta: 0.01, min: 0.01, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.logoScaleEnabled') },
-                    logoScaleSelected: { name: 'Logo Scaling - Selected', defaultValue: 0.85, delta: 0.01, min: 0, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.logoScaleEnabled') },
-                }
-            ),
-            createHeader(
                 { key: 'animation', name: 'Animation' },
                 {
                     animationEnabled: { name: 'Enabled', defaultValue: true, type: 'bool', },
@@ -148,6 +120,14 @@ function createMetadata() {
                     animationArtFadeSpeed: { name: 'Card Fading - Duration (Milliseconds)', defaultValue: 200, min: 0, delta: 50, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.animationEnabled') },
                     logoScaleSpeed: { name: 'Logo Scaling - Duration (Milliseconds)', defaultValue: 200, min: 0, delta: 50, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.animationEnabled'), },
                     logoFadeSpeed: { name: 'Logo Fading - Duration (Milliseconds)', defaultValue: 200, min: 0, delta: 50, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.animationEnabled') },
+                }
+            ),
+            createHeader(
+                { key: 'background', name: 'Background' },
+                {
+                    backgroundOpacity: { name: 'Opacity', defaultValue: 0.8, type: 'real', min: 0, max: 1, delta: 0.01 },
+                    backgroundBlurEnabled: { name: 'Blur', defaultValue: true, type: 'bool' },
+                    backgroundBlurAmount: { name: 'Blur Amount', defaultValue: 64, min: 0, max: 64, inset: 1, type: 'int', isEnabled: () => api.memory.get('settings.global.backgroundBlurEnabled') },
                 }
             ),
             createHeader(
@@ -164,8 +144,12 @@ function createMetadata() {
                 }
             ),
             createHeader(
-                { key: 'overlay', name: 'Overlay' },
-                { darkenAmount: { name: 'Darken', defaultValue: 0.15, delta: 0.01, min: 0.0, max: 1.0, type: 'real', } }
+                { key: 'title', name: 'Card Title' },
+                {
+                    titleEnabled: { name: 'Enabled', defaultValue: true, type: 'bool', },
+                    titleAlwaysVisible: { name: 'Always Visible', defaultValue: true, type: 'bool', inset: 1, isEnabled: () => api.memory.get('settings.global.titleEnabled') },
+                    titleFontSize: { name: 'Font Size', defaultValue: 16, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.titleEnabled') }
+                }
             ),
             createHeader(
                 { key: 'logo', name: 'Logo' },
@@ -181,7 +165,31 @@ function createMetadata() {
                     navigationYearIncrement: { name: 'Year - Increment', defaultValue: 1, delta: 1, min: 1, type: 'int', },
                     navigationRatingIncrement: { name: 'Rating - Increment', defaultValue: 0.5, delta: 0.1, min: 0.1, max: 5.0, type: 'real', },
                 }
-            )
+            ),
+            createHeader(
+                { key: 'overlay', name: 'Overlay' },
+                { darkenAmount: { name: 'Darken', defaultValue: 0.15, delta: 0.01, min: 0.0, max: 1.0, type: 'real', } }
+            ),
+            createHeader(
+                { key: 'scaling', name: 'Scaling' },
+                {
+                    scaleEnabled: { name: 'Card Scaling - Enabled', defaultValue: true, type: 'bool', },
+                    scale: { name: 'Card Scaling - Default', defaultValue: 0.95, delta: 0.01, min: 0, max: 1.0, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.scaleEnabled') },
+                    scaleSelected: { name: 'Card Scaling - Selected', defaultValue: 1.0, delta: 0.01, min: 0, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.scaleEnabled') },
+                    logoScaleEnabled: { name: 'Logo Scaling - Enabled', defaultValue: true, type: 'bool', },
+                    logoScale: { name: 'Logo Scaling - Default', defaultValue: 0.75, delta: 0.01, min: 0.01, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.logoScaleEnabled') },
+                    logoScaleSelected: { name: 'Logo Scaling - Selected', defaultValue: 0.85, delta: 0.01, min: 0, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.logoScaleEnabled') },
+                }
+            ),
+            createHeader(
+                { key: 'videoPreview', name: 'Video Preview' },
+                {
+                    previewEnabled: { name: 'Enabled', defaultValue: true, type: 'bool' },
+                    previewVolume: { name: 'Volume', defaultValue: 0.0, delta: 0.1, min: 0.0, max: 1.0, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.global.previewEnabled') },
+                    videoPreviewDelay: { name: 'Delay', defaultValue: 1000, min: 0, delta: 50, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.global.previewEnabled') },
+                    previewLogoVisible: { name: 'Logo - Visible', defaultValue: true, type: 'bool', inset: 1, isEnabled: () => api.memory.get('settings.global.previewEnabled') }
+                }
+            ),
         ),
         home: Object.assign(
             createCollectionMetadata('home', { key: 'collection1', name: 'Collection 1' }, true),

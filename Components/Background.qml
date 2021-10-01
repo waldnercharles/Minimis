@@ -9,7 +9,7 @@ Item {
         id: crossfade
         anchors.fill: parent
 
-        opacity: showBackgroundImage ? 0.75 : 0
+        opacity: showBackgroundImage ? api.memory.get('settings.global.backgroundOpacity') : 0
         Behavior on opacity { NumberAnimation { duration: 500 } }
 
         layer.enabled: true
@@ -24,8 +24,8 @@ Item {
                 }
             }
 
-            layer.enabled: true
-            layer.effect: FastBlur { radius: 64 }
+            layer.enabled: api.memory.get('settings.global.backgroundBlurEnabled')
+            layer.effect: FastBlur { radius: api.memory.get('settings.global.backgroundBlurAmount') }
         }
     }
 

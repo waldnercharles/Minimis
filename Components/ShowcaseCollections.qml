@@ -69,7 +69,8 @@ FocusScope {
 
         DelegateChoice {
             roleValue: 'showcaseCollection'
-            ShowcaseCollection {
+
+            HorizontalListView { 
                 readonly property bool selected: root.focus && ListView.isCurrentItem
 
                 width: root.width
@@ -79,7 +80,17 @@ FocusScope {
                 focus: selected
 
                 opacity: index < listView.currentIndex ? 0 : 1
-                Behavior on opacity { NumberAnimation { duration: 200 } }
+                Behavior on opacity { OpacityAnimator { duration: 200 } }
+
+                title: settingsMetadata.home[`${collectionKey}type`].values[collectionType]
+
+                aspectRatioNative: api.memory.get(`settings.home.${collectionKey}aspectRatioNative`)
+
+                aspectRatioWidth: api.memory.get(`settings.home.${collectionKey}aspectRatioWidth`)
+                aspectRatioHeight: api.memory.get(`settings.home.${collectionKey}aspectRatioHeight`)
+
+                assetKey: settingsMetadata.home[`${collectionKey}art`].values[api.memory.get(`settings.home.${collectionKey}art`)]
+                logoVisible: api.memory.get(`settings.home.${collectionKey}logoVisible`)
             }
         }
 
@@ -133,7 +144,7 @@ FocusScope {
         highlightMoveDuration: 300
         highlightRangeMode: ListView.StrictlyEnforceRange 
 
-        spacing: gameItemTitleMargin + vpx(10)
+        spacing: gameDelegateTitleMargin// + vpx(10)
 
         cacheBuffer: Math.max(root.rowHeight * 6, 0)
         

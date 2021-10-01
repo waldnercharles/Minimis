@@ -47,11 +47,11 @@ FocusScope {
     property int orderByIndex: 0
     property int orderByDirection: Qt.AscendingOrder
 
-    readonly property bool gameItemTitleEnabled: api.memory.get('settings.global.titleEnabled')
-    readonly property real gameItemTitlePadding: gameItemTitleEnabled ? vpx(api.memory.get('settings.global.titleFontSize') * 0.5) : 0
-    readonly property real gameItemTitleHeight: gameItemTitleEnabled ? vpx(api.memory.get('settings.global.titleFontSize')) : 0
+    readonly property bool gameDelegateTitleEnabled: api.memory.get('settings.global.titleEnabled')
+    readonly property real gameDelegateTitlePadding: gameDelegateTitleEnabled ? vpx(api.memory.get('settings.global.titleFontSize') * 0.4) : 0
+    readonly property real gameDelegateTitleHeight: gameDelegateTitleEnabled ? vpx(api.memory.get('settings.global.titleFontSize')) : 0
 
-    readonly property real gameItemTitleMargin: gameItemTitleEnabled ? gameItemTitleHeight + (api.memory.get('settings.global.borderEnabled') ? vpx(api.memory.get('settings.global.borderWidth')) : 0) + gameItemTitlePadding * 1.5 : 0
+    readonly property real gameDelegateTitleMargin: gameDelegateTitleEnabled ? (gameDelegateTitleHeight * 2) + (gameDelegateTitlePadding * 2.25) + (api.memory.get('settings.global.borderEnabled') ? vpx(api.memory.get('settings.global.borderWidth')) * 2 : 0) : 0
 
     Debouncer {
         id: videoPreviewDebouncer
@@ -113,7 +113,7 @@ FocusScope {
                 anchors.fill: parent
                 focus: root.state === 'showcaseView'
 
-                visible: opacity > 0
+                visible: focus
                 opacity: focus ? 1 : 0
                 Behavior on opacity { NumberAnimation { duration: 300; from: 0 } }
             }
@@ -126,7 +126,7 @@ FocusScope {
 
                 game: root.selectedGame
 
-                visible: opacity > 0
+                visible: focus
                 opacity: focus ? 1 : 0
                 Behavior on opacity { NumberAnimation { duration: 300; from: 0 } }
             }

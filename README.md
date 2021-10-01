@@ -11,7 +11,6 @@ A theme I wrote to work on my Nvidia Shield
 ## Screenshots
 
 ![](https://i.imgur.com/SNteEBf.png)
-![](https://i.imgur.com/SNteEBf.png)
 ![](https://i.imgur.com/uSSZTwW.png)
 ![](https://i.imgur.com/t3uuQVH.jpeg)
 ![](https://i.imgur.com/wN2uXjI.png)

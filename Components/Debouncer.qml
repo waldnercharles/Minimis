@@ -5,8 +5,6 @@ Timer {
 
     property bool enabled: true
 
-    interval: api.memory.get('settings.cardTheme.videoPreviewDelay')
-
     function debounce() {
         enabled ? root.restart() : root.stop();
     }

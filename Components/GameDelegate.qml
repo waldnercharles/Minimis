@@ -24,7 +24,7 @@ Item {
 
     readonly property int logoFontSize: vpx(api.memory.get('settings.cardTheme.logoFontSize'))
 
-    readonly property bool isPlayingPreview: selected && !videoPreviewDebouncer.running && game && game.assets.videoList.length > 0
+    readonly property bool isPlayingPreview: selected && videoPreviewDebouncer.enabled && !videoPreviewDebouncer.running && game && game.assets.videoList.length > 0
     readonly property bool isLoading: sourceDebounce.running || screenshot.status === Image.Loading || (logoVisible && logo.status === Image.Loading)
 
     readonly property bool scaleEnabled: api.memory.get('settings.cardTheme.scaleEnabled')

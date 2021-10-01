@@ -45,7 +45,7 @@ Item {
 
             sourceComponent: videoComponent
 
-            active: !videoPreviewDebouncer.running && root.visible && root.item.game.assets.videoList.length > 0
+            active: videoPreviewDebouncer.enabled && !videoPreviewDebouncer.running && root.visible && root.item.game.assets.videoList.length > 0
         }
 
         visible: loader.active

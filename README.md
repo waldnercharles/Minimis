@@ -2,7 +2,7 @@
 
 # Minimis
 
-A theme I wrote to work on my Nvidia Shield
+A theme I wrote for Pegasus on my Nvidia Shield
 
 ## Installation
 

@@ -24,11 +24,11 @@ FocusScope {
         id: header
         height: vpx(75)
         anchors.left: parent.left
-        anchors.leftMargin: vpx(api.memory.get('settings.theme.leftMargin'))
+        anchors.leftMargin: vpx(api.memory.get('settings.globalTheme.leftMargin'))
 
         Rectangle {
             id: background
-            color: api.memory.get('settings.theme.accentColor')
+            color: api.memory.get('settings.globalTheme.accentColor')
 
             width: title.width + vpx(80)
             height: parent.height
@@ -48,7 +48,7 @@ FocusScope {
             font.bold: true
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            color: api.memory.get('settings.theme.backgroundColor')
+            color: api.memory.get('settings.globalTheme.backgroundColor')
         }
     }
 
@@ -58,7 +58,7 @@ FocusScope {
         focus: true
         anchors {
             top: header.bottom; bottom: parent.bottom; left: parent.left;
-            topMargin: vpx(20); leftMargin: vpx(api.memory.get('settings.theme.leftMargin'))
+            topMargin: vpx(20); leftMargin: vpx(api.memory.get('settings.globalTheme.leftMargin'))
         }
 
         width: parent.width / 5.0
@@ -72,7 +72,7 @@ FocusScope {
 
             Text {
                 text: capitalize(modelData.key)
-                color: api.memory.get('settings.theme.textColor')
+                color: api.memory.get('settings.globalTheme.textColor')
                 font.family: subtitleFont.name
                 font.pixelSize: vpx(22)
                 verticalAlignment: Text.AlignVCenter
@@ -105,7 +105,7 @@ FocusScope {
 
         anchors {
             top: categoriesListView.top; bottom: parent.bottom; left: categoriesListView.right; right: parent.right;
-            rightMargin: vpx(api.memory.get('settings.theme.rightMargin'))
+            rightMargin: vpx(api.memory.get('settings.globalTheme.rightMargin'))
         }
 
         preferredHighlightBegin: 0
@@ -140,7 +140,7 @@ FocusScope {
                 id: settingsName
 
                 text: settingMetadata.name
-                color: api.memory.get('settings.theme.textColor')
+                color: api.memory.get('settings.globalTheme.textColor')
                 font.family: subtitleFont.name
                 font.pixelSize: vpx(20)
                 verticalAlignment: Text.AlignVCenter
@@ -157,7 +157,7 @@ FocusScope {
                 readonly property bool isHeader: settingMetadata.type === 'header'
 
                 text: isHeader ? (value ? '\uf078' : '\uf054') : (capitalizeFirstLetter((settingMetadata.type != 'array' ? value : settingMetadata.values[value]).toString()))
-                color: api.memory.get('settings.theme.textColor')
+                color: api.memory.get('settings.globalTheme.textColor')
                 font.family: isHeader ? fontawesome.name : subtitleFont.name
                 font.pixelSize: vpx(20)
                 verticalAlignment: Text.AlignVCenter

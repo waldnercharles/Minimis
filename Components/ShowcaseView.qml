@@ -36,8 +36,8 @@ FocusScope {
     FocusScope {
         focus: true
         anchors.fill: parent;
-        anchors.leftMargin: vpx(api.memory.get('settings.theme.leftMargin'));
-        anchors.rightMargin: vpx(api.memory.get('settings.theme.rightMargin'));
+        anchors.leftMargin: vpx(api.memory.get('settings.globalTheme.leftMargin'));
+        anchors.rightMargin: vpx(api.memory.get('settings.globalTheme.rightMargin'));
 
         GameMetadata {
             id: showcaseMetadata

@@ -17,7 +17,7 @@ FocusScope {
 
     LastPlayedGamesModel { id: lastPlayedGamesModel; maxItems: 16 }
     FavoriteGamesModel { id: favoriteGamesModel; maxItems: 16 }
-    BookmarkedGamesModel { id: bookmarkedGamesModel; maxItems: 16 }
+    // BookmarkedGamesModel { id: bookmarkedGamesModel; maxItems: 16 }
     RandomGamesModel { id: randomGamesModel; maxItems: 16 }
     GameLibraryModel { id: gameLibraryModel; z: 100 }
 
@@ -25,7 +25,7 @@ FocusScope {
         undefined,
         lastPlayedGamesModel,
         favoriteGamesModel,
-        bookmarkedGamesModel,
+        // bookmarkedGamesModel,
         randomGamesModel,
     ]
 
@@ -44,7 +44,7 @@ FocusScope {
         id: proxyModel
         proxyRoles: [
             ExpressionRole { name: 'collectionKey'; expression: type === 'showcaseCollection' ? `collection${index + 1}` : undefined },
-            ExpressionRole { name: 'collectionType'; expression: type === 'showcaseCollection' ? api.memory.get(`settings.home.${collectionKey}type`) : undefined },
+            ExpressionRole { name: 'collectionType'; expression: type === 'showcaseCollection' ? api.memory.get(`settings.layout.${collectionKey}.type`) : undefined },
             ExpressionRole { name: 'collection'; expression: type === 'showcaseCollection' ? collectionsByType[collectionType] : undefined }
         ]
 
@@ -52,7 +52,7 @@ FocusScope {
             expression: {
                 lastPlayedGamesModel.games.count;
                 favoriteGamesModel.games.count;
-                bookmarkedGamesModel.games.count;
+                // bookmarkedGamesModel.games.count;
                 randomGamesModel.games.count;
 
                 return type === 'gameLibrary' || (collection != null && collection.games.count > 0);
@@ -82,15 +82,15 @@ FocusScope {
                 opacity: index < listView.currentIndex ? 0 : 1
                 Behavior on opacity { OpacityAnimator { duration: 200 } }
 
-                title: settingsMetadata.home[`${collectionKey}type`].values[collectionType]
+                title: settingsMetadata.layout[`${collectionKey}.type`].values[collectionType]
 
-                aspectRatioNative: api.memory.get(`settings.home.${collectionKey}aspectRatioNative`)
+                aspectRatioNative: api.memory.get(`settings.layout.${collectionKey}.aspectRatioNative`)
 
-                aspectRatioWidth: api.memory.get(`settings.home.${collectionKey}aspectRatioWidth`)
-                aspectRatioHeight: api.memory.get(`settings.home.${collectionKey}aspectRatioHeight`)
+                aspectRatioWidth: api.memory.get(`settings.layout.${collectionKey}.aspectRatioWidth`)
+                aspectRatioHeight: api.memory.get(`settings.layout.${collectionKey}.aspectRatioHeight`)
 
-                assetKey: settingsMetadata.home[`${collectionKey}art`].values[api.memory.get(`settings.home.${collectionKey}art`)]
-                logoVisible: api.memory.get(`settings.home.${collectionKey}logoVisible`)
+                assetKey: settingsMetadata.layout[`${collectionKey}.art`].values[api.memory.get(`settings.layout.${collectionKey}.art`)]
+                logoVisible: api.memory.get(`settings.layout.${collectionKey}.logoVisible`)
             }
         }
 
@@ -111,7 +111,7 @@ FocusScope {
                     font.family: subtitleFont.name
                     font.pixelSize: vpx(18)
 
-                    color: api.memory.get('settings.theme.textColor')
+                    color: api.memory.get('settings.globalTheme.textColor')
                     opacity: selected ? 1 : 0.2
 
                     layer.enabled: true

@@ -54,7 +54,7 @@ ColumnLayout {
             font.pixelSize: fontSize
             font.family: subtitleFont.name
             font.bold: true
-            color: api.memory.get('settings.theme.textColor')
+            color: api.memory.get('settings.globalTheme.textColor')
 
             verticalAlignment: Text.AlignVCenter
         }
@@ -69,7 +69,7 @@ ColumnLayout {
             height: playersText.contentHeight + vpx(10)
 
             border.width: vpx(2)
-            border.color: api.memory.get('settings.theme.accentColor')
+            border.color: api.memory.get('settings.globalTheme.accentColor')
 
             radius: vpx(5)
 
@@ -83,7 +83,7 @@ ColumnLayout {
 
                 font.pixelSize: fontSize * 0.9
                 font.family: subtitleFont.name
-                color: api.memory.get('settings.theme.textColor')
+                color: api.memory.get('settings.globalTheme.textColor')
 
                 verticalAlignment: Text.AlignVCenter
             }
@@ -101,7 +101,7 @@ ColumnLayout {
 
                 font.pixelSize: fontSize * 0.9
                 font.family: subtitleFont.name
-                color: api.memory.get('settings.theme.textColor')
+                color: api.memory.get('settings.globalTheme.textColor')
 
                 verticalAlignment: Text.AlignVCenter
             }
@@ -118,7 +118,7 @@ ColumnLayout {
                         anchors.verticalCenter: parent.verticalCenter;
                         font.family: fontawesome.name
                         font.pixelSize: fontSize
-                        color: api.memory.get('settings.theme.textColor')
+                        color: api.memory.get('settings.globalTheme.textColor')
 
                         verticalAlignment: Text.AlignVCenter
                     }

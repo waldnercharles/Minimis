@@ -10,7 +10,7 @@ Item {
 
     property string assetKey
     property bool logoVisible
-    readonly property bool logoVisiblePreview: api.memory.get('settings.global.previewLogoVisible')
+    readonly property bool logoVisiblePreview: api.memory.get('settings.cardTheme.previewLogoVisible')
 
     property bool aspectRatioNative
 
@@ -19,27 +19,27 @@ Item {
     property alias itemWidth: screenshot.width
     property alias itemHeight: screenshot.height
 
-    readonly property string textColor: api.memory.get('settings.theme.textColor')
+    readonly property string textColor: api.memory.get('settings.globalTheme.textColor')
     readonly property string textOutlineColor: 'black'
 
-    readonly property int logoFontSize: vpx(api.memory.get('settings.global.logoFontSize'))
+    readonly property int logoFontSize: vpx(api.memory.get('settings.cardTheme.logoFontSize'))
 
     readonly property bool isPlayingPreview: selected && !videoPreviewDebouncer.running && game && game.assets.videoList.length > 0
     readonly property bool isLoading: sourceDebounce.running || screenshot.status === Image.Loading || (logoVisible && logo.status === Image.Loading)
 
-    readonly property bool scaleEnabled: api.memory.get('settings.global.scaleEnabled')
-    readonly property real scaleSelected: api.memory.get('settings.global.scaleSelected')
-    readonly property real scaleUnselected: api.memory.get('settings.global.scale')
+    readonly property bool scaleEnabled: api.memory.get('settings.cardTheme.scaleEnabled')
+    readonly property real scaleSelected: api.memory.get('settings.cardTheme.scaleSelected')
+    readonly property real scaleUnselected: api.memory.get('settings.cardTheme.scale')
 
-    readonly property bool logoScaleEnabled: api.memory.get('settings.global.logoScaleEnabled')
-    readonly property real logoScaleSelected: api.memory.get('settings.global.logoScaleSelected')
-    readonly property real logoScaleUnselected: api.memory.get('settings.global.logoScale')
+    readonly property bool logoScaleEnabled: api.memory.get('settings.cardTheme.logoScaleEnabled')
+    readonly property real logoScaleSelected: api.memory.get('settings.cardTheme.logoScaleSelected')
+    readonly property real logoScaleUnselected: api.memory.get('settings.cardTheme.logoScale')
 
-    readonly property bool animationEnabled: api.memory.get('settings.global.animationEnabled')
-    readonly property int animationArtScaleDuration: api.memory.get('settings.global.animationArtScaleSpeed')
-    readonly property int animationArtFadeDuration: api.memory.get('settings.global.animationArtFadeSpeed')
-    readonly property int animationLogoScaleDuration: api.memory.get('settings.global.logoScaleSpeed')
-    readonly property int animationLogoFadeDuration: api.memory.get('settings.global.logoFadeSpeed')
+    readonly property bool animationEnabled: api.memory.get('settings.cardTheme.animationEnabled')
+    readonly property int animationArtScaleDuration: api.memory.get('settings.cardTheme.animationArtScaleSpeed')
+    readonly property int animationArtFadeDuration: api.memory.get('settings.cardTheme.animationArtFadeSpeed')
+    readonly property int animationLogoScaleDuration: api.memory.get('settings.cardTheme.logoScaleSpeed')
+    readonly property int animationLogoFadeDuration: api.memory.get('settings.cardTheme.logoFadeSpeed')
 
     readonly property bool artNativeResolution: api.memory.get('settings.performance.artImageResolution') === 0
     readonly property bool artCached: api.memory.get('settings.performance.artImageCaching')
@@ -49,9 +49,9 @@ Item {
     readonly property bool logoCached: api.memory.get('settings.performance.logoImageCaching')
     readonly property bool logoSmoothed: api.memory.get('settings.performance.logoImageSmoothing')
 
-    readonly property real overlayOpacity: api.memory.get('settings.global.darkenAmount')
+    readonly property real overlayOpacity: api.memory.get('settings.cardTheme.darkenAmount')
 
-    readonly property real titleFontSize: vpx(api.memory.get('settings.global.titleFontSize'))
+    readonly property real titleFontSize: vpx(api.memory.get('settings.cardTheme.titleFontSize'))
 
     width: screenshot.width
     height: screenshot.height
@@ -95,7 +95,7 @@ Item {
         opacity: isPlayingPreview ? 0 : 1
         Behavior on opacity { OpacityAnimator { duration: animationArtFadeDuration; } enabled: animationEnabled && !isLoading  }
 
-        radius: vpx(api.memory.get('settings.global.cornerRadius'))
+        radius: vpx(api.memory.get('settings.cardTheme.cornerRadius'))
     }
 
     Image {
@@ -122,7 +122,7 @@ Item {
         layer.effect: OpacityMask {
             maskSource: Rectangle {
                 width: screenshot.width; height: screenshot.height
-                radius: vpx(api.memory.get('settings.global.cornerRadius'))
+                radius: vpx(api.memory.get('settings.cardTheme.cornerRadius'))
             }
         }
     }

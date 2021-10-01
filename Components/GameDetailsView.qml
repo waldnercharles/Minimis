@@ -8,8 +8,8 @@ FocusScope {
     id: root
 
     anchors.fill: parent
-    anchors.leftMargin: vpx(api.memory.get('settings.theme.leftMargin'));
-    anchors.rightMargin: vpx(api.memory.get('settings.theme.rightMargin'));
+    anchors.leftMargin: vpx(api.memory.get('settings.globalTheme.leftMargin'));
+    anchors.rightMargin: vpx(api.memory.get('settings.globalTheme.rightMargin'));
 
     property var game
     property var gameMedia
@@ -81,112 +81,112 @@ FocusScope {
                 }
             }
 
-            FocusScope {
-                id: mediaScope
+            // FocusScope {
+            //     id: mediaScope
 
-                width: root.width; height: vpx(200)
+            //     width: root.width; height: vpx(200)
 
-                ListView {
-                    id: mediaListView
+            //     ListView {
+            //         id: mediaListView
 
-                    focus: parent.focus
+            //         focus: parent.focus
 
-                    width: root.width; height: vpx(200)
-                    orientation: ListView.Horizontal
+            //         width: root.width; height: vpx(200)
+            //         orientation: ListView.Horizontal
 
-                    model: gameMedia
+            //         model: gameMedia
 
-                    highlightResizeDuration: 0
-                    highlightMoveDuration: 300
-                    highlightRangeMode: ListView.ApplyRange
+            //         highlightResizeDuration: 0
+            //         highlightMoveDuration: 300
+            //         highlightRangeMode: ListView.ApplyRange
 
-                    // highlight: GamesViewItemBorder {
-                    //     width: mediaListView.currentItem ? mediaListView.currentItem.width : undefined
-                    //     height: mediaListView.currentItem ? mediaListView.currentItem.height : undefined
+            //         // highlight: GamesViewItemBorder {
+            //         //     width: mediaListView.currentItem ? mediaListView.currentItem.width : undefined
+            //         //     height: mediaListView.currentItem ? mediaListView.currentItem.height : undefined
 
-                    //     scale: mediaListView.currentItem ? mediaListView.currentItem.scale : 0
+            //         //     scale: mediaListView.currentItem ? mediaListView.currentItem.scale : 0
 
-                    //     z: mediaListView.currentItem ? mediaListView.currentItem.z - 1 : 0
+            //         //     z: mediaListView.currentItem ? mediaListView.currentItem.z - 1 : 0
 
-                    //     visible: mediaListView.currentItem != null && mediaScope.focus
-                    // }
+            //         //     visible: mediaListView.currentItem != null && mediaScope.focus
+            //         // }
 
-                    delegate: Item {
-                        id: item
-                        width: isVideo ? assetVideo.width : assetImage.width; height: vpx(150)
+            //         delegate: Item {
+            //             id: item
+            //             width: isVideo ? assetVideo.width : assetImage.width; height: vpx(150)
 
-                        property string asset: modelData
-                        property bool isVideo: asset.endsWith('.mp4') || asset.endsWith('.webm')
+            //             property string asset: modelData
+            //             property bool isVideo: asset.endsWith('.mp4') || asset.endsWith('.webm')
 
-                        property bool selected: mediaScope.focus && ListView.isCurrentItem
+            //             property bool selected: mediaScope.focus && ListView.isCurrentItem
 
-                        Rectangle {
-                            anchors.fill: item
-                            color: 'black'
-                        }
+            //             Rectangle {
+            //                 anchors.fill: item
+            //                 color: 'black'
+            //             }
 
-                        Image {
-                            id: assetImage
-                            height: item.height
+            //             Image {
+            //                 id: assetImage
+            //                 height: item.height
 
-                            source: !isVideo ? asset : ''
-                            asynchronous: true
+            //                 source: !isVideo ? asset : ''
+            //                 asynchronous: true
 
-                            fillMode: Image.PreserveAspectFit
-                            visible: !isVideo
-                            opacity: selected ? 1.0 : 0.6
-                        }
+            //                 fillMode: Image.PreserveAspectFit
+            //                 visible: !isVideo
+            //                 opacity: selected ? 1.0 : 0.6
+            //             }
 
-                        Video {
-                            id: assetVideo
-                            source: isVideo ? asset : ''
+            //             Video {
+            //                 id: assetVideo
+            //                 source: isVideo ? asset : ''
 
-                            width: metaData.resolution ? metaData.resolution.width / metaData.resolution.height * height : 0
-                            height: item.height
+            //                 width: metaData.resolution ? metaData.resolution.width / metaData.resolution.height * height : 0
+            //                 height: item.height
 
-                            loops: MediaPlayer.Infinite
+            //                 loops: MediaPlayer.Infinite
 
-                            visible: isVideo
-                            muted: true
+            //                 visible: isVideo
+            //                 muted: true
 
-                            autoPlay: true
+            //                 autoPlay: true
 
-                            opacity: selected ? 1.0 : 0.6
-                        }
+            //                 opacity: selected ? 1.0 : 0.6
+            //             }
 
-                        Text {
-                            id: icon
-                            height: item.height * 0.25; width: height
-                            anchors.centerIn: parent
+            //             Text {
+            //                 id: icon
+            //                 height: item.height * 0.25; width: height
+            //                 anchors.centerIn: parent
 
-                            text: isVideo ? '\uf04b' : ''
+            //                 text: isVideo ? '\uf04b' : ''
 
-                            font.family: fontawesome.name
-                            font.pixelSize: height
+            //                 font.family: fontawesome.name
+            //                 font.pixelSize: height
 
-                            color: api.memory.get('settings.theme.textColor')
+            //                 color: api.memory.get('settings.globalTheme.textColor')
 
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
+            //                 horizontalAlignment: Text.AlignHCenter
+            //                 verticalAlignment: Text.AlignVCenter
+            //             }
 
-                        layer.enabled: true
-                        layer.effect: OpacityMask {
-                            id: mask
-                            maskSource: Rectangle {
-                                width: item.width; height: item.height
-                                radius: vpx(api.memory.get('settings.global.cornerRadius'))
-                            }
+            //             layer.enabled: true
+            //             layer.effect: OpacityMask {
+            //                 id: mask
+            //                 maskSource: Rectangle {
+            //                     width: item.width; height: item.height
+            //                     radius: vpx(api.memory.get('settings.cardTheme.cornerRadius'))
+            //                 }
 
-                            layer.enabled: !selected && api.memory.get('settings.performance.artDropShadow')
-                            layer.effect: DropShadowLow {
-                                anchors.fill: item
-                                source: mask
-                            }
-                        }
-                    }
-                }
-            }
+            //                 layer.enabled: !selected && api.memory.get('settings.performance.artDropShadow')
+            //                 layer.effect: DropShadowLow {
+            //                     anchors.fill: item
+            //                     source: mask
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
         }
     }
 }

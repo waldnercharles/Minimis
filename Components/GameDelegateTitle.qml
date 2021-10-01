@@ -1,16 +1,18 @@
 import QtQuick 2.15
 
 Column {
+    id: root
+
     property var game
     property bool selected
 
-    readonly property bool titleEnabled: api.memory.get('settings.global.titleEnabled') 
-    readonly property bool titleAlwaysVisible: api.memory.get('settings.global.titleAlwaysVisible')
-    readonly property real titleFontSize: vpx(api.memory.get('settings.global.titleFontSize'))
-    readonly property string titleColor: api.memory.get('settings.theme.textColor')
+    readonly property bool titleEnabled: api.memory.get('settings.cardTheme.titleEnabled') 
+    readonly property bool titleAlwaysVisible: api.memory.get('settings.cardTheme.titleAlwaysVisible')
+    readonly property real titleFontSize: vpx(api.memory.get('settings.cardTheme.titleFontSize'))
+    readonly property string titleColor: api.memory.get('settings.globalTheme.textColor')
 
-    readonly property bool borderEnabled: api.memory.get('settings.global.borderEnabled')
-    readonly property real borderWidth: api.memory.get('settings.global.borderWidth')
+    readonly property bool borderEnabled: api.memory.get('settings.cardTheme.borderEnabled')
+    readonly property real borderWidth: api.memory.get('settings.cardTheme.borderWidth')
 
     opacity: selected ? 1 : 0.2
     visible: titleEnabled && (titleAlwaysVisible || selected)
@@ -46,19 +48,18 @@ Column {
                 verticalAlignment: Text.AlignVCenter
 
                 style: Text.Outline
-                TextMetrics {
-                    id: titleMetrics
-                    text: title.text
+                // TextMetrics {
+                //     id: titleMetrics
+                //     text: title.text
 
-                    font.family: subtitleFont.name
-                    font.pixelSize: title.font.pixelSize
-                }
+                //     font.family: subtitleFont.name
+                //     font.pixelSize: title.font.pixelSize
+                // }
             }
         }
     }
 
     Row {
-
         width: childrenRect.width
         height: titleFontSize
 
@@ -72,10 +73,12 @@ Column {
             color: titleColor
 
             text: getIcon()
-            height: parent.height
+            height: parent.height * 0.9
+
+            anchors.verticalCenter: parent.verticalCenter
 
             font.family: fontawesome.name
-            font.pixelSize: titleFontSize * 0.9
+            font.pixelSize: titleFontSize
             fontSizeMode: Text.VerticalFit
 
             horizontalAlignment: Text.AlignHCenter
@@ -102,21 +105,34 @@ Column {
         }
 
         Text {
+            id: sortTitle
+
             color: textColor
 
             text: getText()
+            width: Math.min(sortTitleMetrics.width, root.width)
             height: parent.height
+
+            anchors.verticalCenter: parent.verticalCenter
 
             font.family: subtitleFont.name
             font.pixelSize: titleFontSize
             fontSizeMode: Text.VerticalFit
 
-            elide: Text.ElideRight
+            elide: sortTitleMetrics.width > root.width ? Text.ElideRight : Text.ElideNone
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
             style: Text.Outline
+
+            TextMetrics {
+                id: sortTitleMetrics
+                text: sortTitle.text
+
+                font.family: subtitleFont.name
+                font.pixelSize: sortTitle.font.pixelSize
+            }
 
             function getText() {
                 if (game == null) {
@@ -128,7 +144,7 @@ Column {
                     case 'title':
                         return game.releaseYear;
                     case 'players':
-                        return `${value > 1 ? '1 - ' : ''}${value}`;
+                        return `${value > 1 ? '1 - ' : ' '}${value}`;
                     case 'lastPlayed':
                         return getTimeAgo(value);
                     case 'rating':

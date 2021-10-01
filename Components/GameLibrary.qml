@@ -17,11 +17,11 @@ FocusScope {
     GridView {
         id: grid
 
-        readonly property int numberOfColumns: Math.max(api.memory.get('settings.gameLibrary.gameViewColumns'), 1)
-        readonly property real inverseSelectedScale: Math.max(api.memory.get('settings.global.scaleSelected') - 1.0, 0)
-        readonly property real borderWidth: (api.memory.get('settings.global.borderEnabled') ? vpx(api.memory.get('settings.global.borderWidth')) : 0);
+        readonly property int numberOfColumns: Math.max(api.memory.get('settings.layout.library.columns'), 1)
+        readonly property real inverseSelectedScale: Math.max(api.memory.get('settings.cardTheme.scaleSelected') - 1.0, 0)
+        readonly property real borderWidth: (api.memory.get('settings.cardTheme.borderEnabled') ? vpx(api.memory.get('settings.cardTheme.borderWidth')) : 0);
 
-        property real aspectRatio: api.memory.get('settings.gameLibrary.aspectRatioNative') ? fakeAsset.height / fakeAsset.width : (api.memory.get('settings.gameLibrary.aspectRatioHeight') / api.memory.get('settings.gameLibrary.aspectRatioWidth'))
+        property real aspectRatio: api.memory.get('settings.layout.library.aspectRatioNative') ? fakeAsset.height / fakeAsset.width : (api.memory.get('settings.layout.library.aspectRatioHeight') / api.memory.get('settings.layout.library.aspectRatioWidth'))
 
         anchors.fill: parent
         anchors.topMargin: ((cellHeight - gameDelegateTitleMargin) * inverseSelectedScale) / 2.0 + borderWidth
@@ -68,9 +68,9 @@ FocusScope {
             game: modelData
             selected: GridView.isCurrentItem && grid.focus
 
-            assetKey: settingsMetadata.gameLibrary.art.values[api.memory.get('settings.gameLibrary.art')]
-            logoVisible: api.memory.get('settings.gameLibrary.logoVisible')
-            aspectRatioNative: api.memory.get('settings.gameLibrary.aspectRatioNative')
+            assetKey: settingsMetadata.layout['library.art'].values[api.memory.get('settings.layout.library.art')]
+            logoVisible: api.memory.get('settings.layout.library.logoVisible')
+            aspectRatioNative: api.memory.get('settings.layout.library.aspectRatioNative')
         }
 
         Component.onCompleted: {

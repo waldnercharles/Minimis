@@ -4,15 +4,15 @@ import QtGraphicalEffects 1.0
 Rectangle {
     property Item currentItem
 
-    readonly property bool borderEnabled: api.memory.get('settings.global.borderEnabled')
-    readonly property bool dropShadowEnabled: api.memory.get('settings.performance.artDropShadow')
+    readonly property bool borderEnabled: api.memory.get('settings.cardTheme.borderEnabled')
+    readonly property bool dropShadowEnabled: true // api.memory.get('settings.performance.artDropShadow')
 
-    readonly property int borderWidth: borderEnabled ? vpx(api.memory.get('settings.global.borderWidth')) : 0
-    readonly property string borderColor1: api.memory.get('settings.global.borderColor1')
-    readonly property string borderColor2: api.memory.get('settings.global.borderColor2')
-    readonly property bool borderAnimated: api.memory.get('settings.global.borderAnimated') 
+    readonly property int borderWidth: borderEnabled ? vpx(api.memory.get('settings.cardTheme.borderWidth')) : 0
+    readonly property string borderColor1: api.memory.get('settings.cardTheme.borderColor1')
+    readonly property string borderColor2: api.memory.get('settings.cardTheme.borderColor2')
+    readonly property bool borderAnimated: api.memory.get('settings.cardTheme.borderAnimated') 
 
-    readonly property int cornerRadius: vpx(api.memory.get('settings.global.cornerRadius'))
+    readonly property int cornerRadius: vpx(api.memory.get('settings.cardTheme.cornerRadius'))
 
     anchors.fill: currentItem
     anchors.margins: -borderWidth

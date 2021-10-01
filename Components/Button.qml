@@ -22,7 +22,7 @@ FocusScope {
         anchors.fill: button
 
         radius: circle ? height / 2 : vpx(5)
-        color: selected ? api.memory.get('settings.theme.accentColor') : api.memory.get('settings.theme.textColor')
+        color: selected ? api.memory.get('settings.globalTheme.accentColor') : api.memory.get('settings.globalTheme.textColor')
 
         opacity: selected ? 1 : 0.4
 
@@ -52,7 +52,7 @@ FocusScope {
             font.family: fontawesome.name
             font.pixelSize: height
 
-            color: selected ? api.memory.get('settings.theme.backgroundColor') : api.memory.get('settings.theme.textColor')
+            color: selected ? api.memory.get('settings.globalTheme.backgroundColor') : api.memory.get('settings.globalTheme.textColor')
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -76,7 +76,7 @@ FocusScope {
             font.family: subtitleFont.name
             font.pixelSize: button.height * 0.4
             font.bold: true
-            color: selected ? api.memory.get('settings.theme.backgroundColor'): api.memory.get('settings.theme.textColor')
+            color: selected ? api.memory.get('settings.globalTheme.backgroundColor'): api.memory.get('settings.globalTheme.textColor')
             anchors { top: parent.top; bottom: parent.bottom }
 
             width: labelFake.width

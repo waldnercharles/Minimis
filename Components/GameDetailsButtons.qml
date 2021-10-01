@@ -25,14 +25,14 @@ ListView {
                 game.launch();
             }
         }
-        Button {
-            icon: '\uf05a'
-            text: 'More Info'
-            height: parent.height
-            selected: root.focus && ListView.isCurrentItem
-            onActivated: {
-            }
-        }
+        // Button {
+        //     icon: '\uf05a'
+        //     text: 'More Info'
+        //     height: parent.height
+        //     selected: root.focus && ListView.isCurrentItem
+        //     onActivated: {
+        //     }
+        // }
         Button {
             icon: (game && game.favorite) ? '\uf004' : '\uf08a'
             height: parent.height

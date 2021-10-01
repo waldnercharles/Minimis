@@ -47,17 +47,17 @@ FocusScope {
     property int orderByIndex: 0
     property int orderByDirection: Qt.AscendingOrder
 
-    readonly property bool gameDelegateTitleEnabled: api.memory.get('settings.global.titleEnabled')
-    readonly property real gameDelegateTitlePadding: gameDelegateTitleEnabled ? vpx(api.memory.get('settings.global.titleFontSize') * 0.4) : 0
-    readonly property real gameDelegateTitleHeight: gameDelegateTitleEnabled ? vpx(api.memory.get('settings.global.titleFontSize')) : 0
+    readonly property bool gameDelegateTitleEnabled: api.memory.get('settings.cardTheme.titleEnabled')
+    readonly property real gameDelegateTitlePadding: gameDelegateTitleEnabled ? vpx(api.memory.get('settings.cardTheme.titleFontSize') * 0.4) : 0
+    readonly property real gameDelegateTitleHeight: gameDelegateTitleEnabled ? vpx(api.memory.get('settings.cardTheme.titleFontSize')) : 0
 
-    readonly property real gameDelegateTitleMargin: gameDelegateTitleEnabled ? (gameDelegateTitleHeight * 2) + (gameDelegateTitlePadding * 2.25) + (api.memory.get('settings.global.borderEnabled') ? vpx(api.memory.get('settings.global.borderWidth')) * 2 : 0) : 0
+    readonly property real gameDelegateTitleMargin: gameDelegateTitleEnabled ? (gameDelegateTitleHeight * 2) + (gameDelegateTitlePadding * 2.25) + (api.memory.get('settings.cardTheme.borderEnabled') ? vpx(api.memory.get('settings.cardTheme.borderWidth')) * 2 : 0) : 0
 
     Debouncer {
         id: videoPreviewDebouncer
 
-        interval: api.memory.get('settings.global.videoPreviewDelay')
-        enabled: api.memory.get('settings.global.previewEnabled')
+        interval: api.memory.get('settings.cardTheme.videoPreviewDelay')
+        enabled: api.memory.get('settings.cardTheme.previewEnabled')
     }
 
     states: [
@@ -179,7 +179,7 @@ FocusScope {
         }
     }
 
-    function reloadSettings(overwrite = false) {
+    function reloadSettings(overwrite = true) {
         for (const [categoryKey, category] of Object.entries(settingsMetadata)) {
             for (const [settingKey, setting] of Object.entries(category)) {
                 const key = `settings.${categoryKey}.${settingKey}`;

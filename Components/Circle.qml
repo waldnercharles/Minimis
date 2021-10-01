@@ -5,5 +5,5 @@ Rectangle {
     width: radius * 2;
 
     radius: vpx(2);
-    color: api.memory.get('settings.theme.textColor')
+    color: api.memory.get('settings.globalTheme.textColor')
 }

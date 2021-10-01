@@ -99,7 +99,7 @@ FocusScope {
                     font.family: subtitleFont.name
                     font.pixelSize: height * 0.4
                     font.bold: true
-                    color: checked ? api.memory.get('settings.theme.accentColor') : api.memory.get('settings.theme.textColor')
+                    color: checked ? api.memory.get('settings.globalTheme.accentColor') : api.memory.get('settings.globalTheme.textColor')
                     opacity: selected ? 1.0 : 0.6
 
                     verticalAlignment: Text.AlignVCenter
@@ -114,7 +114,7 @@ FocusScope {
                     font.family: fontawesome.name
                     font.pixelSize: height * 0.4
 
-                    color: checked ? api.memory.get('settings.theme.accentColor') : api.memory.get('settings.theme.textColor')
+                    color: checked ? api.memory.get('settings.globalTheme.accentColor') : api.memory.get('settings.globalTheme.textColor')
                     opacity: selected ? 1.0 : 0.6
 
                     verticalAlignment: Text.AlignVCenter

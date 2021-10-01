@@ -27,7 +27,7 @@ Item {
             muted: root.muted
             loops: MediaPlayer.Infinite
             autoPlay: true
-            volume: api.memory.get('settings.global.previewVolume')
+            volume: api.memory.get('settings.cardTheme.previewVolume')
         }
     }
 
@@ -55,7 +55,7 @@ Item {
             id: mask
             maskSource: Rectangle {
                 width: loaderContainer.width; height: loaderContainer.height
-                radius: vpx(api.memory.get('settings.global.cornerRadius'))
+                radius: vpx(api.memory.get('settings.cardTheme.cornerRadius'))
             }
         }
     }

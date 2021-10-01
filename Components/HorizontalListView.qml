@@ -30,7 +30,7 @@ FocusScope {
             font.family: subtitleFont.name
             font.pixelSize: vpx(18)
 
-            color: api.memory.get('settings.theme.textColor')
+            color: api.memory.get('settings.globalTheme.textColor')
             opacity: root.focus ? 1 : 0.2
 
             layer.enabled: true

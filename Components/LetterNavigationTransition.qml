@@ -13,8 +13,8 @@ Item {
 
     SequentialAnimation {
         id: fadeAnimation;
-        PauseAnimation { duration: api.memory.get('settings.global.navigationPauseDuration') }
-        NumberAnimation { target: root; property: 'opacity'; to: 0; duration: api.memory.get('settings.global.navigationFadeDuration'); }
+        PauseAnimation { duration: api.memory.get('settings.cardTheme.navigationPauseDuration') }
+        NumberAnimation { target: root; property: 'opacity'; to: 0; duration: api.memory.get('settings.cardTheme.navigationFadeDuration'); }
         PropertyAction { target: root; property: 'text'; value: null }
     }
 
@@ -26,8 +26,8 @@ Item {
         width: Math.max(height, (letterText.contentWidth + icon.contentWidth) + height / 2)
         radius: height / 4
 
-        color: api.memory.get('settings.theme.backgroundColor')
-        opacity: api.memory.get('settings.global.navigationOpacity')
+        color: api.memory.get('settings.globalTheme.backgroundColor')
+        opacity: api.memory.get('settings.cardTheme.navigationOpacity')
     }
 
     Item {
@@ -50,7 +50,7 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
-            color: api.memory.get('settings.theme.accentColor')
+            color: api.memory.get('settings.globalTheme.accentColor')
         }
 
         Text {
@@ -68,7 +68,7 @@ Item {
             font.hintingPreference: Font.PreferNoHinting
             font.family: titleFont.name
             font.capitalization: Font.Capitalize
-            font.pixelSize: vpx(api.memory.get('settings.global.navigationSize'))
+            font.pixelSize: vpx(api.memory.get('settings.cardTheme.navigationSize'))
             font.bold: true
 
             minimumPointSize: vpx(24)
@@ -76,18 +76,13 @@ Item {
 
             verticalAlignment: Text.AlignVCenter
 
-            color: api.memory.get('settings.theme.accentColor')
+            color: api.memory.get('settings.globalTheme.accentColor')
         }
 
     }
 
         layer.enabled: true
-        layer.effect: DropShadow {
-            horizontalOffset: vpx(0); verticalOffset: vpx(6)
-
-            samples: 10
-            color: '#99000000';
-        }
+        layer.effect: DropShadowHigh { }
 
     onTextChanged: {
         if (text) {

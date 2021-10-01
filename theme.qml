@@ -2,10 +2,11 @@ import QtQuick 2.15
 import QtGraphicalEffects 1.0
 import QtMultimedia 5.9
 import QtQml.Models 2.10
-import SortFilterProxyModel 0.2
 
 import "Components"
+import "Components/Collections"
 
+import "./database.js" as Database
 import "./settings.js" as Settings
 import "./utils.js" as Utils
 
@@ -24,7 +25,8 @@ FocusScope {
     SoundEffect { id: sfxAccept; source: "assets/sfx/accept.wav" }
     SoundEffect { id: sfxToggle; source: "assets/sfx/toggle.wav" }
 
-    property var settingsMetadata: Settings.metadata;
+    property var database: Database
+    property var settingsMetadata: Settings.metadata
 
     property var stateHistory: []
 
@@ -41,98 +43,123 @@ FocusScope {
     property bool filterByFavorites: false
     property bool filterByBookmarks: false
 
-    property var orderBy: ['title', 'developer', 'publisher', 'genre', 'releaseYear', 'players', 'rating', 'lastPlayed']
+    property var orderByFields: ['title', 'developer', 'publisher', 'genre', 'releaseYear', 'players', 'rating', 'lastPlayed']
     property int orderByIndex: 0
     property int orderByDirection: Qt.AscendingOrder
 
-    readonly property bool gameItemTitleEnabled: api.memory.get('settings.global.titleEnabled')
-    readonly property real gameItemTitlePadding: gameItemTitleEnabled ? vpx(api.memory.get('settings.global.titleFontSize') * 0.25) : 0
-    readonly property real gameItemTitleHeight: gameItemTitleEnabled ? vpx(api.memory.get('settings.global.titleFontSize')) : 0
+    readonly property bool gameDelegateTitleEnabled: api.memory.get('settings.cardTheme.titleEnabled')
+    readonly property real gameDelegateTitlePadding: gameDelegateTitleEnabled ? vpx(api.memory.get('settings.cardTheme.titleFontSize') * 0.4) : 0
+    readonly property real gameDelegateTitleHeight: gameDelegateTitleEnabled ? vpx(api.memory.get('settings.cardTheme.titleFontSize')) : 0
 
-    readonly property real gameItemTitleMargin: gameItemTitleEnabled ? gameItemTitleHeight + (api.memory.get('settings.global.borderEnabled') ? vpx(api.memory.get('settings.global.borderWidth')) : 0) + gameItemTitlePadding * 3 : 0
+    readonly property real gameDelegateTitleMargin: gameDelegateTitleEnabled ? (gameDelegateTitleHeight * 2) + (gameDelegateTitlePadding * 2.25) + (api.memory.get('settings.cardTheme.borderEnabled') ? vpx(api.memory.get('settings.cardTheme.borderWidth')) * 2 : 0) : 0
 
-    property bool gameItemPlayVideoPreview: false
+    Debouncer {
+        id: videoPreviewDebouncer
 
-    Timer {
-        id: gameItemVideoPreviewDebouncer
-
-        interval: api.memory.get('settings.global.videoPreviewDelay')
-        onTriggered: { gameItemPlayVideoPreview = true; }
-
-        function debounce() {
-            if (api.memory.get('settings.global.previewEnabled')) {
-                gameItemVideoPreviewDebouncer.restart();
-            } else {
-                gameItemVideoPreviewDebouncer.stop();
-            }
-
-            gameItemPlayVideoPreview = false;
-        }
+        interval: api.memory.get('settings.cardTheme.videoPreviewDelay')
+        enabled: api.memory.get('settings.cardTheme.previewEnabled')
     }
 
     states: [
-        State { name: 'homeView'; PropertyChanges { target: loader; sourceComponent: homeView } },
-        State { name: 'gamesView'; PropertyChanges { target: loader; sourceComponent: gamesView } },
-        State { name: 'settingsView'; PropertyChanges { target: loader; sourceComponent: settingsView } },
-        State { name: 'gameDetailsView'; PropertyChanges { target: loader; sourceComponent: gameDetailsView } }
+        State { name: 'showcaseView'; PropertyChanges { target: contentLoader; sourceComponent: showcaseViewComponent } },
+        State { name: 'gameDetailsView'; PropertyChanges { target: contentLoader; sourceComponent: showcaseViewComponent } },
+        State { name: 'settingsView'; PropertyChanges { target: contentLoader; sourceComponent: settingsViewComponent } }
     ]
 
-    state: 'gamesView'
+    state: 'showcaseView'
 
-    Rectangle {
+    Background {
         anchors.fill: parent
-        color: api.memory.get('settings.theme.backgroundColor')
-    }
 
-    Image {
-        anchors.centerIn: parent
-        source: opacity > 0 ? 'assets/loading-spinner.png' : ''
-        asynchronous: true
+        source: contentLoader.game ? contentLoader.game.assets.screenshot || '' : ''
 
-        RotationAnimator on rotation {
-            loops: Animator.Infinite;
-            from: 0;
-            to: 360;
-            duration: 1000
+        Image {
+            id: loadingIndicator
+
+            anchors.centerIn: parent
+            source: loadingIndicator.visible ? 'assets/loading-spinner.png' : ''
+            asynchronous: false
+            smooth: true
+
+            RotationAnimator on rotation {
+                loops: Animator.Infinite;
+                from: 0;
+                to: 360;
+                duration: 1000
+
+                running: loadingIndicator.visible
+            }
+
+            visible: opacity > 0
+            opacity: contentLoader.status === Loader.Loading ? 1 : 0
+            Behavior on opacity { SequentialAnimation { NumberAnimation { duration: 300; from: 1 } } }
         }
-
-        opacity: loader.status !== Loader.Ready ? 1 : 0
-        Behavior on opacity { NumberAnimation { duration: 250; from: 1 } }
     }
 
-    Component {
-        id: homeView
-        HomeView { focus: true }
-    }
+    Component { id: settingsViewComponent; SettingsView { anchors.fill: parent; focus: true } }
 
     Component {
-        id: gamesView
-        GamesView { focus: true }
-    }
+        id: showcaseViewComponent;
 
-    Component {
-        id: settingsView
-        SettingsView { focus: true }
-    }
+        FocusScope {
+            anchors.fill: parent
+            focus: true
 
-    Component {
-        id: gameDetailsView
-        GameDetailsView { focus: true; game: selectedGame }
+            readonly property var game: (root.state === 'showcaseView' ? showcaseView.game : gameDetailsView.game)
+
+            ShowcaseView {
+                id: showcaseView
+
+                anchors.fill: parent
+                focus: root.state === 'showcaseView'
+
+                visible: focus
+                opacity: focus ? 1 : 0
+                Behavior on opacity { NumberAnimation { duration: 300; from: 0 } }
+            }
+
+            GameDetailsView {
+                id: gameDetailsView
+
+                anchors.fill: parent
+                focus: root.state === 'gameDetailsView'
+
+                game: root.selectedGame
+
+                visible: focus
+                opacity: focus ? 1 : 0
+                Behavior on opacity { NumberAnimation { duration: 300; from: 0 } }
+            }
+        }
     }
 
     Loader {
-        id: loader
+        id: contentLoader
+        readonly property var game: item ? item.game : undefined
+
         anchors.fill: parent
 
-        focus: true
         asynchronous: true
 
-        opacity: loader.status === Loader.Ready ? 1 : 0
-        Behavior on opacity { NumberAnimation { duration: 500; from: 0 } }
+        opacity: contentLoader.status === Loader.Ready ? 1 : 0
+        Behavior on opacity { OpacityAnimator { duration: 300; from: 0 } }
+
+        focus: true
+
+        active: false
     }
 
     Component.onCompleted: {
         reloadSettings();
+        const games = api.allGames;
+
+        for (let i = games.count - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            games.move(i, j);
+            games.move(j + 1, i);
+        }
+
+        contentLoader.active = true;
     }
 
     Keys.onPressed: {
@@ -145,7 +172,14 @@ FocusScope {
         }
     }
 
-    function reloadSettings(overwrite = false) {
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function reloadSettings(overwrite = true) {
         for (const [categoryKey, category] of Object.entries(settingsMetadata)) {
             for (const [settingKey, setting] of Object.entries(category)) {
                 const key = `settings.${categoryKey}.${settingKey}`;
@@ -174,32 +208,27 @@ FocusScope {
     }
 
     function toGamesView() {
-        sfxAccept.play();
+        // sfxAccept.play();
         stateHistory.push(root.state);
         root.state = 'gamesView';
     }
 
     function toSettingsView() {
-        sfxAccept.play();
         stateHistory.push(root.state);
         root.state = 'settingsView';
     }
 
     function toGameDetailsView(game) {
-        sfxAccept.play();
-        stateHistory.push(root.state);
-        root.state = 'gameDetailsView';
+        // sfxAccept.play();
 
         if (selectedGame) {
             selectedGameHistory.push(selectedGame);
         }
 
         selectedGame = game;
-    }
 
-    function toggleBookmarks(game) {
-        const key = `database.bookmarks.${game.collections.get(0).shortName}.${game.title}`;
-        api.memory.set(key, !(api.memory.get(key) ?? false));
+        stateHistory.push(root.state);
+        root.state = 'gameDetailsView';
     }
 
     function getPrecision(a) {
@@ -218,5 +247,9 @@ FocusScope {
 
     function capitalizeFirstLetter([ first, ...rest ], locale = 'en-US') {
         return first.toLocaleUpperCase(locale) + rest.join('');
+    }
+
+    function capitalize(str) {
+        return capitalizeFirstLetter(str).split(/([A-Z]?[^A-Z]*)/g).join(' ');
     }
 }

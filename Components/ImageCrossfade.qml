@@ -5,6 +5,11 @@ Item {
 
     property string source: ''
 
+    property int crossfadeDuration: 600
+    property int crossfadePauseDuration: 200
+
+    readonly property real progress: Math.max(img1.opacity, img2.opacity)
+
     onSourceChanged: {
         state = state === 'img1' ? 'img2' : 'img1';
     }
@@ -25,24 +30,24 @@ Item {
             to: 'img1'
             SequentialAnimation {
                 ParallelAnimation {
-                    NumberAnimation { target: img1; property: 'opacity'; to: 0; duration: img1.opacity * 500  }
-                    NumberAnimation { target: img2; property: 'opacity'; to: 0; duration: img2.opacity * 500  }
+                    NumberAnimation { target: img1; property: 'opacity'; to: 0; duration: img1.opacity * crossfadeDuration * 0.5 }
+                    NumberAnimation { target: img2; property: 'opacity'; to: 0; duration: img2.opacity * crossfadeDuration * 0.5 }
                 }
                 PropertyAction { target: img1; property: 'source'; }
-                PauseAnimation { duration: 250 }
-                NumberAnimation { target: img1; property: 'opacity'; to: 1; easing.type: Easing.InOutQuad; duration: 500  }
+                PauseAnimation { duration: crossfadePauseDuration }
+                NumberAnimation { target: img1; property: 'opacity'; to: 1; easing.type: Easing.InOutQuad; duration: crossfadeDuration * 0.5 }
             }
         },
         Transition {
             to: 'img2'
             SequentialAnimation {
                 ParallelAnimation {
-                    NumberAnimation { target: img1; property: 'opacity'; to: 0; duration: img1.opacity * 500  }
-                    NumberAnimation { target: img2; property: 'opacity'; to: 0; duration: img2.opacity * 500 }
+                    NumberAnimation { target: img1; property: 'opacity'; to: 0; duration: img1.opacity * crossfadeDuration * 0.5 }
+                    NumberAnimation { target: img2; property: 'opacity'; to: 0; duration: img2.opacity * crossfadeDuration * 0.5 }
                 }
                 PropertyAction { target: img2; property: 'source' }
-                PauseAnimation { duration: 250 }
-                NumberAnimation { target: img2; property: 'opacity'; to: 1; easing.type: Easing.InOutQuad; duration: 500  }
+                PauseAnimation { duration: crossfadePauseDuration }
+                NumberAnimation { target: img2; property: 'opacity'; to: 1; easing.type: Easing.InOutQuad; duration: crossfadeDuration * 0.5 }
             }
         }
     ]

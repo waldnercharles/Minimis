@@ -8,10 +8,6 @@ FocusScope {
     property var categories: []
     property var currentCategory: categories[categoriesListView.currentIndex]
 
-    function capitalize(str) {
-        return capitalizeFirstLetter(str).split(/([A-Z]?[^A-Z]*)/g).join(' ');
-    }
-
     Component.onCompleted: {
         root.categories = Object.entries(settingsMetadata).map(([categoryKey, category]) => ({
             key: categoryKey,
@@ -22,21 +18,47 @@ FocusScope {
         }));
     }
 
-    GamesViewHeader {
-        id: header
-        text: 'Settings'
-        titleOnly: true
-    }
-
     property real rowHeight: vpx(50)
+
+    Item {
+        id: header
+        height: vpx(75)
+        anchors.left: parent.left
+        anchors.leftMargin: vpx(api.memory.get('settings.globalTheme.leftMargin'))
+
+        Rectangle {
+            id: background
+            color: api.memory.get('settings.globalTheme.accentColor')
+
+            width: title.width + vpx(80)
+            height: parent.height
+
+            radius: vpx(3)
+        }
+
+        Text {
+            id: title
+            height: vpx(45)
+            anchors.centerIn: background
+
+            text: 'Settings'
+
+            font.family: titleFont.name
+            font.pixelSize: vpx(36)
+            font.bold: true
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            color: api.memory.get('settings.globalTheme.backgroundColor')
+        }
+    }
 
     ListView {
         id: categoriesListView
 
         focus: true
         anchors {
-            top: header.bottom; bottom: parent.bottom; left: header.left;
-            topMargin: vpx(20); leftMargin: vpx(api.memory.get('settings.theme.leftMargin'))
+            top: header.bottom; bottom: parent.bottom; left: parent.left;
+            topMargin: vpx(20); leftMargin: vpx(api.memory.get('settings.globalTheme.leftMargin'))
         }
 
         width: parent.width / 5.0
@@ -50,7 +72,7 @@ FocusScope {
 
             Text {
                 text: capitalize(modelData.key)
-                color: api.memory.get('settings.theme.textColor')
+                color: api.memory.get('settings.globalTheme.textColor')
                 font.family: subtitleFont.name
                 font.pixelSize: vpx(22)
                 verticalAlignment: Text.AlignVCenter
@@ -82,14 +104,14 @@ FocusScope {
         model: currentCategory.value
 
         anchors {
-            top: categoriesListView.top; bottom: parent.bottom; left: categoriesListView.right; right: header.right;
-            rightMargin: vpx(api.memory.get('settings.theme.rightMargin'))
+            top: categoriesListView.top; bottom: parent.bottom; left: categoriesListView.right; right: parent.right;
+            rightMargin: vpx(api.memory.get('settings.globalTheme.rightMargin'))
         }
 
         preferredHighlightBegin: 0
         preferredHighlightEnd: settingsListView.height / 2
         highlightRangeMode: ListView.StrictlyEnforceRange 
-        highlightMoveDuration: 100
+        highlightMoveDuration: 300
         clip: true
 
         keyNavigationWraps: true
@@ -111,14 +133,14 @@ FocusScope {
 
             opacity: isExpanded ? (isEnabled ? 1 : 0.33) : 0
 
-            Behavior on height { NumberAnimation { duration: 200 } }
-            Behavior on opacity { NumberAnimation { duration: 200 } }
+            Behavior on height { NumberAnimation { duration: 300 } }
+            Behavior on opacity { NumberAnimation { duration: 300 } }
 
             Text {
                 id: settingsName
 
                 text: settingMetadata.name
-                color: api.memory.get('settings.theme.textColor')
+                color: api.memory.get('settings.globalTheme.textColor')
                 font.family: subtitleFont.name
                 font.pixelSize: vpx(20)
                 verticalAlignment: Text.AlignVCenter
@@ -135,7 +157,7 @@ FocusScope {
                 readonly property bool isHeader: settingMetadata.type === 'header'
 
                 text: isHeader ? (value ? '\uf078' : '\uf054') : (capitalizeFirstLetter((settingMetadata.type != 'array' ? value : settingMetadata.values[value]).toString()))
-                color: api.memory.get('settings.theme.textColor')
+                color: api.memory.get('settings.globalTheme.textColor')
                 font.family: isHeader ? fontawesome.name : subtitleFont.name
                 font.pixelSize: vpx(20)
                 verticalAlignment: Text.AlignVCenter

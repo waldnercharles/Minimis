@@ -4,7 +4,7 @@ import QtGraphicalEffects 1.0
 FocusScope {
     id: root
 
-    property bool selected
+    property bool selected: false
     property bool circle: false
 
     property alias text: label.text
@@ -14,15 +14,20 @@ FocusScope {
 
     width: buttonBackground.width
 
+    onSelectedChanged: { if (selected) { sfxNav.play(); } }
+
     Rectangle {
         id: buttonBackground
 
         anchors.fill: button
 
         radius: circle ? height / 2 : vpx(5)
-        color: selected ? api.memory.get('settings.theme.accentColor') : api.memory.get('settings.theme.textColor')
+        color: selected ? api.memory.get('settings.globalTheme.accentColor') : api.memory.get('settings.globalTheme.textColor')
 
         opacity: selected ? 1 : 0.4
+
+        layer.enabled: true
+        layer.effect: DropShadowLow { }
     }
 
     Row {
@@ -30,11 +35,14 @@ FocusScope {
         height: root.height;
         anchors.verticalCenter: parent.verticalCenter
 
-        property var padding: (height - icon.height) * 0.5
+        property var padding: (height - icon.height) * ((circle && text == '') ? 0.5 : 0.8)
         spacing: padding * 0.5
 
         leftPadding: padding
         rightPadding: padding
+
+        Behavior on leftPadding { NumberAnimation { duration: 200 } }
+        Behavior on rightPadding { NumberAnimation { duration: 200 } }
 
         Text {
             id: icon
@@ -44,7 +52,7 @@ FocusScope {
             font.family: fontawesome.name
             font.pixelSize: height
 
-            color: selected ? api.memory.get('settings.theme.backgroundColor') : api.memory.get('settings.theme.textColor')
+            color: selected ? api.memory.get('settings.globalTheme.backgroundColor') : api.memory.get('settings.globalTheme.textColor')
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -52,25 +60,23 @@ FocusScope {
             visible: !!text
         }
 
-        Text {
+        TextMetrics {
             id: labelFake
 
             font.family: subtitleFont.name
-            font.pixelSize: vpx(13)
+            font.pixelSize: button.height * 0.4
             font.bold: true
 
             text: label.text
-
-            visible: false
         }
 
         Text {
             id: label
 
             font.family: subtitleFont.name
-            font.pixelSize: vpx(13)
+            font.pixelSize: button.height * 0.4
             font.bold: true
-            color: selected ? api.memory.get('settings.theme.backgroundColor'): api.memory.get('settings.theme.textColor')
+            color: selected ? api.memory.get('settings.globalTheme.backgroundColor'): api.memory.get('settings.globalTheme.textColor')
             anchors { top: parent.top; bottom: parent.bottom }
 
             width: labelFake.width
@@ -85,6 +91,7 @@ FocusScope {
         if (api.keys.isAccept(event) && !event.isAutoRepeat) {
             event.accepted = true;
             activated();
+            sfxAccept.play();
         }
     }
 }

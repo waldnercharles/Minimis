@@ -5,6 +5,8 @@ Item {
     anchors.fill: parent
 
     readonly property alias games: games
+    readonly property alias model: games.sourceModel
+
     readonly property var metadata: roleMetadata[sorter.roleName]
 
     property var roleMetadata: ({
@@ -18,11 +20,11 @@ Item {
         'developer': { type: 'string' },
         'publisher': { type: 'string' },
         'genre': { type: 'string' },
-        'releaseYear': { type: 'number', delta: api.memory.get('settings.global.navigationYearIncrement'), getText: (value) => value > 0 ? value : 'N/A' },
+        'releaseYear': { type: 'number', delta: api.memory.get('settings.cardTheme.navigationYearIncrement'), getText: (value) => value > 0 ? value : 'N/A' },
         'players': { type: 'number', icon: '\uf007', getText: (value) => value > 1 ? `1-${value}` : '1' },
         'rating': {
             type: 'number',
-            delta: Math.round(api.memory.get('settings.global.navigationRatingIncrement') * 20),
+            delta: Math.round(api.memory.get('settings.cardTheme.navigationRatingIncrement') * 20),
             factor: 100,
             icon: '\uf005',
             getText: (value) => (value * 5).toString()
@@ -30,19 +32,24 @@ Item {
         // 'lastPlayed': { type: 'number' }
     })
 
-    AnyOf {
-        id: gameFilters
-        ValueFilter { roleName: 'favorite'; value: true; enabled: filterByFavorites }
-        ExpressionFilter { expression: (api.memory.get(`database.bookmarks.${currentCollection.shortName}.${modelData.title}`) ?? false); enabled: filterByBookmarks }
+    ValueFilter { id: gameFilters; roleName: 'favorite'; value: true; enabled: filterByFavorites }
 
-        enabled: filterByFavorites || filterByBookmarks
+    FilterSorter {
+        id: playCountSorter
+        ValueFilter {
+            roleName: 'playCount'
+            value: 0
+            inverted: true
+        }
+        enabled: orderByFields[orderByIndex] === 'lastPlayed'
+        sortOrder: orderByDirection
     }
 
     RoleSorter {
         id: sorter
-        roleName: orderBy[orderByIndex]
+        roleName: orderByFields[orderByIndex]
         sortOrder: orderByDirection
-    }
+    } 
 
     RegExpFilter {
         id: textFilter
@@ -85,16 +92,22 @@ Item {
         id: nav
 
         sourceModel: games.sourceModel
+
         filters: [ gameFilters, textFilter, numberFilter ]
-        sorters: sorter
+        sorters: [ playCountSorter, sorter ]
+
+        delayed: true
     }
 
     SortFilterProxyModel {
         id: games
 
         sourceModel: currentCollection.games
+
         filters: gameFilters
-        sorters: sorter
+        sorters: [ playCountSorter, sorter ]
+
+        delayed: true
     }
 
     function nextChar(c, modifier) {

@@ -4,7 +4,6 @@ import QtGraphicalEffects 1.0
 
 FocusScope {
     signal openCollectionsMenu
-    signal openNavigationMenu
 
     property alias model: grid.model
 
@@ -23,12 +22,16 @@ FocusScope {
 
         property real aspectRatio: api.memory.get('settings.layout.library.aspectRatioNative') ? fakeAsset.height / fakeAsset.width : (api.memory.get('settings.layout.library.aspectRatioHeight') / api.memory.get('settings.layout.library.aspectRatioWidth'))
 
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: navigationBar.left
+
         anchors.topMargin: ((cellHeight - gameDelegateTitleMargin) * inverseSelectedScale) / 2.0 + borderWidth
         anchors.bottomMargin: anchors.topMargin
 
-        anchors.leftMargin: (parent.width / numberOfColumns) * inverseSelectedScale / 2 + borderWidth
-        anchors.rightMargin: anchors.leftMargin
+        anchors.leftMargin: (parent.width / numberOfColumns) * inverseSelectedScale / 2.0 + borderWidth
+        anchors.rightMargin: anchors.leftMargin + (navigationBar.width / 2.0)
 
         focus: parent.focus
 
@@ -36,7 +39,7 @@ FocusScope {
             parent: grid.contentItem
             currentItem: grid.currentItem
 
-            visible: grid.focus
+            visible: grid.focus || navigationBar.focus
         }
 
         cellWidth: width / numberOfColumns
@@ -56,7 +59,7 @@ FocusScope {
 
         highlight: GameDelegateHighlight {
             item: grid.currentItem
-            visible: grid.focus
+            visible: grid.focus || navigationBar.focus
 
             muted: false
         }
@@ -66,7 +69,7 @@ FocusScope {
             itemHeight: GridView.view.cellHeight - gameDelegateTitleMargin
 
             game: modelData
-            selected: GridView.isCurrentItem && grid.focus
+            selected: GridView.isCurrentItem && (grid.focus || navigationBar.focus)
 
             assetKey: settingsMetadata.layout['library.art'].values[api.memory.get('settings.layout.library.art')]
             logoVisible: api.memory.get('settings.layout.library.logoVisible')
@@ -93,11 +96,37 @@ FocusScope {
         Keys.onRightPressed: {
             sfxNav.play();
             if ((grid.currentIndex % grid.numberOfColumns) === (numberOfColumns - 1)) {
-                openNavigationMenu();
+                navigationBar.focus = true;
                 event.accepted = true;
             } else {
                 event.accepted = false;
             }
+        }
+    }
+
+    NavigationBar {
+        id: navigationBar
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+
+        anchors.bottomMargin: vpx(16)
+
+        width: vpx(32)
+        active: focus
+        selectedItem: currentGame
+        selectedItemIndex: grid.currentIndex
+        games: model // indexItems // Faster to avoid using sortproxymodel 
+        onIndexChanged: function (index, indexValue) {
+            if (index != null) {
+                grid.currentIndex = index
+            }
+        }
+
+        Keys.onLeftPressed: {
+            sfxNav.play();
+            grid.focus = true;
+            event.accepted = true;
         }
     }
 }

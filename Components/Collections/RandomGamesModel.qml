@@ -10,7 +10,7 @@ Item {
 
         sourceModel: api.allGames
 
-        delayed: true
+        // delayed: true
     }
 
     SortFilterProxyModel {
@@ -20,6 +20,6 @@ Item {
 
         filters: IndexFilter { maximumIndex: maxItems - 1 }
 
-        delayed: true
+        // delayed: true
     }
 }

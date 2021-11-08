@@ -13,7 +13,7 @@ Item {
         sorters: RoleSorter { roleName: 'lastPlayed'; sortOrder: Qt.DescendingOrder }
         filters: ValueFilter { roleName: 'playCount'; value: 0; inverted: true }
 
-        delayed: true
+        // delayed: true
     }
 
     SortFilterProxyModel {
@@ -23,6 +23,6 @@ Item {
 
         filters: IndexFilter { maximumIndex: maxItems - 1 }
 
-        delayed: true
+        // delayed: true
     }
 }

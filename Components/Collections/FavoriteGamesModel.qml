@@ -12,7 +12,7 @@ Item {
 
         filters: ValueFilter { roleName: 'favorite'; value: true }
 
-        delayed: true
+        // delayed: true
     }
 
     SortFilterProxyModel {
@@ -22,6 +22,6 @@ Item {
 
         filters: IndexFilter { maximumIndex: maxItems - 1 }
 
-        delayed: true
+        // delayed: true
     }
 }

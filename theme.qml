@@ -15,7 +15,7 @@ FocusScope {
 
     FontLoader { id: homeFont; source: "assets/fonts/Comfortaa-Light.ttf" }
 
-    FontLoader { id: fontawesome; source: "assets/fonts/Fontawesome.otf" }
+    FontLoader { id: fontawesome; source: "assets/fonts/FontAwesome.otf" }
     FontLoader { id: titleFont; source: "assets/fonts/SourceSansPro-Bold.ttf" }
     FontLoader { id: subtitleFont; source: "assets/fonts/OpenSans-Bold.ttf" }
     FontLoader { id: bodyFont; source: "assets/fonts/OpenSans-Semibold.ttf" }

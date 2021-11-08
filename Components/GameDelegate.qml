@@ -53,6 +53,8 @@ Item {
 
     readonly property real titleFontSize: vpx(api.memory.get('settings.cardTheme.titleFontSize'))
 
+    readonly property real cardRadius: vpx(api.memory.get('settings.cardTheme.cornerRadius'));
+
     width: screenshot.width
     height: screenshot.height
 
@@ -95,7 +97,7 @@ Item {
         opacity: isPlayingPreview ? 0 : 1
         Behavior on opacity { OpacityAnimator { duration: animationArtFadeDuration; } enabled: animationEnabled && !isLoading  }
 
-        radius: vpx(api.memory.get('settings.cardTheme.cornerRadius'))
+        radius: cardRadius
     }
 
     Image {
@@ -122,7 +124,7 @@ Item {
         layer.effect: OpacityMask {
             maskSource: Rectangle {
                 width: screenshot.width; height: screenshot.height
-                radius: vpx(api.memory.get('settings.cardTheme.cornerRadius'))
+                radius: cardRadius
             }
         }
     }
@@ -244,6 +246,7 @@ Item {
         color: 'black'
         opacity: overlayOpacity
         visible: !selected
+        radius: cardRadius
     }
 
     GameDelegateTitle {

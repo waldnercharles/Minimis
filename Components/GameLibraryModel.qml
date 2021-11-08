@@ -96,7 +96,7 @@ Item {
         filters: [ gameFilters, textFilter, numberFilter ]
         sorters: [ playCountSorter, sorter ]
 
-        delayed: true
+        // delayed: true
     }
 
     SortFilterProxyModel {
@@ -107,7 +107,7 @@ Item {
         filters: gameFilters
         sorters: [ playCountSorter, sorter ]
 
-        delayed: true
+        // delayed: true
     }
 
     function nextChar(c, modifier) {
@@ -206,10 +206,10 @@ Item {
         return games.mapFromSource(nav.mapToSource(0));
     }
 
-    LetterNavigationTransition {
-        id: navOverlay
-        icon: (metadata ? metadata.icon : '') || ''
-    }
+    // LetterNavigationTransition {
+    //     id: navOverlay
+    //     icon: (metadata ? metadata.icon : '') || ''
+    // }
 
     function isLetter(c) {
         return c.toLocaleUpperCase() != c.toLocaleLowerCase() || c.codePointAt(0) > 127;

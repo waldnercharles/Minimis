@@ -76,7 +76,6 @@ Item {
             toGameDetailsView(game);
         }
     }
-    
 
     Timer {
         id: sourceDebounce
@@ -95,7 +94,7 @@ Item {
 
         color: "#1a1a1a";
         opacity: isPlayingPreview ? 0 : 1
-        Behavior on opacity { OpacityAnimator { duration: animationArtFadeDuration; } enabled: animationEnabled && !isLoading  }
+        Behavior on opacity { NumberAnimation { duration: animationArtFadeDuration; } enabled: animationEnabled && !isLoading  }
 
         radius: cardRadius
     }
@@ -117,7 +116,7 @@ Item {
 
         visible: !screenshot.hasError
 
-        opacity: isLoading || isPlayingPreview ? 0 : 1
+        opacity: (isLoading || isPlayingPreview) ? 0 : 1
         Behavior on opacity { NumberAnimation { duration: animationArtFadeDuration; } enabled: animationEnabled && !screenshot.hasError }
 
         layer.enabled: !isLoading && visible
@@ -148,10 +147,10 @@ Item {
         visible: !logo.hasError
 
         opacity: !isLoading && (isPlayingPreview ? logoVisiblePreview : logoVisible) ? 1 : 0
-        Behavior on opacity { OpacityAnimator { duration: animationLogoFadeDuration; } enabled: animationEnabled && !logo.hasError }
+        Behavior on opacity { NumberAnimation { duration: animationLogoFadeDuration; } enabled: animationEnabled && !logo.hasError }
 
         scale: logoScaleEnabled ? (selected ? logoScaleSelected : logoScaleUnselected) : settingsMetadata.global.logoScale.defaultValue
-        Behavior on scale { ScaleAnimator { duration: animationLogoScaleDuration } enabled: animationEnabled && !isLoading && !logo.hasError }
+        Behavior on scale { NumberAnimation { duration: animationLogoScaleDuration } enabled: animationEnabled && !isLoading && !logo.hasError }
     }
 
     Text {
@@ -178,7 +177,7 @@ Item {
         visible: logo.hasError
 
         opacity: logo.hasError ? logo.opacity : 0
-        Behavior on opacity { OpacityAnimator { duration: animationLogoFadeDuration; } enabled: animationEnabled && !isLoading && logo.hasError }
+        Behavior on opacity { NumberAnimation { duration: animationLogoFadeDuration; } enabled: animationEnabled && !isLoading && logo.hasError }
     }
 
     Row {

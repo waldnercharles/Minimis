@@ -28,35 +28,8 @@ Column {
         width: parent.width
         height: titleFontSize
 
-        delegate: Component {
-            Text {
-                id: title
-
-                width: selected ? Math.max(contentWidth, titleScroller.width) : titleScroller.width
-                height: titleFontSize
-                color: titleColor
-
-                text: game ? game.title : ''
-
-                font.family: subtitleFont.name
-                font.pixelSize: titleFontSize
-                fontSizeMode: Text.VerticalFit
-
-                elide: selected ? Text.ElideNone : Text.ElideRight
-
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-
-                style: Text.Outline
-                // TextMetrics {
-                //     id: titleMetrics
-                //     text: title.text
-
-                //     font.family: subtitleFont.name
-                //     font.pixelSize: title.font.pixelSize
-                // }
-            }
-        }
+        text: game ? game.title : ''
+        selected: root.selected
     }
 
     Row {

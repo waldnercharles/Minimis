@@ -116,7 +116,7 @@ FocusScope {
         active: focus
         selectedItem: currentGame
         selectedItemIndex: grid.currentIndex
-        games: model // indexItems // Faster to avoid using sortproxymodel 
+        games: model
         onIndexChanged: function (index, indexValue) {
             if (index != null) {
                 grid.currentIndex = index

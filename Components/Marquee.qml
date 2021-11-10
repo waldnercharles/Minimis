@@ -3,36 +3,64 @@ import QtQuick 2.15
 Item {
     id: root
 
+    readonly property real titleFontSize: vpx(api.memory.get('settings.cardTheme.titleFontSize'))
+    readonly property string titleColor: api.memory.get('settings.globalTheme.textColor')
+
+    property bool selected: false
     property int pixelsPerSecond: vpx(30)
-    readonly property int delegateWidth: (marquee.width - marquee.spacing) / 2.0
-    property alias delegate: textRepeater.delegate
+    property alias text: marquee.text
+
+    readonly property int spacing: vpx(20)
 
     clip: true
 
-    Row {
+    Text {
         id: marquee
-        spacing: vpx(20)
-        Repeater {
-            id: textRepeater
-            model: 2
-        }
+
+        width: root.selected ? Math.max(contentWidth, root.width) : root.width
+        height: titleFontSize
+        color: titleColor
+        font.family: subtitleFont.name
+        font.pixelSize: titleFontSize
+        fontSizeMode: Text.VerticalFit
+        elide: root.selected ? Text.ElideNone : Text.ElideRight
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        style: Text.Outline
 
         NumberAnimation on x {
             id: anim
 
+            running: root.width < marquee.width && selected
             from: 0
-            to: -(root.delegateWidth + marquee.spacing)
-            
+            to: -child.x
+
             duration: Math.abs(anim.to) / root.pixelsPerSecond * 1000
             loops: Animation.Infinite
-
-            running: root.width < root.delegateWidth
 
             onRunningChanged: {
                 if (!running) {
                     marquee.x = 0;
                 }
             }
+        }
+
+        Text {
+            id: child
+
+            x: marquee.width + root.spacing
+            text: anim.running ? parent.text : ''
+            visible: anim.running
+
+            width: parent.width
+            height: parent.height
+            color: parent.color
+            font: parent.font
+            fontSizeMode: parent.fontSizeMode
+            elide: parent.elide
+            horizontalAlignment: parent.horizontalAlignment
+            verticalAlignment: parent.verticalAlignment
+            style: parent.style
         }
     }
 }

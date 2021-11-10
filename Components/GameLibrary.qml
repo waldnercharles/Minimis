@@ -33,7 +33,7 @@ FocusScope {
         anchors.leftMargin: (parent.width / numberOfColumns) * inverseSelectedScale / 2.0 + borderWidth
         anchors.rightMargin: anchors.leftMargin + (navigationBar.width / 2.0)
 
-        focus: parent.focus
+        focus: parent.focus && !navigationBar.focus
 
         DelegateBorder {
             parent: grid.contentItem
@@ -125,7 +125,7 @@ FocusScope {
 
         Keys.onLeftPressed: {
             sfxNav.play();
-            grid.focus = true;
+            navigationBar.focus = false;
             event.accepted = true;
         }
     }

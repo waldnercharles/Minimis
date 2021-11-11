@@ -115,9 +115,8 @@ FocusScope {
         width: vpx(32)
         active: focus
         selectedItem: currentGame
-        selectedItemIndex: grid.currentIndex
         games: model
-        onIndexChanged: function (index, indexValue) {
+        onIndexChanged: {
             if (index != null) {
                 grid.currentIndex = index
             }

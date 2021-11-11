@@ -4,14 +4,15 @@ import QtGraphicalEffects 1.12
 Item {
     id: root 
 
-    // TODO: Add readonly to properties that can be readonly
-    property string roleName: orderByFields[orderByIndex]
-    property bool sortDirection: orderByDirection
+    readonly property string roleName: orderByFields[orderByIndex]
+    readonly property int sortDirection: orderByDirection
+
+    property string previousRoleName
+    property int previousSortDirection
 
     property bool active: false
 
     property var selectedItem
-    property int selectedItemIndex: 0
 
     property var games: []
 
@@ -19,8 +20,8 @@ Item {
     property var enabledItems: []
     property var itemIndexes: []
 
-    // TODO: Use a signal instead
-    property var onIndexChanged: (collectionIndex, index, indexValue) => { }
+    signal indexChanged(int index)
+    function emitIndexChanged() { root.indexChanged(itemIndexes[listView.currentIndex]); }
 
     // TODO: Consolidate this function with the one in GameDelegateTitle
     function getText(item, roleName) {
@@ -77,7 +78,6 @@ Item {
         return c.toLocaleUpperCase() != c.toLocaleLowerCase() || c.codePointAt(0) > 127;
     }
  
-    // TODO: Split into multiple functions so that we can be more specific about what needs to be updated
     function updateNavigation() {
         var selectedIndex = 0
 
@@ -117,7 +117,6 @@ Item {
                         tempEnabledItems[charIndex] = true;
 
                         if (firstChar == selectedItemFirstChar) {
-                            selectedItemIndex = i;
                             listView.currentIndex = charIndex;
                         }
                     }
@@ -150,7 +149,6 @@ Item {
                         tempEnabledItems[tempItems.length - 1] = true;
 
                         if (value == selectedItemValue) {
-                            selectedItemIndex = i;
                             listView.currentIndex = tempItems.length - 1;
                         }
                     }
@@ -164,16 +162,46 @@ Item {
         itemIndexes = tempItemIndexes;
     }
 
-    // TODO: Remove; Use signal
-    function updateIndex() {
-        onIndexChanged(itemIndexes[listView.currentIndex]);
+    onActiveChanged: {
+        let selectedItemValue;
+        switch (roleName) {
+            case 'title':
+            case 'developer':
+            case 'publisher':
+            case 'genre':
+            {
+                const selectedItemTitle = selectedItem ? selectedItem[roleName] : '#';
+                selectedItemValue = selectedItemTitle.charAt(0).toUpperCase();
+                selectedItemValue = isLetter(selectedItemValue) ? selectedItemValue : '#';
+                break;
+            }
+            case 'releaseYear':
+            case 'players':
+            case 'rating':
+            case 'lastPlayed':
+            default: 
+            {
+                selectedItemValue = selectedItem ? getText(selectedItem, roleName) : null;
+                break;
+            }
+        }
+
+        const navigationBarIndex = items.indexOf(selectedItemValue);
+        if (navigationBarIndex != -1) {
+            listView.currentIndex = navigationBarIndex;
+        }
+     }
+
+    onGamesChanged: {
+        Qt.callLater(updateNavigation);
     }
 
-    // TODO: Optimize. We shouldn't be calling updateNavigation unnecessarily.
-    onActiveChanged: { updateNavigation(); }
-    onGamesChanged: { updateNavigation(); }
-    onRoleNameChanged: { updateNavigation(); }
-    onSortDirectionChanged: { updateNavigation(); }
+    onRoleNameChanged: {
+        Qt.callLater(updateNavigation);
+    }
+    onSortDirectionChanged: {
+        Qt.callLater(updateNavigation);
+    }
     
     Keys.onUpPressed: { 
         sfxNav.play()
@@ -191,7 +219,7 @@ Item {
             }
         } while (!listView.currentItem.enabled)
         
-        updateIndex();
+        emitIndexChanged();
     }      
 
     Keys.onDownPressed: { 
@@ -210,7 +238,7 @@ Item {
             }
         } while (!listView.currentItem.enabled)
         
-        updateIndex();
+        emitIndexChanged();
     }    
 
     ListView {
@@ -232,6 +260,23 @@ Item {
 
             property bool selected: ListView.isCurrentItem && root.activeFocus
 
+            Rectangle {
+                id: background
+
+                anchors.fill: parent
+
+                color: api.memory.get('settings.globalTheme.accentColor')
+                radius: vpx(5)
+
+                layer.enabled: selected
+                layer.effect: DropShadowLow { }
+
+                scale: selected ? 1 : 0
+                Behavior on scale { NumberAnimation { duration: 333; from: 0; easing.type: Easing.OutBack; } }
+
+                visible: selected
+            }
+
             Text {
                 text: items[index]
 
@@ -244,9 +289,9 @@ Item {
                 horizontalAlignment: Text.AlignHCenter
                 
                 opacity: selected ? 1 : 0.5
-                color: selected ? api.memory.get('settings.globalTheme.accentColor') : api.memory.get('settings.globalTheme.textColor')
+                color: selected ? api.memory.get('settings.globalTheme.backgroundColor') : api.memory.get('settings.globalTheme.textColor')
 
-                layer.enabled: true
+                layer.enabled: !selected
                 layer.effect: DropShadowLow { }
             }
         }

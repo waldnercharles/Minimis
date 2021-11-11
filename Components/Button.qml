@@ -24,7 +24,7 @@ FocusScope {
         radius: circle ? height / 2 : vpx(5)
         color: selected ? api.memory.get('settings.globalTheme.accentColor') : api.memory.get('settings.globalTheme.textColor')
 
-        opacity: selected ? 1 : 0.4
+        opacity: selected ? 1 : 0.2
 
         layer.enabled: true
         layer.effect: DropShadowLow { }

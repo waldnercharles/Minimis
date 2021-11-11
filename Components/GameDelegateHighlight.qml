@@ -22,7 +22,7 @@ Item {
 
         Video {
             anchors.fill: parent
-            source: root.item.game.assets.videoList[0]
+            source: root.item ? root.item.game.assets.videoList[0] || '' : ''
             fillMode: VideoOutput.PreserveAspectCrop
             muted: root.muted
             loops: MediaPlayer.Infinite
@@ -45,7 +45,7 @@ Item {
 
             sourceComponent: videoComponent
 
-            active: videoPreviewDebouncer.enabled && !videoPreviewDebouncer.running && root.visible && root.item.game.assets.videoList.length > 0
+            active: videoPreviewDebouncer.enabled && !videoPreviewDebouncer.running && root.visible && root.item && root.item.game.assets.videoList.length > 0
         }
 
         visible: loader.active

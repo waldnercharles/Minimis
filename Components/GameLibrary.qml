@@ -81,6 +81,10 @@ FocusScope {
             grid.positionViewAtIndex(grid.currentIndex, GridView.Center);
         }
 
+        onCountChanged: {
+            Qt.callLater(navigationBar.updateNavigation);
+        }
+
         Keys.onUpPressed: { sfxNav.play(); event.accepted = false; }
         Keys.onDownPressed: { sfxNav.play(); event.accepted = false; }
 
@@ -95,7 +99,7 @@ FocusScope {
         }
         Keys.onRightPressed: {
             sfxNav.play();
-            if ((grid.currentIndex % grid.numberOfColumns) === (numberOfColumns - 1)) {
+            if (((grid.currentIndex % grid.numberOfColumns) === (numberOfColumns - 1)) || (grid.currentIndex === grid.count - 1)) {
                 navigationBar.focus = true;
                 event.accepted = true;
             } else {

@@ -12,22 +12,6 @@ const games = {
                     api.memory.set(`${key}.bookmark`, value);
                     game.onFavoriteChanged();
                 }
-            },
-
-            get played() {
-                return game && game.lastPlayed && game.lastPlayed.getTime() === game.lastPlayed.getTime();
-            },
-
-            get random() {
-                if (key != null) {
-                    if (_randomValues[key] == null) {
-                        _randomValues[key] = Math.random();
-                    }
-
-                    return _randomValues[key];
-                }
-
-                return 0;
             }
         }
     }

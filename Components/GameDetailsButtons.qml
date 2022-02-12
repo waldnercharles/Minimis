@@ -51,9 +51,8 @@ ListView {
             selected: root.focus && ListView.isCurrentItem
             circle: true
             onActivated: {
-                const gameExt = database.games.get(game);
-
-                gameExt.bookmark = !gameExt.bookmark;
+                const dbGame = database.games.get(game);
+                dbGame.bookmark = !dbGame.bookmark;
             }
         }
     }

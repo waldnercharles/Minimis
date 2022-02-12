@@ -50,7 +50,7 @@ Item {
 
         visible: loader.active
 
-        layer.enabled: true
+        layer.enabled: api.memory.get('settings.cardTheme.videoPreviewMaskEnabled')
         layer.effect: OpacityMask {
             id: mask
             maskSource: Rectangle {

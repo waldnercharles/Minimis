@@ -3,16 +3,23 @@ import QtMultimedia 5.9
 import QtGraphicalEffects 1.0
 import QtQml.Models 2.10
 import QtQuick.Layouts 1.15
+import SortFilterProxyModel 0.2
+import Qt.labs.qmlmodels 1.0
 
 FocusScope {
     id: root
 
+    readonly property bool scaleEnabled: api.memory.get('settings.cardTheme.scaleEnabled')
+    readonly property real scaleSelected: api.memory.get('settings.cardTheme.scaleSelected')
+    readonly property real scaleUnselected: api.memory.get('settings.cardTheme.scale')
+
+    readonly property bool animationEnabled: api.memory.get('settings.cardTheme.animationEnabled')
+    readonly property int animationArtScaleDuration: api.memory.get('settings.cardTheme.animationArtScaleSpeed')
+
     anchors.fill: parent
-    anchors.leftMargin: vpx(api.memory.get('settings.globalTheme.leftMargin'));
-    anchors.rightMargin: vpx(api.memory.get('settings.globalTheme.rightMargin'));
 
     property var game
-    property var gameMedia
+    property var gameMedia: [];
 
     onGameChanged: {
         const media = [];
@@ -26,26 +33,45 @@ FocusScope {
         gameMedia = media;
     }
 
-    ListView {
-        id: listView
+    MediaView {
+        id: mediaView
+        anchors.fill: root
 
-        focus: parent.focus
+        media: gameMedia
 
-        anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
+        onClosed: {
+            listView.focus = true
+            mediaListView.currentIndex = mediaView.currentIndex
+        }
+    }
 
-        displayMarginBeginning: height
-        displayMarginEnd: height
+    ListModel {
+        id: listModel
 
-        preferredHighlightBegin: 0
-        preferredHighlightEnd: height
+        ListElement { type: 'gameDetails' }
+        ListElement { type: 'media' }
+    }
 
-        highlightMoveDuration: 300
-        highlightRangeMode: ListView.ApplyRange
+    SortFilterProxyModel {
+        id: proxyModel
+        filters: ExpressionFilter {
+            expression: {
+                gameMedia.length;
+                return type === 'gameDetails' || (type === 'media' && gameMedia.length > 0);
+            }
+        }
 
-        height: vpx(220)
-        spacing: vpx(20)
+        sourceModel: listModel
+    }
 
-        model: ObjectModel {
+    DelegateChooser {
+        id: listViewDelegate
+
+        role: 'type'
+
+        DelegateChoice {
+            roleValue: 'gameDetails'
+
             FocusScope {
                 id: gameDetails
                 width: listView.width
@@ -80,113 +106,118 @@ FocusScope {
                     }
                 }
             }
-
-            // FocusScope {
-            //     id: mediaScope
-
-            //     width: root.width; height: vpx(200)
-
-            //     ListView {
-            //         id: mediaListView
-
-            //         focus: parent.focus
-
-            //         width: root.width; height: vpx(200)
-            //         orientation: ListView.Horizontal
-
-            //         model: gameMedia
-
-            //         highlightResizeDuration: 0
-            //         highlightMoveDuration: 300
-            //         highlightRangeMode: ListView.ApplyRange
-
-            //         // highlight: GamesViewItemBorder {
-            //         //     width: mediaListView.currentItem ? mediaListView.currentItem.width : undefined
-            //         //     height: mediaListView.currentItem ? mediaListView.currentItem.height : undefined
-
-            //         //     scale: mediaListView.currentItem ? mediaListView.currentItem.scale : 0
-
-            //         //     z: mediaListView.currentItem ? mediaListView.currentItem.z - 1 : 0
-
-            //         //     visible: mediaListView.currentItem != null && mediaScope.focus
-            //         // }
-
-            //         delegate: Item {
-            //             id: item
-            //             width: isVideo ? assetVideo.width : assetImage.width; height: vpx(150)
-
-            //             property string asset: modelData
-            //             property bool isVideo: asset.endsWith('.mp4') || asset.endsWith('.webm')
-
-            //             property bool selected: mediaScope.focus && ListView.isCurrentItem
-
-            //             Rectangle {
-            //                 anchors.fill: item
-            //                 color: 'black'
-            //             }
-
-            //             Image {
-            //                 id: assetImage
-            //                 height: item.height
-
-            //                 source: !isVideo ? asset : ''
-            //                 asynchronous: true
-
-            //                 fillMode: Image.PreserveAspectFit
-            //                 visible: !isVideo
-            //                 opacity: selected ? 1.0 : 0.6
-            //             }
-
-            //             Video {
-            //                 id: assetVideo
-            //                 source: isVideo ? asset : ''
-
-            //                 width: metaData.resolution ? metaData.resolution.width / metaData.resolution.height * height : 0
-            //                 height: item.height
-
-            //                 loops: MediaPlayer.Infinite
-
-            //                 visible: isVideo
-            //                 muted: true
-
-            //                 autoPlay: true
-
-            //                 opacity: selected ? 1.0 : 0.6
-            //             }
-
-            //             Text {
-            //                 id: icon
-            //                 height: item.height * 0.25; width: height
-            //                 anchors.centerIn: parent
-
-            //                 text: isVideo ? '\uf04b' : ''
-
-            //                 font.family: fontawesome.name
-            //                 font.pixelSize: height
-
-            //                 color: api.memory.get('settings.globalTheme.textColor')
-
-            //                 horizontalAlignment: Text.AlignHCenter
-            //                 verticalAlignment: Text.AlignVCenter
-            //             }
-
-            //             layer.enabled: true
-            //             layer.effect: OpacityMask {
-            //                 id: mask
-            //                 maskSource: Rectangle {
-            //                     width: item.width; height: item.height
-            //                     radius: vpx(api.memory.get('settings.cardTheme.cornerRadius'))
-            //                 }
-
-            //                 layer.enabled: !selected && api.memory.get('settings.performance.artDropShadow')
-            //                 layer.effect: DropShadowLow {
-            //                     anchors.fill: item
-            //                     source: mask
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
         }
+
+        DelegateChoice {
+            roleValue: 'media'
+
+            FocusScope {
+                id: mediaScope
+
+                width: root.width
+                height: vpx(150)
+
+                Column {
+                    anchors.fill: parent
+                    spacing: vpx(10)
+
+                    focus: parent.focus
+
+                    Text {
+                        text: 'Media'
+
+                        font.family: subtitleFont.name
+                        font.pixelSize: vpx(18)
+
+                        color: api.memory.get('settings.globalTheme.textColor')
+                        opacity: root.focus ? 1 : 0.2
+
+                        layer.enabled: true
+                        layer.effect: DropShadowLow { cached: true }
+                    }
+
+                    ListView {
+                        id: mediaListView
+
+                        DelegateBorder {
+                            parent: mediaListView.contentItem
+                            currentItem: mediaListView.currentItem
+
+                            visible: mediaScope.focus
+                        }
+
+                        width: root.width;
+                        height: vpx(150)
+
+                        focus: parent.focus
+                        orientation: ListView.Horizontal
+
+                        model: gameMedia
+
+                        highlightResizeDuration: 0
+                        highlightMoveDuration: 300
+                        highlightRangeMode: ListView.ApplyRange
+                        highlightFollowsCurrentItem: true
+
+                        displayMarginBeginning: width * 2
+                        displayMarginEnd: width * 2
+
+                        // highlight: GamesViewItemBorder {
+                        //     width: mediaListView.currentItem ? mediaListView.currentItem.width : undefined
+                        //     height: mediaListView.currentItem ? mediaListView.currentItem.height : undefined
+
+                        //     scale: mediaListView.currentItem ? mediaListView.currentItem.scale : 0
+
+                        //     z: mediaListView.currentItem ? mediaListView.currentItem.z - 1 : 0
+
+                        //     visible: mediaListView.currentItem != null && mediaScope.focus
+                        // }
+
+                        Keys.onLeftPressed: { sfxNav.play(); event.accepted = false; }
+                        Keys.onRightPressed: { sfxNav.play(); event.accepted = false; }
+
+                        delegate: MediaDelegate {
+                            asset: modelData
+                            height: vpx(150)
+
+                            onActivated: {
+                                mediaView.currentIndex = mediaListView.currentIndex
+                                mediaView.focus = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    ListView {
+        id: listView
+
+        focus: true
+        opacity: focus ? 1 : 0
+        Behavior on opacity { OpacityAnimator { duration: 200 } }
+
+        anchors { left: parent.left; right: parent.right }
+
+        anchors.leftMargin: vpx(api.memory.get('settings.globalTheme.leftMargin'));
+        anchors.rightMargin: vpx(api.memory.get('settings.globalTheme.rightMargin'));
+
+        displayMarginBeginning: root.height
+        displayMarginEnd: root.height
+
+        preferredHighlightBegin: 0
+        preferredHighlightEnd: vpx(175)
+
+        highlightResizeDuration: 0
+        highlightMoveDuration: 300
+        highlightRangeMode: ListView.StrictlyEnforceRange
+
+        height: vpx(150)
+
+        y: parent.height - height - (proxyModel.count > 1 ? vpx(75) : vpx(0))
+
+        model: proxyModel
+        delegate: listViewDelegate
     }
 }

@@ -1,4 +1,8 @@
 import QtQuick 2.4
+import QtMultimedia 5.9
+import QtGraphicalEffects 1.0
+import QtQml.Models 2.10
+import QtQuick.Layouts 1.15
  
 Item {
     id: root
@@ -8,12 +12,19 @@ Item {
     property int crossfadeDuration: 600
     property int crossfadePauseDuration: 200
 
-    property var fillMode: Image.PreserveAspectCrop
+    property var fillMode: VideoOutput.PreserveAspectCrop
+    property real volume: 1.0
 
     readonly property real progress: Math.max(img1.opacity, img2.opacity)
 
+    function restart() {
+        img1.seek(0)
+        img2.seek(0)
+    }
+
     onSourceChanged: {
         state = state === 'img1' ? 'img2' : 'img1';
+        restart()
     }
 
     states: [
@@ -54,26 +65,26 @@ Item {
         }
     ]
  
-    Image {
+    Video {
         id: img1
         anchors.fill: parent
 
         fillMode: root.fillMode
-        asynchronous: true
+        autoPlay: true
+        loops: MediaPlayer.Infinite
 
-        smooth: false
-        cache: false
+        volume: img1.opacity * root.volume
     }
  
-    Image {
+    Video {
         id: img2
         anchors.fill: parent
 
         fillMode: root.fillMode
-        asynchronous: true
+        autoPlay: true
+        loops: MediaPlayer.Infinite
 
-        smooth: false
-        cache: false
+        volume: img2.opacity * root.volume
     }
  
     state: "img1"

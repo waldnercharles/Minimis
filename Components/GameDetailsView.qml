@@ -126,8 +126,6 @@ FocusScope {
                     anchors.fill: parent
                     spacing: vpx(10)
 
-                    focus: parent.focus
-
                     Text {
                         text: 'Media'
 
@@ -154,7 +152,7 @@ FocusScope {
                         width: root.width;
                         height: vpx(150)
 
-                        focus: parent.focus
+                        focus: mediaScope.focus
                         orientation: ListView.Horizontal
 
                         model: gameMedia

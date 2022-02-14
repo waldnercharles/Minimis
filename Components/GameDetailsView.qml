@@ -31,6 +31,11 @@ FocusScope {
         }
 
         gameMedia = media;
+        listView.currentIndex = 0;
+    }
+
+    onFocusChanged: {
+        listView.currentIndex = 0;
     }
 
     MediaView {

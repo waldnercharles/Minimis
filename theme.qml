@@ -151,12 +151,13 @@ FocusScope {
 
     Component.onCompleted: {
         reloadSettings();
-        const games = api.allGames;
+        const games = api.allGames.entries;
 
         for (let i = games.count - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            games.move(i, j);
-            games.move(j + 1, i);
+            const tmp = games[i];
+            games[i] = games[j];
+            games[j] = tmp;
         }
 
         contentLoader.active = true;

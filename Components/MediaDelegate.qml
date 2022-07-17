@@ -8,13 +8,13 @@ Item {
     id: item
 
     property string asset
-    property bool isVideo: asset.endsWith('.mp4') || asset.endsWith('.webm')
+    property bool isVideo: asset.includes('.mp4') || asset.includes('.webm')
 
     property bool selected: mediaScope.focus && ListView.isCurrentItem
 
     width: isVideo ? assetVideo.width : assetImage.width
 
-    scale: scaleEnabled ? (selected ? scaleSelected : scaleUnselected) : settingsMetadata.global.scale.defaultValue
+    scale: scaleEnabled ? (selected ? scaleSelected : scaleUnselected) : settingsMetadata.cardTheme.scale.defaultValue
     Behavior on scale { NumberAnimation { duration: animationArtScaleDuration; } enabled: animationEnabled }
 
     z: selected ? 255 : 1
@@ -42,7 +42,7 @@ Item {
         id: assetVideo
         source: isVideo ? asset : ''
 
-        width: metaData.resolution ? metaData.resolution.width / metaData.resolution.height * height : 0
+        width: metaData.resolution ? metaData.resolution.width / metaData.resolution.height * height : height
         height: item.height
 
         loops: MediaPlayer.Infinite
@@ -50,14 +50,12 @@ Item {
         visible: isVideo
         muted: true
 
-        autoLoad: true
+        autoPlay: true
         opacity: selected ? 1.0 : 0.6
         // flushMode: VideoOutput.FirstFrame
 
         onStatusChanged: {
-            if (assetVideo.status == MediaPlayer.Loaded) {
-                assetVideo.seek(2000);
-                assetVideo.play();
+            if (assetVideo.status == MediaPlayer.Buffered) {
                 assetVideo.pause();
             }
         }
@@ -73,7 +71,7 @@ Item {
         font.family: fontawesome.name
         font.pixelSize: height
 
-        color: api.memory.get('settings.globalTheme.textColor')
+        color: api.memory.get('settings.general.textColor')
 
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter

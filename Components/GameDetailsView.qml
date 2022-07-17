@@ -124,15 +124,15 @@ FocusScope {
 
                 Column {
                     anchors.fill: parent
-                    spacing: vpx(10)
+                    spacing: vpx(10) * uiScale
 
                     Text {
                         text: 'Media'
 
                         font.family: subtitleFont.name
-                        font.pixelSize: vpx(18)
+                        font.pixelSize: vpx(18) * uiScale
 
-                        color: api.memory.get('settings.globalTheme.textColor')
+                        color: api.memory.get('settings.general.textColor')
                         opacity: root.focus ? 1 : 0.2
 
                         layer.enabled: true
@@ -203,8 +203,8 @@ FocusScope {
 
         anchors { left: parent.left; right: parent.right }
 
-        anchors.leftMargin: vpx(api.memory.get('settings.globalTheme.leftMargin'));
-        anchors.rightMargin: vpx(api.memory.get('settings.globalTheme.rightMargin'));
+        anchors.leftMargin: vpx(api.memory.get('settings.general.leftMargin'));
+        anchors.rightMargin: vpx(api.memory.get('settings.general.rightMargin'));
 
         displayMarginBeginning: root.height
         displayMarginEnd: root.height

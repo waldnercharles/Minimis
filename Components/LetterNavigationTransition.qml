@@ -26,7 +26,7 @@ Item {
         width: Math.max(height, (letterText.contentWidth + icon.contentWidth) + height / 2)
         radius: height / 4
 
-        color: api.memory.get('settings.globalTheme.backgroundColor')
+        color: api.memory.get('settings.general.backgroundColor')
         opacity: api.memory.get('settings.cardTheme.navigationOpacity')
     }
 
@@ -50,7 +50,7 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
-            color: api.memory.get('settings.globalTheme.accentColor')
+            color: api.memory.get('settings.general.accentColor')
         }
 
         Text {
@@ -76,7 +76,7 @@ Item {
 
             verticalAlignment: Text.AlignVCenter
 
-            color: api.memory.get('settings.globalTheme.accentColor')
+            color: api.memory.get('settings.general.accentColor')
         }
 
     }

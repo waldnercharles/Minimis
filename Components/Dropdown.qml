@@ -7,7 +7,7 @@ FocusScope {
     id: root
 
     anchors.top: parent.bottom
-    anchors.topMargin: vpx(4)
+    anchors.topMargin: vpx(4) * uiScale
 
     property alias items: dropdownItems.model
     property int checkedIndex: 0
@@ -99,7 +99,7 @@ FocusScope {
                     font.family: subtitleFont.name
                     font.pixelSize: height * 0.4
                     font.bold: true
-                    color: checked ? api.memory.get('settings.globalTheme.accentColor') : api.memory.get('settings.globalTheme.textColor')
+                    color: checked ? api.memory.get('settings.general.accentColor') : api.memory.get('settings.general.textColor')
                     opacity: selected ? 1.0 : 0.6
 
                     verticalAlignment: Text.AlignVCenter
@@ -114,7 +114,7 @@ FocusScope {
                     font.family: fontawesome.name
                     font.pixelSize: height * 0.4
 
-                    color: checked ? api.memory.get('settings.globalTheme.accentColor') : api.memory.get('settings.globalTheme.textColor')
+                    color: checked ? api.memory.get('settings.general.accentColor') : api.memory.get('settings.general.textColor')
                     opacity: selected ? 1.0 : 0.6
 
                     verticalAlignment: Text.AlignVCenter
@@ -134,7 +134,7 @@ FocusScope {
         height: delegateHeight * (root.items.count ?? root.items.length ?? 0)
         width: contentItem.childrenRect.width
 
-        readonly property int delegateHeight: vpx(33)
+        readonly property int delegateHeight: vpx(33) * uiScale
         delegate: dropdownItem 
         Keys.onPressed: {
             if (api.keys.isAccept(event) && !event.isAutoRepeat) {

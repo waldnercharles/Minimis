@@ -16,11 +16,11 @@ FocusScope {
     GridView {
         id: grid
 
-        readonly property int numberOfColumns: Math.max(api.memory.get('settings.layout.library.columns'), 1)
+        readonly property int numberOfColumns: Math.max(api.memory.get('settings.library.columns'), 1)
         readonly property real inverseSelectedScale: Math.max(api.memory.get('settings.cardTheme.scaleSelected') - 1.0, 0)
         readonly property real borderWidth: (api.memory.get('settings.cardTheme.borderEnabled') ? vpx(api.memory.get('settings.cardTheme.borderWidth')) : 0);
 
-        property real aspectRatio: api.memory.get('settings.layout.library.aspectRatioNative') ? fakeAsset.height / fakeAsset.width : (api.memory.get('settings.layout.library.aspectRatioHeight') / api.memory.get('settings.layout.library.aspectRatioWidth'))
+        property real aspectRatio: api.memory.get('settings.library.aspectRatioNative') ? fakeAsset.height / fakeAsset.width : (api.memory.get('settings.library.aspectRatioHeight') / api.memory.get('settings.library.aspectRatioWidth'))
 
         anchors.top: parent.top
         anchors.bottom: parent.bottom
@@ -71,9 +71,9 @@ FocusScope {
             game: modelData
             selected: GridView.isCurrentItem && (grid.focus || navigationBar.focus)
 
-            assetKey: settingsMetadata.layout['library.art'].values[api.memory.get('settings.layout.library.art')]
-            logoVisible: api.memory.get('settings.layout.library.logoVisible')
-            aspectRatioNative: api.memory.get('settings.layout.library.aspectRatioNative')
+            assetKey: settingsMetadata.library.art.values[api.memory.get('settings.library.art')]
+            logoVisible: api.memory.get('settings.library.logoVisible')
+            aspectRatioNative: api.memory.get('settings.library.aspectRatioNative')
         }
 
         Component.onCompleted: {
@@ -116,7 +116,7 @@ FocusScope {
 
         anchors.bottomMargin: vpx(16)
 
-        width: vpx(32)
+        width: vpx(32) * uiScale
         active: focus
         selectedItem: currentGame
         games: model

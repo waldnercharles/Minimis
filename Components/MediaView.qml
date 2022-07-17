@@ -11,7 +11,7 @@ FocusScope {
     property int currentIndex: 0
 
     property string asset: media.length > root.currentIndex ? media[root.currentIndex] : ''
-    property bool isVideo: asset.endsWith('.mp4') || asset.endsWith('.webm')
+    property bool isVideo: asset.includes('.mp4') || asset.includes('.webm')
 
     opacity: root.focus ? 1 : 0
     Behavior on opacity { OpacityAnimator { duration: 300 } }
@@ -71,7 +71,7 @@ FocusScope {
         Repeater {
             model: media.length
             Circle {
-                color: root.currentIndex == index ? api.memory.get('settings.globalTheme.accentColor') : api.memory.get('settings.globalTheme.textColor')
+                color: root.currentIndex == index ? api.memory.get('settings.general.accentColor') : api.memory.get('settings.general.textColor')
                 opacity: root.currentIndex == index ? 1 : 0.5
                 radius: vpx(5)
             }

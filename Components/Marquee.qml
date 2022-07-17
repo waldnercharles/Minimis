@@ -3,8 +3,8 @@ import QtQuick 2.15
 Item {
     id: root
 
-    readonly property real titleFontSize: vpx(api.memory.get('settings.cardTheme.titleFontSize'))
-    readonly property string titleColor: api.memory.get('settings.globalTheme.textColor')
+    readonly property real titleFontSize: vpx(gameDelegateTitleFontSize)
+    readonly property string titleColor: api.memory.get('settings.general.textColor')
 
     property bool selected: false
     property int pixelsPerSecond: vpx(30)

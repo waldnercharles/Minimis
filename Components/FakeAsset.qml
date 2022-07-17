@@ -3,7 +3,7 @@ import QtMultimedia 5.9
 
 Image {
     property var collection 
-    readonly property string assetKey: settingsMetadata.layout['library.art'].values[api.memory.get('settings.layout.library.art')]
+    readonly property string assetKey: settingsMetadata.library.art.values[api.memory.get('settings.library.art')]
 
     source: {
         if (collection != null) {
@@ -20,7 +20,7 @@ Image {
 
     fillMode: Image.PreserveAspectFit
 
-    asynchronous: !api.memory.get('settings.layout.library.aspectRatioNative')
+    asynchronous: !api.memory.get('settings.library.aspectRatioNative')
     visible: false
     enabled: false
 }

@@ -18,37 +18,37 @@ FocusScope {
         }));
     }
 
-    property real rowHeight: vpx(50)
+    property real rowHeight: vpx(50) * uiScale
 
     Item {
         id: header
-        height: vpx(75)
+        height: vpx(75) * uiScale
         anchors.left: parent.left
-        anchors.leftMargin: vpx(api.memory.get('settings.globalTheme.leftMargin'))
+        anchors.leftMargin: vpx(api.memory.get('settings.general.leftMargin'))
 
         Rectangle {
             id: background
-            color: api.memory.get('settings.globalTheme.accentColor')
+            color: api.memory.get('settings.general.accentColor')
 
-            width: title.width + vpx(80)
+            width: title.width + vpx(80) * uiScale
             height: parent.height
 
-            radius: vpx(3)
+            radius: vpx(3) * uiScale
         }
 
         Text {
             id: title
-            height: vpx(45)
+            height: vpx(45) * uiScale
             anchors.centerIn: background
 
             text: 'Settings'
 
             font.family: titleFont.name
-            font.pixelSize: vpx(36)
+            font.pixelSize: vpx(36) * uiScale
             font.bold: true
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            color: api.memory.get('settings.globalTheme.backgroundColor')
+            color: api.memory.get('settings.general.backgroundColor')
         }
     }
 
@@ -58,7 +58,7 @@ FocusScope {
         focus: true
         anchors {
             top: header.bottom; bottom: parent.bottom; left: parent.left;
-            topMargin: vpx(20); leftMargin: vpx(api.memory.get('settings.globalTheme.leftMargin'))
+            topMargin: vpx(20) * uiScale; leftMargin: vpx(api.memory.get('settings.general.leftMargin'))
         }
 
         width: parent.width / 5.0
@@ -72,16 +72,16 @@ FocusScope {
 
             Text {
                 text: capitalize(modelData.key)
-                color: api.memory.get('settings.globalTheme.textColor')
+                color: api.memory.get('settings.general.textColor')
                 font.family: subtitleFont.name
-                font.pixelSize: vpx(22)
+                font.pixelSize: vpx(22) * uiScale
                 verticalAlignment: Text.AlignVCenter
                 opacity: selected ? 1 : 0.2
                 
                 height: parent.height
 
                 anchors.left: parent.left
-                anchors.leftMargin: vpx(5)
+                anchors.leftMargin: vpx(5) * uiScale
             }
         }
 
@@ -105,7 +105,7 @@ FocusScope {
 
         anchors {
             top: categoriesListView.top; bottom: parent.bottom; left: categoriesListView.right; right: parent.right;
-            rightMargin: vpx(api.memory.get('settings.globalTheme.rightMargin'))
+            rightMargin: vpx(api.memory.get('settings.general.rightMargin'))
         }
 
         preferredHighlightBegin: 0
@@ -122,16 +122,18 @@ FocusScope {
             readonly property string settingKey: `settings.${currentCategory.key}.${modelData.key}`
             readonly property string parentSettingKey: modelData.value.parent != null ? `settings.${currentCategory.key}.${modelData.value.parent}` : ''
 
-            readonly property bool isEnabled: (!(settingMetadata && settingMetadata.isEnabled) || settingMetadata.isEnabled())
+            readonly property bool isHidden: !!settingMetadata.hidden
+            readonly property bool isEnabled: (!(settingMetadata && settingMetadata.isEnabled) || settingMetadata.isEnabled()) && !isHidden
             readonly property bool isExpanded: !parentSettingKey || api.memory.get(parentSettingKey)
 
             property var settingMetadata: settingsMetadata[currentCategory.key][modelData.key]
             property var value: api.memory.get(settingKey)
 
             width: ListView.view.width
-            height: isExpanded ? rowHeight : 0
+            height: isExpanded && !isHidden  ? rowHeight : 0
 
             opacity: isExpanded ? (isEnabled ? 1 : 0.33) : 0
+            visible: !isHidden
 
             Behavior on height { NumberAnimation { duration: 300 } }
             Behavior on opacity { NumberAnimation { duration: 300 } }
@@ -140,15 +142,15 @@ FocusScope {
                 id: settingsName
 
                 text: settingMetadata.name
-                color: api.memory.get('settings.globalTheme.textColor')
+                color: api.memory.get('settings.general.textColor')
                 font.family: subtitleFont.name
-                font.pixelSize: vpx(20)
+                font.pixelSize: vpx(20) * uiScale
                 verticalAlignment: Text.AlignVCenter
                 opacity: selected ? 1 : 0.2
 
                 height: parent.height
                 anchors.left: parent.left
-                anchors.leftMargin: vpx(5) + ((settingMetadata.inset || 0) * vpx(25))
+                anchors.leftMargin: vpx(5) * uiScale + ((settingMetadata.inset || 0) * vpx(25) * uiScale)
             }
 
             Text {
@@ -157,15 +159,15 @@ FocusScope {
                 readonly property bool isHeader: settingMetadata.type === 'header'
 
                 text: isHeader ? (value ? '\uf078' : '\uf054') : (capitalizeFirstLetter((settingMetadata.type != 'array' ? value : settingMetadata.values[value]).toString()))
-                color: api.memory.get('settings.globalTheme.textColor')
+                color: api.memory.get('settings.general.textColor')
                 font.family: isHeader ? fontawesome.name : subtitleFont.name
-                font.pixelSize: vpx(20)
+                font.pixelSize: vpx(20) * uiScale
                 verticalAlignment: Text.AlignVCenter
                 opacity: selected ? 1.0 : 0.2
 
                 height: parent.height
                 anchors.right: parent.right
-                anchors.rightMargin: vpx(5)
+                anchors.rightMargin: vpx(5) * uiScale
             }
 
             Keys.onLeftPressed: {

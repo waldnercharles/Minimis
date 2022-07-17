@@ -5,7 +5,8 @@ import QtGraphicalEffects 1.0
 ListView {
     id: root
 
-    height: vpx(33)
+
+    height: vpx(33) * ((uiScale ?? 1) < 0 ? 1 : uiScale)
 
     anchors {
         left: parent.left

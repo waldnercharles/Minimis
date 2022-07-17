@@ -47,9 +47,12 @@ FocusScope {
     property int orderByIndex: 0
     property int orderByDirection: Qt.AscendingOrder
 
+    readonly property real uiScale: api.memory.get('settings.general.uiScale') ?? 1;
+
     readonly property bool gameDelegateTitleEnabled: api.memory.get('settings.cardTheme.titleEnabled')
-    readonly property real gameDelegateTitlePadding: gameDelegateTitleEnabled ? vpx(api.memory.get('settings.cardTheme.titleFontSize') * 0.4) : 0
-    readonly property real gameDelegateTitleHeight: gameDelegateTitleEnabled ? vpx(api.memory.get('settings.cardTheme.titleFontSize')) : 0
+    readonly property real gameDelegateTitleFontSize: api.memory.get('settings.cardTheme.titleFontSize') * uiScale
+    readonly property real gameDelegateTitlePadding: gameDelegateTitleEnabled ? vpx(gameDelegateTitleFontSize * 0.4) : 0
+    readonly property real gameDelegateTitleHeight: gameDelegateTitleEnabled ? vpx(gameDelegateTitleFontSize) : 0
 
     readonly property real gameDelegateTitleMargin: gameDelegateTitleEnabled ? (gameDelegateTitleHeight * 2) + (gameDelegateTitlePadding * 2.25) + (api.memory.get('settings.cardTheme.borderEnabled') ? vpx(api.memory.get('settings.cardTheme.borderWidth')) * 2 : 0) : 0
 
@@ -151,13 +154,12 @@ FocusScope {
 
     Component.onCompleted: {
         reloadSettings();
-        const games = api.allGames.entries;
+        const games = api.allGames;
 
         for (let i = games.count - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            const tmp = games[i];
-            games[i] = games[j];
-            games[j] = tmp;
+            games.move(i, j);
+            games.move(j + 1, i);
         }
 
         contentLoader.active = true;
@@ -170,13 +172,6 @@ FocusScope {
 
         if (api.keys.isCancel(event)) {
             event.accepted = previousScreen();
-        }
-    }
-
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
         }
     }
 

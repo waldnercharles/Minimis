@@ -22,15 +22,15 @@ FocusScope {
 
     Column {
         anchors.fill: parent
-        spacing: vpx(10)
+        spacing: vpx(10) * uiScale
 
         Text {
             id: listViewTitle
 
             font.family: subtitleFont.name
-            font.pixelSize: vpx(18)
+            font.pixelSize: vpx(18) * uiScale
 
-            color: api.memory.get('settings.globalTheme.textColor')
+            color: api.memory.get('settings.general.textColor')
             opacity: root.focus ? 1 : 0.2
 
             layer.enabled: true

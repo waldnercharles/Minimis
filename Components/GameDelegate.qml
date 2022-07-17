@@ -19,10 +19,10 @@ Item {
     property alias itemWidth: screenshot.width
     property alias itemHeight: screenshot.height
 
-    readonly property string textColor: api.memory.get('settings.globalTheme.textColor')
+    readonly property string textColor: api.memory.get('settings.general.textColor')
     readonly property string textOutlineColor: 'black'
 
-    readonly property int logoFontSize: vpx(api.memory.get('settings.cardTheme.logoFontSize'))
+    readonly property int logoFontSize: vpx(api.memory.get('settings.cardTheme.logoFontSize')) * uiScale
 
     readonly property bool isPlayingPreview: selected && videoPreviewDebouncer.enabled && !videoPreviewDebouncer.running && game && game.assets.videoList.length > 0
     readonly property bool isLoading: sourceDebounce.running || screenshot.status === Image.Loading || (logoVisible && logo.status === Image.Loading)
@@ -51,14 +51,14 @@ Item {
 
     readonly property real overlayOpacity: api.memory.get('settings.cardTheme.darkenAmount')
 
-    readonly property real titleFontSize: vpx(api.memory.get('settings.cardTheme.titleFontSize'))
+    readonly property real titleFontSize: vpx(gameDelegateTitleFontSize)
 
     readonly property real cardRadius: vpx(api.memory.get('settings.cardTheme.cornerRadius'));
 
     width: screenshot.width
     height: screenshot.height
 
-    scale: scaleEnabled ? (selected ? scaleSelected : scaleUnselected) : settingsMetadata.global.scale.defaultValue
+    scale: scaleEnabled ? (selected ? scaleSelected : scaleUnselected) : settingsMetadata.cardTheme.scale.defaultValue
     Behavior on scale { NumberAnimation { duration: animationArtScaleDuration; } enabled: animationEnabled }
 
     z: selected ? 255 : 1
@@ -149,7 +149,7 @@ Item {
         opacity: !isLoading && (isPlayingPreview ? logoVisiblePreview : logoVisible) ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: animationLogoFadeDuration; } enabled: animationEnabled && !logo.hasError }
 
-        scale: logoScaleEnabled ? (selected ? logoScaleSelected : logoScaleUnselected) : settingsMetadata.global.logoScale.defaultValue
+        scale: logoScaleEnabled ? (selected ? logoScaleSelected : logoScaleUnselected) : settingsMetadata.cardTheme.logoScale.defaultValue
         Behavior on scale { NumberAnimation { duration: animationLogoScaleDuration } enabled: animationEnabled && !isLoading && !logo.hasError }
     }
 

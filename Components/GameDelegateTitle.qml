@@ -8,8 +8,8 @@ Column {
 
     readonly property bool titleEnabled: api.memory.get('settings.cardTheme.titleEnabled') 
     readonly property bool titleAlwaysVisible: api.memory.get('settings.cardTheme.titleAlwaysVisible')
-    readonly property real titleFontSize: vpx(api.memory.get('settings.cardTheme.titleFontSize'))
-    readonly property string titleColor: api.memory.get('settings.globalTheme.textColor')
+    readonly property real titleFontSize: vpx(gameDelegateTitleFontSize)
+    readonly property string titleColor: api.memory.get('settings.general.textColor')
 
     readonly property bool borderEnabled: api.memory.get('settings.cardTheme.borderEnabled')
     readonly property real borderWidth: api.memory.get('settings.cardTheme.borderWidth')

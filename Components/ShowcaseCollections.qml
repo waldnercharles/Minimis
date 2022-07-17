@@ -44,7 +44,7 @@ FocusScope {
         id: proxyModel
         proxyRoles: [
             ExpressionRole { name: 'collectionKey'; expression: type === 'showcaseCollection' ? `collection${index + 1}` : undefined },
-            ExpressionRole { name: 'collectionType'; expression: type === 'showcaseCollection' ? api.memory.get(`settings.layout.${collectionKey}.type`) : undefined },
+            ExpressionRole { name: 'collectionType'; expression: type === 'showcaseCollection' ? api.memory.get(`settings.collections.${collectionKey}.type`) : undefined },
             ExpressionRole { name: 'collection'; expression: type === 'showcaseCollection' ? collectionsByType[collectionType] : undefined }
         ]
 
@@ -82,15 +82,15 @@ FocusScope {
                 opacity: index < listView.currentIndex ? 0 : 1
                 Behavior on opacity { OpacityAnimator { duration: 200 } }
 
-                title: settingsMetadata.layout[`${collectionKey}.type`].values[collectionType]
+                title: settingsMetadata.collections[`${collectionKey}.type`].values[collectionType]
 
-                aspectRatioNative: api.memory.get(`settings.layout.${collectionKey}.aspectRatioNative`)
+                aspectRatioNative: api.memory.get(`settings.collections.${collectionKey}.aspectRatioNative`)
 
-                aspectRatioWidth: api.memory.get(`settings.layout.${collectionKey}.aspectRatioWidth`)
-                aspectRatioHeight: api.memory.get(`settings.layout.${collectionKey}.aspectRatioHeight`)
+                aspectRatioWidth: api.memory.get(`settings.collections.${collectionKey}.aspectRatioWidth`)
+                aspectRatioHeight: api.memory.get(`settings.collections.${collectionKey}.aspectRatioHeight`)
 
-                assetKey: settingsMetadata.layout[`${collectionKey}.art`].values[api.memory.get(`settings.layout.${collectionKey}.art`)]
-                logoVisible: api.memory.get(`settings.layout.${collectionKey}.logoVisible`)
+                assetKey: settingsMetadata.collections[`${collectionKey}.art`].values[api.memory.get(`settings.collections.${collectionKey}.art`)]
+                logoVisible: api.memory.get(`settings.collections.${collectionKey}.logoVisible`)
             }
         }
 
@@ -103,15 +103,15 @@ FocusScope {
                 width: root.width
                 height: root.height
 
-                spacing: vpx(10)
+                spacing: vpx(10) * uiScale
 
                 Text {
                     text: 'Library'
 
                     font.family: subtitleFont.name
-                    font.pixelSize: vpx(18)
+                    font.pixelSize: vpx(18) * uiScale
 
-                    color: api.memory.get('settings.globalTheme.textColor')
+                    color: api.memory.get('settings.general.textColor')
                     opacity: selected ? 1 : 0.2
 
                     layer.enabled: true

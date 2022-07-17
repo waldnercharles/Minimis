@@ -6,9 +6,9 @@ ColumnLayout {
     id: root
     property var game
 
-    property int bottomMargin: vpx(35)
+    property int bottomMargin: vpx(35) * uiScale
 
-    readonly property real fontSize: vpx(18)
+    readonly property real fontSize: vpx(18) * uiScale
 
     readonly property string year: game && game.releaseYear != 0 ? game.releaseYear : 'N/A'
     readonly property real rating: game && game.rating != null ? parseFloat(game.rating * 5).toPrecision(2) : 0
@@ -23,7 +23,7 @@ ColumnLayout {
         Layout.fillHeight: true
         Layout.alignment: Qt.AlignBottom | Qt.AlignLeft
 
-        Layout.topMargin: vpx(30)
+        Layout.topMargin: vpx(30) * uiScale
 
         fillMode: Image.PreserveAspectFit
         horizontalAlignment: Image.AlignLeft
@@ -39,8 +39,8 @@ ColumnLayout {
 
     Row {
         Layout.fillWidth: true
-        Layout.leftMargin: vpx(10)
-        Layout.topMargin: vpx(20)
+        Layout.leftMargin: vpx(10) * uiScale
+        Layout.topMargin: vpx(20) * uiScale
         Layout.bottomMargin: root.bottomMargin
 
         Layout.alignment: Qt.AlignBottom | Qt.AlignLeft
@@ -54,22 +54,22 @@ ColumnLayout {
             font.pixelSize: fontSize
             font.family: subtitleFont.name
             font.bold: true
-            color: api.memory.get('settings.globalTheme.textColor')
+            color: api.memory.get('settings.general.textColor')
 
             verticalAlignment: Text.AlignVCenter
         }
 
-        Circle { radius: 2; anchors.verticalCenter: parent.verticalCenter }
+        Circle { radius: vpx(2); anchors.verticalCenter: parent.verticalCenter }
 
         Rectangle {
             id: playersBackground
             anchors.verticalCenter: parent.verticalCenter
 
-            width: playersText.contentWidth + vpx(40)
-            height: playersText.contentHeight + vpx(10)
+            width: playersText.contentWidth + vpx(40) * uiScale
+            height: playersText.contentHeight + vpx(10) * uiScale
 
             border.width: vpx(2)
-            border.color: api.memory.get('settings.globalTheme.accentColor')
+            border.color: api.memory.get('settings.general.accentColor')
 
             radius: vpx(5)
 
@@ -83,16 +83,16 @@ ColumnLayout {
 
                 font.pixelSize: fontSize * 0.9
                 font.family: subtitleFont.name
-                color: api.memory.get('settings.globalTheme.textColor')
+                color: api.memory.get('settings.general.textColor')
 
                 verticalAlignment: Text.AlignVCenter
             }
         }
 
-        Circle { radius: 2; anchors.verticalCenter: parent.verticalCenter }
+        Circle { radius: vpx(2); anchors.verticalCenter: parent.verticalCenter }
 
         Row {
-            spacing: vpx(10)
+            spacing: vpx(10) * uiScale
             anchors.verticalCenter: parent.verticalCenter
 
             Text {
@@ -101,7 +101,7 @@ ColumnLayout {
 
                 font.pixelSize: fontSize * 0.9
                 font.family: subtitleFont.name
-                color: api.memory.get('settings.globalTheme.textColor')
+                color: api.memory.get('settings.general.textColor')
 
                 verticalAlignment: Text.AlignVCenter
             }
@@ -110,7 +110,7 @@ ColumnLayout {
                 id: ratingStars
                 anchors.verticalCenter: parent.verticalCenter;
 
-                spacing: vpx(4)
+                spacing: vpx(4) * uiScale
                 Repeater {
                     model: 5
                     delegate: Text {
@@ -118,7 +118,7 @@ ColumnLayout {
                         anchors.verticalCenter: parent.verticalCenter;
                         font.family: fontawesome.name
                         font.pixelSize: fontSize
-                        color: api.memory.get('settings.globalTheme.textColor')
+                        color: api.memory.get('settings.general.textColor')
 
                         verticalAlignment: Text.AlignVCenter
                     }

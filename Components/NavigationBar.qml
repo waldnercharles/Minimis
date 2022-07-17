@@ -256,7 +256,7 @@ Item {
             opacity: enabled ? 1 : 0.33
 
             width: parent.width
-            height: vpx(32)
+            height: vpx(32) * uiScale
 
             property bool selected: ListView.isCurrentItem && root.activeFocus
 
@@ -265,7 +265,7 @@ Item {
 
                 anchors.fill: parent
 
-                color: api.memory.get('settings.globalTheme.accentColor')
+                color: api.memory.get('settings.general.accentColor')
                 radius: vpx(5)
 
                 layer.enabled: selected
@@ -289,7 +289,7 @@ Item {
                 horizontalAlignment: Text.AlignHCenter
                 
                 opacity: selected ? 1 : 0.5
-                color: selected ? api.memory.get('settings.globalTheme.backgroundColor') : api.memory.get('settings.globalTheme.textColor')
+                color: selected ? api.memory.get('settings.general.backgroundColor') : api.memory.get('settings.general.textColor')
 
                 layer.enabled: !selected
                 layer.effect: DropShadowLow { }

@@ -8,11 +8,11 @@ function createCollectionMetadata(category, parent, collectionType, defaults) {
     const parentKey = parent && parent.key ? parent.key : undefined;
 
     const inset = parent ? 1 : 0;
-    const prefix = parentKey ?? '';
+    const prefix = parentKey ? `${parentKey}.` : '';
     const fullPrefix = `settings.${category}.${prefix}`
 
     if (collectionType == 'collection') {
-        metadata[`${prefix}.type`] = {
+        metadata[`${prefix}type`] = {
             name: 'Type',
             defaultValue: defaults[`type`] ?? 0,
             values: [ 'None', 'Recently Played', 'Favorites', /*'Bookmarks',*/ 'Random Games' ],
@@ -20,7 +20,7 @@ function createCollectionMetadata(category, parent, collectionType, defaults) {
             parent: parentKey, inset: inset
         };
     } else if (collectionType == 'library') {
-        metadata[`${prefix}.columns`] = {
+        metadata[`${prefix}columns`] = {
             name: 'Number of Columns',
             defaultValue: defaults[`columns`] ?? 1,
             min: 1,
@@ -37,65 +37,65 @@ function createCollectionMetadata(category, parent, collectionType, defaults) {
 
     const presets = [ boxArt, wide, tall, square, custom ];
 
-    metadata[`${prefix}.preset`] = {
+    metadata[`${prefix}preset`] = {
         name: 'Preset',
         defaultValue: defaults[`preset`] ?? 1,
         values: [ 'Box Art', 'Wide', 'Tall', 'Square', 'Custom' ],
         type: 'array',
         parent: parentKey, inset: inset,
-        isEnabled: () => api.memory.get(`${fullPrefix}.type`) !== 0,
+        isEnabled: () => api.memory.get(`${fullPrefix}type`) !== 0,
         onChanged: (value) => {
             const preset = presets[value];
 
-            api.memory.set(`${fullPrefix}.art`, preset.art);
-            api.memory.set(`${fullPrefix}.aspectRatioNative`, preset.aspectRatioNative);
-            api.memory.set(`${fullPrefix}.aspectRatioWidth`, preset.aspectRatioWidth);
-            api.memory.set(`${fullPrefix}.aspectRatioHeight`, preset.aspectRatioHeight);
-            api.memory.set(`${fullPrefix}.logoVisible`, preset.logoVisible);
+            api.memory.set(`${fullPrefix}art`, preset.art);
+            api.memory.set(`${fullPrefix}aspectRatioNative`, preset.aspectRatioNative);
+            api.memory.set(`${fullPrefix}aspectRatioWidth`, preset.aspectRatioWidth);
+            api.memory.set(`${fullPrefix}aspectRatioHeight`, preset.aspectRatioHeight);
+            api.memory.set(`${fullPrefix}logoVisible`, preset.logoVisible);
         }
     };
 
     const defaultPreset = defaults['preset'] != null ? presets[defaults['preset']] : presets[0];
 
-    metadata[`${prefix}.art`] = {
+    metadata[`${prefix}art`] = {
         name: 'Art',
         defaultValue: defaultPreset.art ?? 0,
         values: ['screenshot', 'boxFront', 'boxBack', 'boxSpine', 'boxFull', 'cartridge', 'marquee', 'bezel', 'panel', 'cabinetLeft', 'cabinetRight', 'tile', 'banner', 'steam', 'poster', 'background', 'titlescreen'],
         type: 'array',
         parent: parentKey, inset: inset,
-        isEnabled: () => api.memory.get(`${fullPrefix}.preset`) === 4
+        isEnabled: () => api.memory.get(`${fullPrefix}preset`) === 4
     };
 
-    metadata[`${prefix}.aspectRatioNative`] = {
+    metadata[`${prefix}aspectRatioNative`] = {
         name: 'Art - Aspect Ratio - Use Native',
         defaultValue: defaultPreset.aspectRatioNative ?? false,
         type: 'bool',
         parent: parentKey, inset: inset,
-        isEnabled: () => api.memory.get(`${fullPrefix}.preset`) === 4
+        isEnabled: () => api.memory.get(`${fullPrefix}preset`) === 4
     };
 
-    metadata[`${prefix}.aspectRatioWidth`] = {
+    metadata[`${prefix}aspectRatioWidth`] = {
         name: 'Art - Aspect Ratio - Width',
         defaultValue: defaultPreset.aspectRatioWidth ?? 9.2,
         delta: 0.1, min: 0.1, type: 'real',
         parent: parentKey, inset: inset,
-        isEnabled: () => api.memory.get(`${fullPrefix}.preset`) === 4 && !api.memory.get(`${fullPrefix}.aspectRatioNative`)
+        isEnabled: () => api.memory.get(`${fullPrefix}preset`) === 4 && !api.memory.get(`${fullPrefix}aspectRatioNative`)
     };
 
-    metadata[`${prefix}.aspectRatioHeight`] = {
+    metadata[`${prefix}aspectRatioHeight`] = {
         name: 'Art - Aspect Ratio - Height',
         defaultValue: defaultPreset.aspectRatioHeight ?? 4.3,
         delta: 0.1, min: 0.1, type: 'real',
         parent: parentKey, inset: inset,
-        isEnabled: () => api.memory.get(`${fullPrefix}.preset`) === 4 && !api.memory.get(`${fullPrefix}.aspectRatioNative`)
+        isEnabled: () => api.memory.get(`${fullPrefix}preset`) === 4 && !api.memory.get(`${fullPrefix}aspectRatioNative`)
     };
 
-    metadata[`${prefix}.logoVisible`] = {
+    metadata[`${prefix}logoVisible`] = {
         name: 'Logo - Visible',
         defaultValue: defaultPreset.logoVisible ?? true,
         type: 'bool',
         parent: parentKey, inset: inset,
-        isEnabled: () => api.memory.get(`${fullPrefix}.preset`) === 4
+        isEnabled: () => api.memory.get(`${fullPrefix}preset`) === 4
     };
 
     return metadata;
@@ -115,13 +115,29 @@ function createHeader(header, obj) {
 
 function createMetadata() {
     const metadata = {
-        layout: Object.assign(
-            createCollectionMetadata('layout', { key: 'collection1', name: 'Collection 1' }, 'collection', { type: 1, preset: 3 }),
-            createCollectionMetadata('layout', { key: 'collection2', name: 'Collection 2' }, 'collection', { type: 2, preset: 1 }),
-            createCollectionMetadata('layout', { key: 'collection3', name: 'Collection 3' }, 'collection', { type: 3, preset: 0 }),
-            createCollectionMetadata('layout', { key: 'collection4', name: 'Collection 4' }, 'collection', { type: 0, preset: 0 }),
-            createCollectionMetadata('layout', { key: 'collection5', name: 'Collection 5' }, 'collection', { type: 0, preset: 0 }),
-            createCollectionMetadata('layout', { key: 'library', name: 'Library' }, 'library', { columns: 8, preset: 2 }),
+        library: Object.assign(
+            createCollectionMetadata('library', null, 'library', { columns: 4, preset: 2 }),
+        ),
+        collections: Object.assign(
+            createCollectionMetadata('collections', { key: 'collection1', name: 'Collection 1' }, 'collection', { type: 0, preset: 0 }),
+            createCollectionMetadata('collections', { key: 'collection2', name: 'Collection 2' }, 'collection', { type: 0, preset: 0 }),
+            createCollectionMetadata('collections', { key: 'collection3', name: 'Collection 3' }, 'collection', { type: 0, preset: 0 }),
+            createCollectionMetadata('collections', { key: 'collection4', name: 'Collection 4' }, 'collection', { type: 0, preset: 0 }),
+            createCollectionMetadata('collections', { key: 'collection5', name: 'Collection 5' }, 'collection', { type: 0, preset: 0 }),
+        ),
+        general: Object.assign(
+            {
+                uiScale: { name: 'UI Scale', defaultValue: 1, min: 0.5, type: 'real', delta: 0.01 },
+                backgroundOpacity: { name: 'Background Opacity', defaultValue: 0.8, type: 'real', min: 0, max: 1, delta: 0.01 },
+                backgroundBlurEnabled: { name: 'Background Blur', defaultValue: true, type: 'bool' },
+                backgroundBlurAmount: { name: 'Background Blur Amount', defaultValue: 64, min: 0, max: 64, inset: 1, type: 'int', isEnabled: () => api.memory.get('settings.general.backgroundBlurEnabled') },
+                backgroundColor: { name: 'Background Color', defaultValue: '#343434', type: 'string', hidden: true },
+                accentColor: { name: 'Accent Color', defaultValue: '#FFC85C', type: 'string', hidden: true },
+                textColor: { name: 'Text Color', defaultValue: '#ECECEC', type: 'string', hidden: true },
+
+                leftMargin: { name: 'Screen Padding - Left', defaultValue: 60, min: 0, type: 'int' },
+                rightMargin: { name: 'Screen Padding - Right', defaultValue: 60, min: 0, type: 'int' },
+            }
         ),
         cardTheme: Object.assign(
             createHeader(
@@ -183,24 +199,6 @@ function createMetadata() {
                     videoPreviewMaskEnabled: { name: 'Rounded Corners', defaultValue: true, type: 'bool', inset: 1, isEnabled: () => api.memory.get('settings.cardTheme.previewEnabled') }
                 }
             ),
-        ),
-        globalTheme: Object.assign(
-            createHeader(
-                { key: 'background', name: 'Background' },
-                {
-                    backgroundOpacity: { name: 'Opacity', defaultValue: 0.8, type: 'real', min: 0, max: 1, delta: 0.01 },
-                    backgroundBlurEnabled: { name: 'Blur', defaultValue: true, type: 'bool' },
-                    backgroundBlurAmount: { name: 'Blur Amount', defaultValue: 64, min: 0, max: 64, inset: 1, type: 'int', isEnabled: () => api.memory.get('settings.globalTheme.backgroundBlurEnabled') },
-                }
-            ),
-            {
-                backgroundColor: { name: 'Background Color', defaultValue: '#343434', type: 'string' },
-                accentColor: { name: 'Accent Color', defaultValue: '#FFC85C', type: 'string' },
-                textColor: { name: 'Text Color', defaultValue: '#ECECEC', type: 'string' },
-
-                leftMargin: { name: 'Screen Padding - Left', defaultValue: 60, min: 0, type: 'int' },
-                rightMargin: { name: 'Screen Padding - Right', defaultValue: 60, min: 0, type: 'int' },
-            }
         ),
         performance: Object.assign({
             assetDebounceDuration: { name: 'Asset Debounce Duration', defaultValue: 500, min: 0, delta: 50, type: 'real' },

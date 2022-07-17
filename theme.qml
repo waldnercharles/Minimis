@@ -156,10 +156,12 @@ FocusScope {
         reloadSettings();
         const games = api.allGames;
 
-        for (let i = games.count - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            games.move(i, j);
-            games.move(j + 1, i);
+        if (api.allGames.move != null) { // latest version of pegasus does not support my hack
+            for (let i = games.count - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                games.move(i, j);
+                games.move(j + 1, i);
+            }
         }
 
         contentLoader.active = true;

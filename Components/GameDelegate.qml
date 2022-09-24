@@ -174,9 +174,9 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
 
-        visible: logo.hasError
+        visible: logo.hasError || screenshot.hasError
 
-        opacity: logo.hasError ? logo.opacity : 0
+        opacity: logo.hasError || screenshot.hasError ? (logo.opacity + screenshot.opacity) / 2.0 : 0
         Behavior on opacity { NumberAnimation { duration: animationLogoFadeDuration; } enabled: animationEnabled && !isLoading && logo.hasError }
     }
 

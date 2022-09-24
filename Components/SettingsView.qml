@@ -8,6 +8,8 @@ FocusScope {
     property var categories: []
     property var currentCategory: categories[categoriesListView.currentIndex]
 
+    property var settingOpacity: 0.4;
+
     Component.onCompleted: {
         root.categories = Object.entries(settingsMetadata).map(([categoryKey, category]) => ({
             key: categoryKey,
@@ -76,7 +78,7 @@ FocusScope {
                 font.family: subtitleFont.name
                 font.pixelSize: vpx(22) * uiScale
                 verticalAlignment: Text.AlignVCenter
-                opacity: selected ? 1 : 0.2
+                opacity: selected ? 1 : settingOpacity
                 
                 height: parent.height
 
@@ -132,7 +134,7 @@ FocusScope {
             width: ListView.view.width
             height: isExpanded && !isHidden  ? rowHeight : 0
 
-            opacity: isExpanded ? (isEnabled ? 1 : 0.33) : 0
+            opacity: isExpanded ? (isEnabled ? 1 : settingOpacity) : 0
             visible: !isHidden
 
             Behavior on height { NumberAnimation { duration: 300 } }
@@ -146,7 +148,7 @@ FocusScope {
                 font.family: subtitleFont.name
                 font.pixelSize: vpx(20) * uiScale
                 verticalAlignment: Text.AlignVCenter
-                opacity: selected ? 1 : 0.2
+                opacity: selected ? 1 : settingOpacity
 
                 height: parent.height
                 anchors.left: parent.left
@@ -163,7 +165,7 @@ FocusScope {
                 font.family: isHeader ? fontawesome.name : subtitleFont.name
                 font.pixelSize: vpx(20) * uiScale
                 verticalAlignment: Text.AlignVCenter
-                opacity: selected ? 1.0 : 0.2
+                opacity: selected ? 1.0 : settingOpacity
 
                 height: parent.height
                 anchors.right: parent.right

@@ -196,7 +196,6 @@ function createMetadata() {
                     previewVolume: { name: 'Volume', defaultValue: 0.0, delta: 0.1, min: 0.0, max: 1.0, type: 'real', inset: 1, isEnabled: () => api.memory.get('settings.cardTheme.previewEnabled') },
                     videoPreviewDelay: { name: 'Delay', defaultValue: 1000, min: 0, delta: 50, type: 'int', inset: 1, isEnabled: () => api.memory.get('settings.cardTheme.previewEnabled') },
                     previewLogoVisible: { name: 'Logo - Visible', defaultValue: false, type: 'bool', inset: 1, isEnabled: () => api.memory.get('settings.cardTheme.previewEnabled') },
-                    videoPreviewMaskEnabled: { name: 'Rounded Corners', defaultValue: true, type: 'bool', inset: 1, isEnabled: () => api.memory.get('settings.cardTheme.previewEnabled') }
                 }
             ),
         ),

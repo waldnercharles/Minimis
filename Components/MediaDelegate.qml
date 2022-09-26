@@ -38,27 +38,14 @@ Item {
         opacity: selected ? 1.0 : 0.6
     }
 
-    Video {
+    Rectangle {
         id: assetVideo
-        source: isVideo ? asset : ''
-
-        width: metaData.resolution ? metaData.resolution.width / metaData.resolution.height * height : height
+        width: item.height
         height: item.height
 
-        loops: MediaPlayer.Infinite
-
         visible: isVideo
-        muted: true
-
-        autoPlay: true
         opacity: selected ? 1.0 : 0.6
-        // flushMode: VideoOutput.FirstFrame
-
-        onStatusChanged: {
-            if (assetVideo.status == MediaPlayer.Buffered) {
-                assetVideo.pause();
-            }
-        }
+        color: 'black'
     }
 
     Text {
@@ -88,7 +75,7 @@ Item {
         }
     }
 
-    layer.enabled: isVideo ? api.memory.get('settings.cardTheme.videoPreviewMaskEnabled') : true
+    layer.enabled: true
     layer.effect: OpacityMask {
         maskSource: Rectangle {
             width: item.width; height: item.height

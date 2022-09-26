@@ -69,7 +69,7 @@ FocusScope {
             }
 
             delegate: GameDelegate {
-                itemWidth: root.aspectRatioNative ? listView.height : height / root.aspectRatio
+                itemWidth: root.aspectRatioNative ? undefined : height / root.aspectRatio
                 itemHeight: listView.height
 
                 game: modelData

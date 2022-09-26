@@ -48,15 +48,7 @@ Item {
             active: videoPreviewDebouncer.enabled && !videoPreviewDebouncer.running && root.visible && root.item && root.item.game.assets.videoList.length > 0
         }
 
+        radius: vpx(api.memory.get('settings.cardTheme.cornerRadius'))
         visible: loader.active
-
-        layer.enabled: api.memory.get('settings.cardTheme.videoPreviewMaskEnabled')
-        layer.effect: OpacityMask {
-            id: mask
-            maskSource: Rectangle {
-                width: loaderContainer.width; height: loaderContainer.height
-                radius: vpx(api.memory.get('settings.cardTheme.cornerRadius'))
-            }
-        }
     }
 }

@@ -55,7 +55,7 @@ Item {
 
     readonly property real cardRadius: vpx(api.memory.get('settings.cardTheme.cornerRadius'));
 
-    width: screenshot.width
+    width: logoNativeResolution && screenshot.hasError && !isLoading && !screenshot.width ? screenshot.height : screenshot.width
     height: screenshot.height
 
     scale: scaleEnabled ? (selected ? scaleSelected : scaleUnselected) : settingsMetadata.cardTheme.scale.defaultValue
@@ -146,7 +146,7 @@ Item {
 
         visible: !logo.hasError
 
-        opacity: !isLoading && (isPlayingPreview ? logoVisiblePreview : logoVisible) ? 1 : 0
+        opacity: !isLoading && !screenshot.hasError && (isPlayingPreview ? logoVisiblePreview : logoVisible) ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: animationLogoFadeDuration; } enabled: animationEnabled && !logo.hasError }
 
         scale: logoScaleEnabled ? (selected ? logoScaleSelected : logoScaleUnselected) : settingsMetadata.cardTheme.logoScale.defaultValue
@@ -176,7 +176,7 @@ Item {
 
         visible: logo.hasError || screenshot.hasError
 
-        opacity: logo.hasError || screenshot.hasError ? (logo.opacity + screenshot.opacity) / 2.0 : 0
+        opacity: visible ? logo.opacity + (screenshot.hasError ? screenshot.opacity : 0) : 0
         Behavior on opacity { NumberAnimation { duration: animationLogoFadeDuration; } enabled: animationEnabled && !isLoading && logo.hasError }
     }
 

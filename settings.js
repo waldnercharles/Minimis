@@ -15,7 +15,7 @@ function createCollectionMetadata(category, parent, collectionType, defaults) {
         metadata[`${prefix}type`] = {
             name: 'Type',
             defaultValue: defaults[`type`] ?? 0,
-            values: [ 'None', 'Recently Played', 'Favorites' /*'Bookmarks',*/ /*'Random Games'*/ ],
+            values: [ 'None', 'Recently Played', 'Favorites', /*'Bookmarks',*/ 'Random Games' ],
             type: 'array',
             parent: parentKey, inset: inset
         };

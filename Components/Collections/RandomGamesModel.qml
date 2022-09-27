@@ -2,7 +2,8 @@ import QtQuick 2.3
 import SortFilterProxyModel 0.2
 
 Item {
-    readonly property alias games: topGames
+    readonly property var games: randomGames
+    readonly property bool indexed: true
     property int maxItems: 16
 
     SortFilterProxyModel {

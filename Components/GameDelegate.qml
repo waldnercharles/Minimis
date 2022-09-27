@@ -55,7 +55,7 @@ Item {
 
     readonly property real cardRadius: vpx(api.memory.get('settings.cardTheme.cornerRadius'));
 
-    width: logoNativeResolution && screenshot.hasError && !isLoading && !screenshot.width ? screenshot.height : screenshot.width
+    width: aspectRatioNative && !isLoading && screenshot.hasError ? screenshot.height : screenshot.width
     height: screenshot.height
 
     scale: scaleEnabled ? (selected ? scaleSelected : scaleUnselected) : settingsMetadata.cardTheme.scale.defaultValue

@@ -18,7 +18,7 @@ FocusScope {
     LastPlayedGamesModel { id: lastPlayedGamesModel; maxItems: 16 }
     FavoriteGamesModel { id: favoriteGamesModel; maxItems: 16 }
     // BookmarkedGamesModel { id: bookmarkedGamesModel; maxItems: 16 }
-    // RandomGamesModel { id: randomGamesModel; maxItems: 16 }
+    RandomGamesModel { id: randomGamesModel; maxItems: 16 }
     GameLibraryModel { id: gameLibraryModel; z: 100 }
 
     readonly property var collectionsByType: [
@@ -26,7 +26,7 @@ FocusScope {
         lastPlayedGamesModel,
         favoriteGamesModel,
         // bookmarkedGamesModel,
-        // randomGamesModel,
+        randomGamesModel,
     ]
 
     ListModel {
@@ -53,9 +53,9 @@ FocusScope {
                 lastPlayedGamesModel.games.count;
                 favoriteGamesModel.games.count;
                 // bookmarkedGamesModel.games.count;
-                // randomGamesModel.games.count;
+                randomGamesModel.games.length;
 
-                return type === 'gameLibrary' || (collection != null && collection.games.count > 0);
+                return type === 'gameLibrary' || (collection != null && (collection.games.count > 0 || collection.games.length > 0));
             }
         }
 
@@ -76,7 +76,8 @@ FocusScope {
                 width: root.width
                 height: root.rowHeight
 
-                model: collection ? collection.games : undefined
+                games: collection ? collection.games : undefined
+                indexed: collection.indexed ?? false
                 focus: selected
 
                 opacity: index < listView.currentIndex ? 0 : 1

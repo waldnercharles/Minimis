@@ -35,6 +35,8 @@ FocusScope {
 
     onCurrentCollectionChanged: savedGameIndex = 0;
 
+    property var randomGames: []
+
     property var selectedGame
     property var selectedGameHistory: []
 
@@ -154,15 +156,11 @@ FocusScope {
 
     Component.onCompleted: {
         reloadSettings();
-        const games = api.allGames;
 
-        // if (api.allGames.move != null) { // latest version of pegasus does not support my hack
-        //     for (let i = games.count - 1; i > 0; i--) {
-        //         const j = Math.floor(Math.random() * (i + 1));
-        //         games.move(i, j);
-        //         games.move(j + 1, i);
-        //     }
-        // }
+        for (let i = 0; i < 16; i++) {
+            const j = Math.floor(Math.random() * (api.allGames.count));
+            randomGames.push(j);
+        }
 
         contentLoader.active = true;
     }

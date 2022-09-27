@@ -5,6 +5,9 @@ import QtGraphicalEffects 1.0
 FocusScope {
     id: root
 
+    property var games;
+    property bool indexed;
+
     property bool aspectRatioNative;
 
     property real aspectRatioWidth;
@@ -18,7 +21,6 @@ FocusScope {
     readonly property var currentGame: listView.currentItem ? listView.currentItem.game : undefined
 
     property alias title: listViewTitle.text
-    property alias model: listView.model
 
     Column {
         anchors.fill: parent
@@ -47,6 +49,8 @@ FocusScope {
                 visible: listView.focus
             }
 
+            model: indexed ? games.length : games
+
             height: parent.height - y
             width: parent.width
 
@@ -72,7 +76,7 @@ FocusScope {
                 itemWidth: root.aspectRatioNative ? undefined : height / root.aspectRatio
                 itemHeight: listView.height
 
-                game: modelData
+                game: indexed ? api.allGames.get(games[index]) : modelData
                 selected: ListView.isCurrentItem && listView.focus
 
                 assetKey: root.assetKey

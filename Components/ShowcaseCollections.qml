@@ -15,12 +15,6 @@ FocusScope {
 
     property int rowHeight
 
-    LastPlayedGamesModel { id: lastPlayedGamesModel; maxItems: 16 }
-    FavoriteGamesModel { id: favoriteGamesModel; maxItems: 16 }
-    // BookmarkedGamesModel { id: bookmarkedGamesModel; maxItems: 16 }
-    RandomGamesModel { id: randomGamesModel; maxItems: 16 }
-    GameLibraryModel { id: gameLibraryModel; z: 100 }
-
     readonly property var collectionsByType: [
         undefined,
         lastPlayedGamesModel,
@@ -93,8 +87,10 @@ FocusScope {
                 assetKey: settingsMetadata.collections[`${collectionKey}.art`].values[api.memory.get(`settings.collections.${collectionKey}.art`)]
                 logoVisible: api.memory.get(`settings.collections.${collectionKey}.logoVisible`)
 
-                currentIndex: showcaseViewGameIndex[index]
-                onCurrentIndexChanged: { showcaseViewGameIndex[index] = currentIndex; }
+                currentIndex: { currentIndex = Math.max(collection.indexed ? showcaseViewGameIndex[index] : games.mapFromSource(games.sourceModel.mapFromSource(showcaseViewGameIndex[index])), 0); }
+                onCurrentIndexChanged: {
+                    showcaseViewGameIndex[index] = collection.indexed ? currentIndex : games.sourceModel.mapToSource(games.mapToSource(currentIndex));
+                }
             }
         }
 
@@ -131,8 +127,10 @@ FocusScope {
                     model: gameLibraryModel.games
                     focus: selected
 
-                    currentIndex: showcaseViewGameIndex[index]
-                    onCurrentIndexChanged: { showcaseViewGameIndex[index] = currentIndex; }
+                    currentIndex: { currentIndex = Math.max(model.mapFromSource(showcaseViewGameIndex[index]), 0); }
+                    onCurrentIndexChanged: {
+                        showcaseViewGameIndex[index] = model.mapToSource(currentIndex);
+                    }
                 }
             }
         }

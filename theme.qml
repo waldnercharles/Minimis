@@ -25,6 +25,12 @@ FocusScope {
     SoundEffect { id: sfxAccept; source: "assets/sfx/accept.wav" }
     SoundEffect { id: sfxToggle; source: "assets/sfx/toggle.wav" }
 
+    LastPlayedGamesModel { id: lastPlayedGamesModel; maxItems: 16 }
+    FavoriteGamesModel { id: favoriteGamesModel; maxItems: 16 }
+    // BookmarkedGamesModel { id: bookmarkedGamesModel; maxItems: 16 }
+    RandomGamesModel { id: randomGamesModel; maxItems: 16 }
+    GameLibraryModel { id: gameLibraryModel; z: 100 }
+
     property var database: Database
     property var settingsMetadata: Settings.metadata
 

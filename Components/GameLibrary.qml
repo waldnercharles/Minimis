@@ -78,7 +78,7 @@ FocusScope {
         }
 
         Component.onCompleted: {
-            grid.positionViewAtIndex(grid.currentIndex, GridView.Center);
+            grid.positionViewAtIndex(grid.currentIndex, GridView.SnapPosition);
         }
 
         onCountChanged: {

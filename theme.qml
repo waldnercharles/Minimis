@@ -30,17 +30,16 @@ FocusScope {
 
     property var stateHistory: []
 
-    property var currentCollection: api.collections.get(0)
+    property var currentCollection: api.collections.get(currentCollectionIndex)
     property int currentCollectionIndex: 0
-
-    onCurrentCollectionChanged: savedGameIndex = 0;
 
     property var randomGames: []
 
     property var selectedGame
     property var selectedGameHistory: []
 
-    property int savedGameIndex: 0;
+    property int showcaseViewListIndex: 0
+    property var showcaseViewGameIndex: [0, 0, 0, 0, 0, 0]
 
     property bool filterByFavorites: false
     property bool filterByBookmarks: false
@@ -48,6 +47,58 @@ FocusScope {
     property var orderByFields: ['title', 'developer', 'publisher', 'genre', 'releaseYear', 'players', 'rating', 'lastPlayed']
     property int orderByIndex: 0
     property int orderByDirection: Qt.AscendingOrder
+
+    function saveState(game) {
+        api.memory.set('state.saved', true);
+        api.memory.set('state.state', root.state);
+        api.memory.set('state.stateHistory', JSON.stringify(stateHistory));
+        api.memory.set('state.currentCollectionIndex', currentCollectionIndex);
+        api.memory.set('state.randomGames', JSON.stringify(randomGames));
+        api.memory.set('state.selectedGame', api.allGames.indexOf(game));
+        // api.memory.set('state.selectedGameHistory', JSON.stringify(selectedGameHistory));
+        api.memory.set('state.filterByFavorites', filterByFavorites);
+        api.memory.set('state.filterByBookmarks', filterByBookmarks);
+        api.memory.set('state.orderByIndex', orderByIndex);
+        api.memory.set('state.orderByDirection', orderByDirection);
+
+        api.memory.set('state.showcaseViewListIndex', showcaseViewListIndex);
+        api.memory.set('state.showcaseViewGameIndex', JSON.stringify(showcaseViewGameIndex));
+    }
+
+    function loadState() {
+        if (api.memory.get('state.saved') ?? false) {
+            api.memory.set('state.saved', false);
+
+            root.state = api.memory.get('state.state');
+            root.stateHistory = JSON.parse(api.memory.get('state.stateHistory'));
+            root.currentCollectionIndex = api.memory.get('state.currentCollectionIndex');
+            root.randomGames = JSON.parse(api.memory.get('state.randomGames'));
+            root.selectedGame = api.allGames.get(api.memory.get('state.selectedGame'));
+            // selectedGameHistory = JSON.parse(api.memory.get('state.selectedGameHistory'));
+            root.filterByFavorites = api.memory.get('state.filterByFavorites');
+            root.filterByBookmarks = api.memory.get('state.filterByBookmarks');
+            root.orderByIndex = api.memory.get('state.orderByIndex');
+            root.orderByDirection = api.memory.get('state.orderByDirection');
+
+            root.showcaseViewListIndex = api.memory.get('state.showcaseViewListIndex');
+            root.showcaseViewGameIndex = JSON.parse(api.memory.get('state.showcaseViewGameIndex'));
+        } else {
+            for (let i = 0; i < 16; i++) {
+                const j = Math.floor(Math.random() * (api.allGames.count));
+                root.randomGames.push(j);
+            }
+        }
+    }
+
+    function launchGame(game) {
+        if (game != null) {
+            saveState(game);
+            game.launch();
+        } else {
+            saveState(selectedGame);
+            selectedGame.launch();
+        }
+    }
 
     readonly property real uiScale: api.memory.get('settings.general.uiScale') ?? 1;
 
@@ -150,17 +201,12 @@ FocusScope {
         Behavior on opacity { OpacityAnimator { duration: 300; from: 0 } }
 
         focus: true
-
         active: false
     }
 
     Component.onCompleted: {
         reloadSettings();
-
-        for (let i = 0; i < 16; i++) {
-            const j = Math.floor(Math.random() * (api.allGames.count));
-            randomGames.push(j);
-        }
+        loadState();
 
         contentLoader.active = true;
     }

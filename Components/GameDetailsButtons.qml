@@ -22,7 +22,7 @@ ListView {
             height: parent.height
             selected: root.focus && ListView.isCurrentItem
             onActivated: {
-                game.launch();
+                launchGame(game);
             }
         }
         // Button {

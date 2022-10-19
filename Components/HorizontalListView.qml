@@ -20,6 +20,8 @@ FocusScope {
 
     readonly property var currentGame: listView.currentItem ? listView.currentItem.game : undefined
 
+    property alias currentIndex: listView.currentIndex
+
     property alias title: listViewTitle.text
 
     Column {
@@ -59,7 +61,7 @@ FocusScope {
 
             highlightResizeDuration: 0
             highlightMoveDuration: 300
-            highlightRangeMode: ListView.ApplyRange
+            highlightRangeMode: ListView.StrictlyEnforceRange 
             highlightFollowsCurrentItem: true
 
             displayMarginBeginning: width * 2
@@ -86,8 +88,14 @@ FocusScope {
                 sourceDebounceDuration: 0
             }
 
+            snapMode: ListView.SnapToItem
+
             Keys.onLeftPressed: { sfxNav.play(); event.accepted = false; }
             Keys.onRightPressed: { sfxNav.play(); event.accepted = false; }
+
+            Component.onCompleted: {
+                listView.positionViewAtIndex(listView.currentIndex, ListView.SnapPosition);
+            }
         }
     }
 }

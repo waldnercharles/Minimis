@@ -11,7 +11,7 @@ FocusScope {
     id: root
 
     readonly property alias list: listView
-    readonly property var currentGame: listView.currentItem && listView.currentItem ? listView.currentItem.currentGame : undefined
+    readonly property var currentGame: listView.currentItem ? listView.currentItem.currentGame : undefined
 
     property int rowHeight
 
@@ -55,7 +55,7 @@ FocusScope {
                 // bookmarkedGamesModel.games.count;
                 randomGamesModel.games.length;
 
-                return type === 'gameLibrary' || (collection != null && (collection.games.count > 0 || collection.games.length > 0));
+                return type === 'gameLibrary' || (collection != null && collection.games && ((collection.games.count > 0) || (collection.games.length > 0)));
             }
         }
 
@@ -92,6 +92,9 @@ FocusScope {
 
                 assetKey: settingsMetadata.collections[`${collectionKey}.art`].values[api.memory.get(`settings.collections.${collectionKey}.art`)]
                 logoVisible: api.memory.get(`settings.collections.${collectionKey}.logoVisible`)
+
+                currentIndex: showcaseViewGameIndex[index]
+                onCurrentIndexChanged: { showcaseViewGameIndex[index] = currentIndex; }
             }
         }
 
@@ -127,6 +130,9 @@ FocusScope {
 
                     model: gameLibraryModel.games
                     focus: selected
+
+                    currentIndex: showcaseViewGameIndex[index]
+                    onCurrentIndexChanged: { showcaseViewGameIndex[index] = currentIndex; }
                 }
             }
         }
@@ -156,5 +162,8 @@ FocusScope {
 
         Keys.onUpPressed: { sfxNav.play(); event.accepted = false; }
         Keys.onDownPressed: { sfxNav.play(); event.accepted = false; }
+
+        currentIndex: showcaseViewListIndex;
+        onCurrentIndexChanged: { showcaseViewListIndex = currentIndex; }
     }
 }

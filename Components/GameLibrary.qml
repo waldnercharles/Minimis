@@ -8,6 +8,7 @@ FocusScope {
     property alias model: grid.model
 
     readonly property var currentGame: grid.currentItem ? grid.currentItem.game : undefined
+    property alias currentIndex: grid.currentIndex
 
     clip: true
 
@@ -77,7 +78,6 @@ FocusScope {
         }
 
         Component.onCompleted: {
-            // grid.currentIndex = gridContainer.focus ? savedGameIndex : -1;
             grid.positionViewAtIndex(grid.currentIndex, GridView.Center);
         }
 

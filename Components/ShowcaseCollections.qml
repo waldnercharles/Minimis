@@ -100,10 +100,15 @@ FocusScope {
                 readonly property bool selected: root.focus && ListView.isCurrentItem
                 readonly property var currentGame: gameLibrary.currentGame
 
+                property alias currentIndex: gameLibrary.currentIndex
+
                 width: root.width
                 height: root.height
 
                 spacing: vpx(10) * uiScale
+
+                function nextLetter() { gameLibrary.navigation.next(); }
+                function prevLetter() { gameLibrary.navigation.prev(); }
 
                 Text {
                     text: 'Library'
@@ -150,6 +155,7 @@ FocusScope {
         highlightRangeMode: ListView.StrictlyEnforceRange 
 
         spacing: gameDelegateTitleMargin// + vpx(10)
+        snapMode: ListView.SnapToItem
 
         cacheBuffer: Math.max(root.rowHeight * 6, 0)
         
@@ -163,5 +169,22 @@ FocusScope {
 
         currentIndex: showcaseViewListIndex;
         onCurrentIndexChanged: { showcaseViewListIndex = currentIndex; }
+
+        Component.onCompleted: {
+            listView.positionViewAtIndex(listView.currentIndex, ListView.SnapPosition);
+        }
+    }
+
+    function nextLetter() {
+        listView.currentIndex = listView.count - 1;
+
+        var gameLibraryDelegate = listView.itemAtIndex(listView.currentIndex);
+        gameLibraryDelegate.nextLetter();
+    }
+    function prevLetter() {
+        listView.currentIndex = listView.count - 1;
+
+        var gameLibraryDelegate = listView.itemAtIndex(listView.currentIndex);
+        gameLibraryDelegate.prevLetter();
     }
 }

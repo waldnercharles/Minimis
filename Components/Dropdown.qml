@@ -17,7 +17,7 @@ FocusScope {
 
     property string roleName
 
-    signal activated
+    signal activated(index: int)
 
     state: 'closed'
 
@@ -140,9 +140,8 @@ FocusScope {
             if (api.keys.isAccept(event) && !event.isAutoRepeat) {
                 event.accepted = true;
                 // root.state = 'closed';
-                root.checkedIndex = dropdownItems.currentIndex;
                 sfxAccept.play();
-                root.activated();
+                root.activated(dropdownItems.currentIndex);
             }
 
             if (api.keys.isCancel(event) && !event.isAutoRepeat) {

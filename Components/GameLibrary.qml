@@ -6,6 +6,7 @@ FocusScope {
     signal openCollectionsMenu
 
     property alias model: grid.model
+    property alias navigation: navigationBar
 
     readonly property var currentGame: grid.currentItem ? grid.currentItem.game : undefined
     property alias currentIndex: grid.currentIndex

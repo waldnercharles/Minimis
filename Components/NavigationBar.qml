@@ -163,6 +163,25 @@ Item {
     }
 
     onActiveChanged: {
+        Qt.callLater(updateCurrentIndex);
+     }
+
+    onGamesChanged: {
+        Qt.callLater(updateNavigation);
+    }
+
+    onRoleNameChanged: {
+        Qt.callLater(updateNavigation);
+    }
+    onSortDirectionChanged: {
+        Qt.callLater(updateNavigation);
+    }
+
+    onSelectedItemChanged: {
+        Qt.callLater(updateCurrentIndex);
+    }
+
+    function updateCurrentIndex() {
         let selectedItemValue;
         switch (roleName) {
             case 'title':
@@ -190,22 +209,10 @@ Item {
         if (navigationBarIndex != -1) {
             listView.currentIndex = navigationBarIndex;
         }
-     }
-
-    onGamesChanged: {
-        Qt.callLater(updateNavigation);
     }
 
-    onRoleNameChanged: {
-        Qt.callLater(updateNavigation);
-    }
-    onSortDirectionChanged: {
-        Qt.callLater(updateNavigation);
-    }
-    
-    Keys.onUpPressed: { 
+    function prev() {
         sfxNav.play()
-        event.accepted = true
 
         const startingIndex = listView.currentIndex;
 
@@ -220,11 +227,10 @@ Item {
         } while (!listView.currentItem.enabled)
         
         emitIndexChanged();
-    }      
+    }
 
-    Keys.onDownPressed: { 
+    function next() {
         sfxNav.play()
-        event.accepted = true
 
         const startingIndex = listView.currentIndex;
 
@@ -239,6 +245,16 @@ Item {
         } while (!listView.currentItem.enabled)
         
         emitIndexChanged();
+    }
+    
+    Keys.onUpPressed: { 
+        event.accepted = true
+        prev();
+    }      
+
+    Keys.onDownPressed: { 
+        event.accepted = true
+        next();
     }    
 
     ListView {
@@ -251,27 +267,29 @@ Item {
 
         model: items.length
         delegate: Item {
+            property bool selected: ListView.isCurrentItem
+
             enabled: !!enabledItems[index]
 
-            opacity: enabled ? 1 : 0.33
+            opacity: enabled ? (selected && !root.activeFocus ? 0.8 : 1) : 0.33
 
-            width: parent.width
+            width: parent ? parent.width : height
             height: vpx(32) * uiScale
-
-            property bool selected: ListView.isCurrentItem && root.activeFocus
 
             Rectangle {
                 id: background
 
                 anchors.fill: parent
 
-                color: api.memory.get('settings.general.accentColor')
+                color: (selected && root.activeFocus) ? api.memory.get('settings.general.accentColor') : 'transparent'
+                border.width: (selected && !root.activeFocus) ? vpx(2) : 0
+                border.color: api.memory.get('settings.general.accentColor')
                 radius: vpx(5)
 
                 layer.enabled: selected
                 layer.effect: DropShadowLow { }
 
-                scale: selected ? 1 : 0
+                scale: selected ? (root.activeFocus ? 1 : 0.98) : 0
                 Behavior on scale { NumberAnimation { duration: 333; from: 0; easing.type: Easing.OutBack; } }
 
                 visible: selected
@@ -289,7 +307,7 @@ Item {
                 horizontalAlignment: Text.AlignHCenter
                 
                 opacity: selected ? 1 : 0.5
-                color: selected ? api.memory.get('settings.general.backgroundColor') : api.memory.get('settings.general.textColor')
+                color: (selected && root.activeFocus) ? api.memory.get('settings.general.backgroundColor') : api.memory.get('settings.general.textColor')
 
                 layer.enabled: !selected
                 layer.effect: DropShadowLow { }

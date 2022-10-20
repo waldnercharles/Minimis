@@ -82,6 +82,49 @@ FocusScope {
             }
         }
 
-        ShowcaseViewHeader { id: header }
+        ShowcaseViewHeader {
+            id: header
+            
+            onDropdownUpdated: {
+                showcase.focus = true;
+                showcase.list.currentIndex = showcase.list.count - 1;
+                var gameLibraryDelegate = listView.itemAtIndex(listView.currentIndex);
+                gameLibraryDelegate.currentIndex = 0;
+            }
+        }
+
+        Keys.onPressed: {
+            if (api.keys.isPageUp(event)) {
+                event.accepted = true;
+                showcase.focus = true;
+                showcase.prevLetter();
+            }
+
+            if (api.keys.isPageDown(event)) {
+                event.accepted = true;
+                showcase.focus = true;
+                showcase.nextLetter();
+            }
+
+            if (api.keys.isNextPage(event)) {
+                event.accepted = true;
+                currentCollectionIndex = (currentCollectionIndex < (api.collections.count - 1)) ? (currentCollectionIndex + 1) : 0;
+                showcase.focus = true;
+                showcase.list.currentIndex = showcase.list.count - 1;
+                var gameLibraryDelegate = showcase.list.itemAtIndex(showcase.list.currentIndex);
+                gameLibraryDelegate.currentIndex = 0;
+                sfxAccept.play();
+            }
+
+            if (api.keys.isPrevPage(event)) {
+                event.accepted = true;
+                currentCollectionIndex = (currentCollectionIndex > 0) ? (currentCollectionIndex - 1) : (api.collections.count - 1);
+                showcase.focus = true;
+                showcase.list.currentIndex = showcase.list.count - 1;
+                var gameLibraryDelegate = showcase.list.itemAtIndex(showcase.list.currentIndex);
+                gameLibraryDelegate.currentIndex = 0;
+                sfxAccept.play();
+            }
+        }
     }
 }

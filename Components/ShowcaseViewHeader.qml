@@ -5,7 +5,6 @@ import QtGraphicalEffects 1.0
 ListView {
     id: root
 
-
     height: vpx(33) * ((uiScale ?? 1) < 0 ? 1 : uiScale)
 
     anchors {
@@ -21,6 +20,8 @@ ListView {
 
     orientation: ListView.Horizontal
     layoutDirection: Qt.RightToLeft
+
+    signal dropdownUpdated()
 
     model: ObjectModel {
         Button {
@@ -56,13 +57,15 @@ ListView {
 
                 checkedIndex: orderByIndex
 
-                onActivated: {
-                    if (orderByIndex === checkedIndex) {
+                onActivated: (idx) => {
+                    if (orderByIndex === idx) {
                         orderByDirection = orderByDirection === Qt.AscendingOrder ? Qt.DescendingOrder : Qt.AscendingOrder;
                     } else {
-                        orderByIndex = checkedIndex;
+                        orderByIndex = idx;
                         orderByDirection = Qt.AscendingOrder;
                     }
+
+                    root.dropdownUpdated();
                 }
             }
         }
@@ -93,14 +96,16 @@ ListView {
 
                 checkedIndex: filterByFavorites ? 1 : 0
 
-                onActivated: {
-                    if (checkedIndex === 0) {
+                onActivated: (idx) => {
+                    if (idx === 0) {
                         filterByFavorites = false;
                     }
 
-                    if (checkedIndex === 1) {
+                    if (idx === 1) {
                         filterByFavorites = true;
                     }
+
+                    root.dropdownUpdated();
                 }
             }
         }
@@ -123,10 +128,9 @@ ListView {
                 roleName: 'name'
 
                 checkedIndex: currentCollectionIndex
-
-                onActivated: {
-                    currentCollectionIndex = checkedIndex;
-                    currentCollection = api.collections.get(checkedIndex);
+                onActivated: (idx) => {
+                    currentCollectionIndex = currentIndex;
+                    root.dropdownUpdated();
                 }
             }
         }

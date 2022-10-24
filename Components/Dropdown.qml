@@ -85,7 +85,6 @@ FocusScope {
             width: childrenRect.width
             height: childrenRect.height
 
-
             Row {
                 leftPadding: dropdownItems.delegateHeight * 0.44
                 rightPadding: dropdownItems.delegateHeight * 0.44
@@ -103,12 +102,11 @@ FocusScope {
                     opacity: selected ? 1.0 : 0.6
 
                     verticalAlignment: Text.AlignVCenter
-                    // horizontalAlignment: Text.AlignHCenter
                 }
                 Text {
                     text: checked ? root.checkedIcon : ''
 
-                    width: height * 1.33
+                    width: height
                     height: dropdownItems.delegateHeight
 
                     font.family: fontawesome.name
@@ -128,18 +126,20 @@ FocusScope {
         id: dropdownItems
         anchors.centerIn: dropdownBackground
 
+        readonly property int delegateHeight: vpx(33) * uiScale
+        readonly property var fullHeight: delegateHeight * (root.items.count ?? root.items.length ?? 0)
+        readonly property var maxHeight: delegateHeight * 5
+
         focus: root.focus && root.state == 'open'
         clip: true
 
-        height: delegateHeight * (root.items.count ?? root.items.length ?? 0)
+        height: fullHeight > maxHeight ? maxHeight : fullHeight
         width: contentItem.childrenRect.width
 
-        readonly property int delegateHeight: vpx(33) * uiScale
         delegate: dropdownItem 
         Keys.onPressed: {
             if (api.keys.isAccept(event) && !event.isAutoRepeat) {
                 event.accepted = true;
-                // root.state = 'closed';
                 sfxAccept.play();
                 root.activated(dropdownItems.currentIndex);
             }
@@ -153,5 +153,22 @@ FocusScope {
 
         Keys.onUpPressed: { event.accepted = true; dropdownItems.decrementCurrentIndex(); sfxNav.play(); }
         Keys.onDownPressed: { event.accepted = true; dropdownItems.incrementCurrentIndex(); sfxNav.play(); }
+
+        Rectangle {
+            color: api.memory.get('settings.general.textColor')
+
+            anchors.right: dropdownItems.right
+
+            width: vpx(4) * uiScale
+            height: visible ? dropdownItems.height * (dropdownItems.maxHeight / dropdownItems.fullHeight) : 0
+
+            radius: width
+            opacity: 0.5
+
+            y: visible ? (dropdownItems.height - height) * (dropdownItems.currentItem.y / (dropdownItems.fullHeight - dropdownItems.currentItem.height)) : 0
+            Behavior on y { PropertyAnimation { duration: 100; easing.type: Easing.OutQuad } }
+
+            visible: root.state == 'open' && dropdownItems.maxHeight < dropdownItems.fullHeight
+        }
     }
 }

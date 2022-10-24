@@ -160,15 +160,14 @@ FocusScope {
             anchors.right: dropdownItems.right
 
             width: vpx(4) * uiScale
-            height: visible ? dropdownItems.height * (dropdownItems.maxHeight / dropdownItems.fullHeight) : 0
+            height: visible ? dropdownItems.height * (dropdownItems.height / dropdownItems.contentHeight) : 0
 
             radius: width
             opacity: 0.5
 
-            y: visible ? (dropdownItems.height - height) * (dropdownItems.currentItem.y / (dropdownItems.fullHeight - dropdownItems.currentItem.height)) : 0
-            Behavior on y { PropertyAnimation { duration: 100; easing.type: Easing.OutQuad } }
+            y: visible ? dropdownItems.height * (dropdownItems.contentY / dropdownItems.contentHeight) : 0
 
-            visible: root.state == 'open' && dropdownItems.maxHeight < dropdownItems.fullHeight
+            visible: root.state == 'open' && dropdownItems.height < dropdownItems.contentHeight
         }
     }
 }

@@ -167,7 +167,7 @@ FocusScope {
 
             y: visible ? dropdownItems.height * (dropdownItems.contentY / dropdownItems.contentHeight) : 0
 
-            visible: root.state == 'open' && dropdownItems.height < dropdownItems.contentHeight
+            visible: root.state === 'open' && (dropdownItems.maxHeight < dropdownItems.fullHeight)
         }
     }
 }

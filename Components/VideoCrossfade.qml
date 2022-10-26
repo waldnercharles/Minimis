@@ -27,6 +27,20 @@ Item {
         restart()
     }
 
+    Connections {
+        target: Qt.application
+
+        function onStateChanged() {
+            if (Qt.application.state == Qt.ApplicationSuspended) {
+                img1.pause();
+                img2.pause();
+            } else {
+                img1.play();
+                img2.play();
+            }
+        }
+    }
+
     states: [
         State {
             name: "img1"

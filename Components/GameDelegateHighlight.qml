@@ -21,6 +21,8 @@ Item {
         id: videoComponent
 
         Video {
+            id: video
+
             anchors.fill: parent
             source: root.item ? root.item.game.assets.videoList[0] || '' : ''
             fillMode: VideoOutput.PreserveAspectCrop
@@ -28,6 +30,11 @@ Item {
             loops: MediaPlayer.Infinite
             autoPlay: true
             volume: api.memory.get('settings.cardTheme.previewVolume')
+
+            Connections {
+                target: Qt.application
+                onStateChanged: Qt.application.state == Qt.ApplicationSuspended ? video.pause() : video.play()
+            }
         }
     }
 

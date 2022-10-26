@@ -79,35 +79,37 @@ FocusScope {
 
             FocusScope {
                 id: gameDetails
+
                 width: listView.width
-                height: listView.height 
+                height: listView.height
 
                 readonly property bool selected: root.focus && ListView.isCurrentItem
 
                 ColumnLayout {
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                        bottom: parent.bottom
-                    }
+                    id: columnLayout
+                    anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
 
                     GameMetadata {
-                        width: parent.width
-                        height: parent.height * 0.5
+                        Layout.preferredWidth: root.width * 0.7
+                        Layout.preferredHeight: root.height * 0.5
+
+                        Layout.fillWidth: false
+                        Layout.alignment: Qt.AlignBottom | Qt.AlignLeft
 
                         game: root.game
-
-                        bottomMargin: vpx(10)
                     }
 
                     GameDetailsButtons {
+                        id: buttons
+
                         game: root.game
 
                         focus: gameDetails.selected
 
                         Layout.fillWidth: true
-                        Layout.topMargin: vpx(15)
-                        Layout.bottomMargin: vpx(50)
+                        Layout.bottomMargin: height * 0.5
+
+                        Layout.alignment: Qt.AlignBottom | Qt.AlignLeft
                     }
                 }
             }
@@ -165,17 +167,6 @@ FocusScope {
                         displayMarginBeginning: width * 2
                         displayMarginEnd: width * 2
 
-                        // highlight: GamesViewItemBorder {
-                        //     width: mediaListView.currentItem ? mediaListView.currentItem.width : undefined
-                        //     height: mediaListView.currentItem ? mediaListView.currentItem.height : undefined
-
-                        //     scale: mediaListView.currentItem ? mediaListView.currentItem.scale : 0
-
-                        //     z: mediaListView.currentItem ? mediaListView.currentItem.z - 1 : 0
-
-                        //     visible: mediaListView.currentItem != null && mediaScope.focus
-                        // }
-
                         Keys.onLeftPressed: { sfxNav.play(); event.accepted = false; }
                         Keys.onRightPressed: { sfxNav.play(); event.accepted = false; }
 
@@ -201,10 +192,11 @@ FocusScope {
         opacity: focus ? 1 : 0
         Behavior on opacity { OpacityAnimator { duration: 200 } }
 
-        anchors { left: parent.left; right: parent.right }
+        anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
 
         anchors.leftMargin: vpx(api.memory.get('settings.general.leftMargin'));
         anchors.rightMargin: vpx(api.memory.get('settings.general.rightMargin'));
+        anchors.bottomMargin: proxyModel.count > 1 ? vpx(75) : vpx(0)
 
         displayMarginBeginning: root.height
         displayMarginEnd: root.height
@@ -217,8 +209,6 @@ FocusScope {
         highlightRangeMode: ListView.StrictlyEnforceRange
 
         height: vpx(150)
-
-        y: parent.height - height - (proxyModel.count > 1 ? vpx(75) : vpx(0))
 
         model: proxyModel
         delegate: listViewDelegate

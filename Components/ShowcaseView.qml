@@ -42,7 +42,7 @@ FocusScope {
         GameMetadata {
             id: showcaseMetadata
 
-            width: parent.width
+            width: parent.width * 0.6
             height: parent.height * 0.5
 
             game: root.game
@@ -64,6 +64,7 @@ FocusScope {
             onCurrentGameChanged: {
                 if (currentGame != null) {
                     root.previousGame = currentGame;
+                    showcaseMetadata.showDetails = false;
                 }
             }
 
@@ -124,6 +125,15 @@ FocusScope {
                 var gameLibraryDelegate = showcase.list.itemAtIndex(showcase.list.currentIndex);
                 gameLibraryDelegate.currentIndex = 0;
                 sfxAccept.play();
+            }
+
+            if (api.keys.isDetails(event) && !event.isAutoRepeat) {
+                if (showcase.focus && showcase.list.currentIndex != showcase.list.count - 1) {
+                    event.accepted = true;
+                    showcaseMetadata.showDetails = !showcaseMetadata.showDetails;
+
+                    sfxAccept.play();
+                }
             }
         }
     }

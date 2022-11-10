@@ -90,6 +90,8 @@ FocusScope {
                     anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
 
                     GameMetadata {
+                        id: gameMetadata
+
                         Layout.preferredWidth: root.width * 0.7
                         Layout.preferredHeight: root.height * 0.5
 
@@ -110,6 +112,17 @@ FocusScope {
                         Layout.bottomMargin: height * 0.5
 
                         Layout.alignment: Qt.AlignBottom | Qt.AlignLeft
+                    }
+                }
+
+                Keys.onPressed: {
+                    if (api.keys.isDetails(event) && !event.isAutoRepeat) {
+                        if (gameDetails.selected) {
+                            event.accepted = true;
+                            gameMetadata.showDetails = !gameMetadata.showDetails;
+
+                            sfxAccept.play();
+                        }
                     }
                 }
             }

@@ -87,7 +87,15 @@ FocusScope {
         }
 
         Keys.onUpPressed: { sfxNav.play(); event.accepted = false; }
-        Keys.onDownPressed: { sfxNav.play(); event.accepted = false; }
+        Keys.onDownPressed: {
+            sfxNav.play();
+            if ((grid.currentIndex + grid.numberOfColumns) > (grid.count - 1) && (Math.trunc(grid.currentIndex / grid.numberOfColumns) != Math.trunc(grid.count / grid.numberOfColumns))) {
+                grid.currentIndex = grid.count - 1;
+                event.accepted = true;
+            } else {
+                event.accepted = false;
+            }
+        }
 
         Keys.onLeftPressed: { 
             sfxNav.play();

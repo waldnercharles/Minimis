@@ -1,6 +1,4 @@
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/smalltalk)
-
-![](https://i.imgur.com/R2ODkeG.jpeg)
+![](.meta/screenshots/screen1.png)
 
 # Minimis
 
@@ -12,9 +10,9 @@ A theme I wrote for Pegasus on my Nvidia Shield
 
 ## Screenshots
 
-![](https://i.imgur.com/SNteEBf.png)
-![](https://i.imgur.com/uSSZTwW.png)
-![](https://i.imgur.com/t3uuQVH.jpeg)
-![](https://i.imgur.com/wN2uXjI.png)
-![](https://i.imgur.com/24oyvLF.jpeg)
-![](https://i.imgur.com/gfxdNvw.png)
+![](.meta/screenshots/screen2.jpg)
+![](.meta/screenshots/screen3.png)
+![](.meta/screenshots/screen4.jpg)
+![](.meta/screenshots/screen5.png)
+![](.meta/screenshots/screen6.jpg)
+![](.meta/screenshots/screen7.png)
